@@ -12,9 +12,12 @@ public class PlayerMove : MonoBehaviour
     Animator anim;
     Transform cam; // 팔로우 카메라
 
-    Vector3 moveDir;
+    Vector3 moveDir;    // 이동할 방향
     float turnVelocity; // 현재 회전 속도
     bool isMoving;      // 이동 중인지
+
+    [HideInInspector]
+    public bool isCantMove; // 이동 불가능한 상태인지
 
     [Header("-- 조이스틱 관련 --")]
     public GameObject joyStick;
@@ -23,9 +26,6 @@ public class PlayerMove : MonoBehaviour
     float joyStickRadiius; // 조이스틱 배경의 반지름
     float screenWidthHalf; // 화면의 절반
     bool isJoyStick;       // 조이스틱 사용 중인지
-
-    //[HideInInspector]
-    public bool isCantMove; // 이동 불가능한 상태인지
 
     void Start()
     {

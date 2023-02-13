@@ -1,35 +1,50 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCollision : MonoBehaviour
 {
     PlayerAction playerAction;
+    InventoryManager inventory;
 
     private void Start()
     {
         playerAction = GetComponent<PlayerAction>();
+        inventory = FindObjectOfType<InventoryManager>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        // NPC¿Í ¸¸³µÀ» ¶§
-        if(other.tag == "NPC")
+        switch (other.tag)
         {
-            other.SendMessage("PlayerHI");
-            playerAction.actionState = ActionState.WithNPC;
-            playerAction.npcName = other.name;
+            case "NPC": // NPCì´ ê·¼ì²˜ì— ìˆì„ ë•Œ
+                other.SendMessage("PlayerHI");
+                playerAction.actionState = ActionState.WithNPC;
+                playerAction.npcName = other.name;
+                break;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        // NPC¿Í Çì¾îÁ³À» ¶§
-        if (other.tag == "NPC")
+        switch (other.tag)
         {
-            other.SendMessage("PlayerBye");
-            playerAction.actionState = ActionState.None;
-            playerAction.npcName = "";
+            case "NPC": // NPCì™€ í—¤ì–´ì¡Œì„ ë•Œ
+                other.SendMessage("PlayerBye");
+                playerAction.actionState = ActionState.None;
+                playerAction.npcName = "";
+                break;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        switch (collision.gameObject.tag)
+        {
+            case "Item": // Itemê³¼ ë‹¿ì•˜ì„ ë•Œ
+                collision.gameObject.GetComponent<Magnet>().isTouch = true;
+                inventory.AddItem(collision.gameObject.GetComponent<ItemObject>().item);
+                break;
         }
     }
 }

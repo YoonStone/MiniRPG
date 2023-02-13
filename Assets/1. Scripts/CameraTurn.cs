@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
@@ -11,6 +11,9 @@ public class CameraTurn : MonoBehaviour
     float screenWidthHalf;
     bool isDrag;
 
+    [HideInInspector]
+    public bool isCantTurn;
+
     void Start()
     {
         cineFreeLook = GetComponent<CinemachineFreeLook>();
@@ -19,13 +22,15 @@ public class CameraTurn : MonoBehaviour
 
     void Update()
     {
-        // µå·¡±× ½ÃÀÛ
+        if (isCantTurn) return;
+
+        // ë“œë˜ê·¸ ì‹œì‘
         if (Input.GetMouseButtonDown(0) && Input.mousePosition.x > screenWidthHalf)
         {
             isDrag = true;
             currentPos = Input.mousePosition;
         }
-        // µå·¡±× Á¾·á
+        // ë“œë˜ê·¸ ì¢…ë£Œ
         else if (Input.GetMouseButtonUp(0))
         {
             isDrag = false;
@@ -33,10 +38,10 @@ public class CameraTurn : MonoBehaviour
             cineFreeLook.m_XAxis.m_InputAxisValue = 0;
         }
 
-        // µå·¡±× Áß
+        // ë“œë˜ê·¸ ì¤‘
         if (isDrag)
         {
-            // µå·¡±× ¹æÇâ´ë·Î Ä«¸Ş¶ó È¸Àü
+            // ë“œë˜ê·¸ ë°©í–¥ëŒ€ë¡œ ì¹´ë©”ë¼ íšŒì „
             Vector2 dragDir = (Vector2)Input.mousePosition - currentPos;
             cineFreeLook.m_YAxis.m_InputAxisValue = dragDir.y;
             cineFreeLook.m_XAxis.m_InputAxisValue = dragDir.x;

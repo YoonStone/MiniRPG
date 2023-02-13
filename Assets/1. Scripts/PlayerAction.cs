@@ -11,10 +11,10 @@ public enum ActionState
 
 public class PlayerAction : MonoBehaviour
 {
-    public ActionState actionState;
+    public ActionState actionState; // 상호작용 종류
     
     [HideInInspector]
-    public string npcName;
+    public string npcName; // 대화할 NPC의 이름
 
     PlayerMove playerMove;
     Animator anim;
@@ -24,7 +24,8 @@ public class PlayerAction : MonoBehaviour
         playerMove = GetComponent<PlayerMove>();
         anim = GetComponent<Animator>();
 
-        UIManager.instance.playerActionBtn.onClick.AddListener(OnClickPlayerActionBtn);
+        //UIManager.instance.playerActionBtn.onClick.AddListener(OnClickPlayerActionBtn);
+        FindObjectOfType<PlayUIManager>().playerActionBtn.onClick.AddListener(OnClickPlayerActionBtn);
     }
 
     private void Update()
@@ -58,7 +59,8 @@ public class PlayerAction : MonoBehaviour
     IEnumerator AttackEndCheck()
     {
         // 공격 애니메이션이 끝날 때까지 기다렸다가 이동 가능상태로 변경
-        yield return new WaitUntil(() => anim.GetCurrentAnimatorStateInfo(0).IsTag("Attack") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f);
+        yield return new WaitUntil(() 
+            => anim.GetCurrentAnimatorStateInfo(0).IsTag("Attack") && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f);
         playerMove.isCantMove = false;
     }
 
