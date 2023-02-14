@@ -13,13 +13,14 @@ public class DungeonManager : MonoBehaviour
     void Start()
     {
         playerCC = FindObjectOfType<CharacterController>();
-        uiMng = FindObjectOfType<PlayUIManager>();
+
         //player = playerCC.transform;
         playerCC.enabled = false;
         playerCC.transform.position = playerPos.position;
         playerCC.transform.rotation = playerPos.rotation;
         playerCC.enabled = true;
-        StartCoroutine(uiMng.Fade(1, 0));
+      
+        StartCoroutine(PlayUIManager.instance.Fade(1, 0));
     }
 
     // Update is called once per frame

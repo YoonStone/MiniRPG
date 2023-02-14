@@ -16,16 +16,16 @@ public class PlayUIManager : MonoBehaviour
     [Header("-- Fade -- ")]
     public Transform fadeImg; // 페이드인,페이드아웃
 
-    //static public UIManager instance;
-    //private void Awake()
-    //{
-    //    if (instance == null)
-    //    {
-    //        instance = this;
-    //        DontDestroyOnLoad(gameObject);
-    //    }
-    //    else if (instance != this) Destroy(gameObject);
-    //}
+    static public PlayUIManager instance;
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (instance != this) Destroy(gameObject);
+    }
 
     private void Start()
     {
