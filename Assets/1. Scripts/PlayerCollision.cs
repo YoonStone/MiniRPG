@@ -20,7 +20,7 @@ public class PlayerCollision : MonoBehaviour
             case "NPC": // NPC이 근처에 있을 때
                 other.SendMessage("PlayerHI");
                 playerAction.actionState = ActionState.WithNPC;
-                playerAction.npcName = other.name;
+                playerAction.npcName = other.name.Split('_')[1];
                 break;
         }
     }

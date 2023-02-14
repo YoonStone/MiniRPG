@@ -18,14 +18,15 @@ public class PlayerAction : MonoBehaviour
 
     PlayerMove playerMove;
     Animator anim;
+    PlayUIManager uiMng;
 
     void Start()
     {
         playerMove = GetComponent<PlayerMove>();
         anim = GetComponent<Animator>();
 
-        //UIManager.instance.playerActionBtn.onClick.AddListener(OnClickPlayerActionBtn);
-        FindObjectOfType<PlayUIManager>().playerActionBtn.onClick.AddListener(OnClickPlayerActionBtn);
+        uiMng = FindObjectOfType<PlayUIManager>();
+        uiMng.playerActionBtn.onClick.AddListener(OnClickPlayerActionBtn);
     }
 
     private void Update()
@@ -68,5 +69,10 @@ public class PlayerAction : MonoBehaviour
     void NPCInteract()
     {
         // NPC 이름에 따라
+        switch (npcName)
+        {
+            case "Boy": // 꼬마애 (페이드인 후 씬 전환)
+                StartCoroutine(uiMng.Fade(0, 1)); break;
+        }
     }
 }

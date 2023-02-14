@@ -13,6 +13,9 @@ public class PlayUIManager : MonoBehaviour
     [Header("-- 버튼 -- ")]
     public Button playerActionBtn; // 플레이어 액션 버튼
 
+    [Header("-- Fade -- ")]
+    public Transform fadeImg; // 페이드인,페이드아웃
+
     //static public UIManager instance;
     //private void Awake()
     //{
@@ -42,4 +45,20 @@ public class PlayUIManager : MonoBehaviour
         anim_Inventory.SetTrigger(triggerName);
     }
 
+    // 페이드인, 페이드아웃
+    public IEnumerator Fade(int from, int to)
+    {
+        Vector3 fromScale = new Vector3(from, from, from);
+        Vector3 toScale = new Vector3(to, to, to);
+
+        float time = 0;
+        while(time < 1)
+        {
+            time += Time.deltaTime;
+            fadeImg.localScale = Vector3.Lerp(fromScale, toScale, time);
+            yield return null;
+        }
+
+        if(to == 1) LoadingManager.LoadScene(2);
+    }
 }
