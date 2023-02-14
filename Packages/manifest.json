@@ -2,7 +2,7 @@
   "dependencies": {
     "com.unity.2d.animation": "8.0.5",
     "com.unity.2d.sprite": "1.0.0",
-    "com.unity.2d.spriteshape": "5.1.5",
+    "com.unity.2d.spriteshape": "8.0.1",
     "com.unity.cinemachine": "2.8.9",
     "com.unity.collab-proxy": "1.17.2",
     "com.unity.feature.development": "1.0.1",

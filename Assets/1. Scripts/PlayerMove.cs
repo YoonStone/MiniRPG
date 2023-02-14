@@ -7,8 +7,9 @@ public class PlayerMove : MonoBehaviour
     [Header("-- 이동 관련 --")]
     public float moveSpeed;
     public float turnSpeed;
+    public float gravityScale;
 
-    Rigidbody rigid;
+    CharacterController cc;
     Animator anim;
     Transform cam; // 팔로우 카메라
 
@@ -26,10 +27,11 @@ public class PlayerMove : MonoBehaviour
     float joyStickRadiius; // 조이스틱 배경의 반지름
     float screenWidthHalf; // 화면의 절반
     bool isJoyStick;       // 조이스틱 사용 중인지
+    float posY;            // y축 이동 담당
 
     void Start()
     {
-        rigid = GetComponent<Rigidbody>();
+        cc = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
         cam = Camera.main.transform;
         stick = joyStick.transform.GetChild(0);
@@ -56,8 +58,14 @@ public class PlayerMove : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (isCantMove) return;
-        if (isMoving) Move();
+        Vector3 moveDir = transform.forward;
+
+        // 이동하지 않는 상태에서는 
+        if (isCantMove || !isMoving) moveDir = Vector3.zero;
+
+        // 이동하지 않아도 중력은 작동
+        moveDir.y -= gravityScale;
+        cc.Move(moveDir * moveSpeed);
     }
 
     // 조이스틱 담당
@@ -92,9 +100,6 @@ public class PlayerMove : MonoBehaviour
         else return Vector3.zero;        
     }
 
-    // 이동 담당
-    void Move() { rigid.velocity = transform.forward * moveSpeed;}
-
     // 회전 담당
     void Turn()
     {
@@ -109,6 +114,5 @@ public class PlayerMove : MonoBehaviour
     public void MoveEnd()
     {
         anim.SetFloat("velocity", 0);
-        rigid.velocity = Vector3.zero;
     }
 }
