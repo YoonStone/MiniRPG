@@ -5,6 +5,9 @@ using Cinemachine;
 
 public class CameraTurn : MonoBehaviour
 {
+    [Header("카메라 회전 속도")]
+    public float turnSpeed;
+
     CinemachineFreeLook cineFreeLook;
 
     Vector2 currentPos;
@@ -43,8 +46,8 @@ public class CameraTurn : MonoBehaviour
         {
             // 드래그 방향대로 카메라 회전
             Vector2 dragDir = (Vector2)Input.mousePosition - currentPos;
-            cineFreeLook.m_YAxis.m_InputAxisValue = dragDir.y;
-            cineFreeLook.m_XAxis.m_InputAxisValue = dragDir.x;
+            cineFreeLook.m_YAxis.m_InputAxisValue = dragDir.y * turnSpeed;
+            cineFreeLook.m_XAxis.m_InputAxisValue = dragDir.x * turnSpeed;
             currentPos = Input.mousePosition;
         }
     }

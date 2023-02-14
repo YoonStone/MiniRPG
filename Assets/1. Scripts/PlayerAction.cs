@@ -70,6 +70,7 @@ public class PlayerAction : MonoBehaviour
         switch (npcName)
         {
             case "Boy": // 꼬마애 (페이드인 후 씬 전환)
+                actionState = ActionState.None; npcName = "";
                 StartCoroutine(PlayUIManager.instance.Fade(0, 1)); break;
         }
     }
