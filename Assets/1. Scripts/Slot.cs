@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class Slot : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class Slot : MonoBehaviour
             // 수량이 1개 이하면 안 보이게
             if (count <= 1) countImg.SetActive(false);
             // 수량이 2개가 되면 보이게
-            else if(count == 2) countImg.SetActive(true);
+            else if(count >= 2) countImg.SetActive(true);
             countTxt.text = count.ToString();
         }
     }
@@ -41,16 +42,38 @@ public class Slot : MonoBehaviour
     Image slotImage;
     GameObject countImg;
     TextMeshProUGUI countTxt;
+    Drag drag;
 
-    private void Awake()
+    private void Start()
     {
         slotImage = transform.GetChild(0).GetComponent<Image>();
         countImg = transform.GetChild(1).gameObject;
         countTxt = countImg.GetComponentInChildren<TextMeshProUGUI>();
+        drag = InventoryManager.instance.drag;
+    }
+
+    // 슬롯 위에 손이 올라오면
+    public void OnEnter()
+    {
+        drag.pointEnterSlot = this;
+    }
+
+    // 슬롯 위에서 손이 떨어지면 
+    public void OnExit()
+    {
+        drag.pointEnterSlot = null;
+    }
+
+    // 슬롯 클릭
+    public void OnDown()
+    {
+        if (item == null) return;
+        drag.gameObject.SetActive(true);
+        drag.DragStart(this, item, count);
     }
 
     // 슬롯에서 아이템 사라지는 경우
-    void ItemOut()
+    public void ItemOut()
     {
         item = null;
         slotImage.sprite = null;

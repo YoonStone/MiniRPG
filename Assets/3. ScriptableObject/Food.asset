@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dae5b23a9dfe5d48a5ad5b44abbc855, type: 3}
   m_Name: Food
   m_EditorClassIdentifier: 
-  itemIdx: 0
+  itemIdx: 1
   itemInfo: "\uBA39\uC73C\uBA74 \uD798\uC774 \uB0A0 \uAC83 \uAC19\uC544"
-  itemSprite: {fileID: 21300000, guid: 082ac95b597b5f049906d7f139728c63, type: 3}
+  itemSprite: {fileID: 21300000, guid: 678484c1ae68c4d5b84a77bdc551c8c9, type: 3}
   itemPrice: 0
   isCanDrop: 1
   isCanSell: 1

@@ -14,9 +14,6 @@ public class CameraTurn : MonoBehaviour
     float screenWidthHalf;
     bool isDrag;
 
-    [HideInInspector]
-    public bool isCantTurn;
-
     void Start()
     {
         cineFreeLook = GetComponent<CinemachineFreeLook>();
@@ -25,8 +22,6 @@ public class CameraTurn : MonoBehaviour
 
     void Update()
     {
-        if (isCantTurn) return;
-
         // 드래그 시작
         if (Input.GetMouseButtonDown(0) && Input.mousePosition.x > screenWidthHalf)
         {
