@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Item
   - NPC
+  - Monster
   layers:
   - Default
   - TransparentFX
@@ -13,9 +14,9 @@ TagManager:
   - Player
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Item
+  - NPC
+  - Monster
   - 
   - 
   - 

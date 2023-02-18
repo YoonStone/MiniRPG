@@ -19,8 +19,23 @@ public class PlayUIManager : MonoBehaviour
     public TextMeshProUGUI popupBtn1Txt;
     public TextMeshProUGUI popupBtn2Txt;
 
+    [Header("-- 이미지 -- ")]
+    public Image hpImg;
+
     [Header("-- Fade -- ")]
     public Transform fadeImg; // 페이드인,페이드아웃
+
+    private float maxHp = 100;
+    private float hp; // 플레이어 체력
+    public float Hp
+    {
+        get { return hp; }
+        set
+        {
+            hp = value;
+            hpImg.fillAmount = hp / maxHp;
+        }
+    }
 
     static public PlayUIManager instance;
     private void Awake()
@@ -37,6 +52,8 @@ public class PlayUIManager : MonoBehaviour
     {
         // 머리 위 닉네임 설정
         FindObjectOfType<PlayerAction>().GetComponentInChildren<TextMeshPro>().text = $"[ {DataManager.instance.data.nickname} ]";
+
+        Hp = maxHp;
     }
 
     // 설정 버튼
@@ -86,5 +103,12 @@ public class PlayUIManager : MonoBehaviour
         }
 
         if(to == 1) LoadingManager.LoadScene(2);
+    }
+
+    public IEnumerator GetHitEffect()
+    {
+        hpImg.color = Color.red;
+        yield return new WaitForSeconds(0.5f);
+        hpImg.color = Color.white;
     }
 }

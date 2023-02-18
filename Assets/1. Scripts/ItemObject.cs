@@ -8,10 +8,6 @@ public class ItemObject : MonoBehaviour
 {
     public Item item;
 
-    [HideInInspector]
-    public bool isTouch;
-
-    bool isPlayer;
     float moveSpeed = 4f;
 
     private void Update()
@@ -19,19 +15,12 @@ public class ItemObject : MonoBehaviour
         transform.Rotate(Vector3.up,Space.World);
     }
 
-    // 플레이어와 닿으면 자석 움직임 시작
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Player" && !isPlayer)
-        {
-            isPlayer = true;
-            StartCoroutine(MagentMove(other.transform));
-        }
-    }
-
     // 자석 움직임
-    IEnumerator MagentMove(Transform player)
+    public IEnumerator MagentMove(Transform player)
     {
+        if (CompareTag("Untagged")) yield break;
+        tag = "Untagged";
+
         Vector3 targetPos;
         float distance;
         do

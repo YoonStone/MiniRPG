@@ -13,11 +13,11 @@ public class PlayerAction : MonoBehaviour
 {
     public ActionState actionState; // 상호작용 종류
     
-    [HideInInspector]
-    public string npcName; // 대화할 NPC의 이름
+    [HideInInspector] public string npcName; // 대화할 NPC의 이름
 
     PlayerMove playerMove;
     Animator anim;
+
 
     void Start()
     {
