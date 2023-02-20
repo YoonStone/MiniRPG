@@ -6,19 +6,34 @@ public class NPC : MonoBehaviour
 {
     public GameObject nickName;
 
+    PlayerAction player;
+
     void Start()
     {
-        
+        player = FindObjectOfType<PlayerAction>();
     }
 
-    void PlayerHI()
+    private void OnTriggerEnter(Collider other)
     {
-        nickName.SetActive(true);
+        switch (other.tag)
+        {
+            case "Player": // player가 근처에 있을 때
+                nickName.SetActive(true);
+                player.actionState = ActionState.WithNPC;
+                player.npcName = other.name.Split('_')[1];
+                break;
+        }
     }
 
-    void PlayerBye()
+    private void OnTriggerExit(Collider other)
     {
-        nickName.SetActive(false);
+        switch (other.tag)
+        {
+            case "Player": // player와 헤어졌을 때
+                nickName.SetActive(false);
+                player.actionState = ActionState.Attack;
+                player.npcName = "";
+                break;
+        }
     }
-
 }

@@ -37,6 +37,8 @@ public class PlayUIManager : MonoBehaviour
         }
     }
 
+    PlayerAction player;
+
     static public PlayUIManager instance;
     private void Awake()
     {
@@ -50,9 +52,10 @@ public class PlayUIManager : MonoBehaviour
 
     private void Start()
     {
-        // 머리 위 닉네임 설정
-        FindObjectOfType<PlayerAction>().GetComponentInChildren<TextMeshPro>().text = $"[ {DataManager.instance.data.nickname} ]";
+        player = FindObjectOfType<PlayerAction>();
 
+        // 머리 위 닉네임 설정
+        player.GetComponentInChildren<TextMeshPro>().text = $"[ {DataManager.instance.data.nickname} ]";
         Hp = maxHp;
     }
 

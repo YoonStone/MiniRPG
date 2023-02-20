@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.AI;
+using System.Net.NetworkInformation;
 
 public class Monster : MonoBehaviour
 {
@@ -29,16 +31,33 @@ public class Monster : MonoBehaviour
                 case MonsterState.Idle: StartCoroutine(Idle()); break;
                 case MonsterState.Follow: StartCoroutine(Follow()); break;
                 case MonsterState.Attack: StartCoroutine(Attack()); break;
-                case MonsterState.GetHit: StartCoroutine(GetHit()); break;
                 case MonsterState.Die: Die(); break;
             }
         }
     }
 
+    private float hp;
+    public float Hp
+    {
+        get { return hp; }
+        set
+        {
+            hp = value;
+            hpImg.fillAmount = hp / maxHp;
+        }
+    }
+
     Animator anim;
     NavMeshAgent agent;
-    PlayerAction player;
+    protected PlayerAction player;
     Transform playerTr;
+    CanvasGroup cg;
+
+    [Header("체력바")]
+    public Image hpImg;
+
+    [Header("최대 체력")]
+    public float maxHp;
 
     [Header("플레이어와의 거리")]
     public float dist_Follow, dist_Attack;
@@ -49,14 +68,14 @@ public class Monster : MonoBehaviour
     [HideInInspector]
     public bool isAttack; // 공격 중인지
 
-    public float hp = 100;
-
     private void Start()
     {
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         player = FindObjectOfType<PlayerAction>();
+        cg = GetComponentInChildren<CanvasGroup>();
 
+        Hp = maxHp;
         playerTr = player.transform;
         agent.stoppingDistance = dist_Attack - 0.5f;
         State = MonsterState.Idle;
@@ -65,6 +84,7 @@ public class Monster : MonoBehaviour
     // 기본
     public virtual IEnumerator Idle()
     {
+        cg.alpha = 0;
         anim.SetBool("isMove", false);
         agent.isStopped = true;
         agent.ResetPath();
@@ -80,6 +100,7 @@ public class Monster : MonoBehaviour
     // 추격
     public virtual IEnumerator Follow()
     {
+        cg.alpha = 1;
         anim.SetBool("isMove", true);
         agent.isStopped = false;
 
@@ -117,15 +138,28 @@ public class Monster : MonoBehaviour
         anim.SetBool("isAttack", false);
     }
 
+    // 피격
+    MonsterState curState;
     public virtual IEnumerator GetHit()
     {
-        hp -= 10;
+        Hp -= 10;
+
+        cg.alpha = 1;
+        agent.isStopped = true;
+        agent.ResetPath();
 
         if(hp > 0)
         {
+            // 이전 상태 저장 후 상태 변경
+            if (State != MonsterState.GetHit)
+            {
+                curState = State;
+                State = MonsterState.GetHit;
+            }
+
             anim.SetTrigger("getHit");
             yield return new WaitForSeconds(anim.GetCurrentAnimatorClipInfo(0).Length);
-            State = MonsterState.Idle;
+            if(State == MonsterState.GetHit) State = curState; // 이전 상태로 돌아가기
         }
         else
         {
@@ -133,17 +167,21 @@ public class Monster : MonoBehaviour
         }
     }
 
+    // 죽음
     public virtual void Die()
     {
+        cg.alpha = 0;
         anim.SetTrigger("die");
+        GetComponent<Collider>().enabled = false;
+        this.enabled = false;
     }
 
-    private void OnTriggerEnter(Collider other)
+    // 실제 공격 
+    public virtual void AttackAction()
     {
-        if(other.CompareTag("Player") && isAttack)
+        if (isAttack)
         {
-            PlayUIManager.instance.Hp -= atk;
-            StartCoroutine(PlayUIManager.instance.GetHitEffect());
+            player.GetHit(atk);
             isAttack = false;
         }
     }
