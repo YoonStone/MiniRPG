@@ -45,7 +45,12 @@ public class PlayerMove : MonoBehaviour
     {
         if (isCantMove) return;
 
-        moveDir = JoyStickMove();
+        //moveDir = JoyStickMove();
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        moveDir = new Vector3(h, 0, v).normalized * 5;
+        anim.SetFloat("velocity", moveDir.magnitude);
+
         isMoving = moveDir.magnitude != 0;
 
         if (isMoving)

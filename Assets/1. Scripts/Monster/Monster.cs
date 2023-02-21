@@ -47,7 +47,7 @@ public class Monster : MonoBehaviour
         }
     }
 
-    Animator anim;
+    protected Animator anim;
     NavMeshAgent agent;
     protected PlayerAction player;
     Transform playerTr;
@@ -68,7 +68,7 @@ public class Monster : MonoBehaviour
     [HideInInspector]
     public bool isAttack; // 공격 중인지
 
-    private void Start()
+    private void Awake()
     {
         anim = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
@@ -82,7 +82,7 @@ public class Monster : MonoBehaviour
     }
 
     // 기본
-    public virtual IEnumerator Idle()
+    public IEnumerator Idle()
     {
         cg.alpha = 0;
         anim.SetBool("isMove", false);
@@ -98,7 +98,7 @@ public class Monster : MonoBehaviour
     }
 
     // 추격
-    public virtual IEnumerator Follow()
+    public IEnumerator Follow()
     {
         cg.alpha = 1;
         anim.SetBool("isMove", true);
@@ -115,7 +115,7 @@ public class Monster : MonoBehaviour
     }
 
     // 공격
-    public virtual IEnumerator Attack()
+    protected virtual IEnumerator Attack()
     {
         anim.SetBool("isAttack", true);
         anim.SetTrigger("attack");
@@ -140,7 +140,7 @@ public class Monster : MonoBehaviour
 
     // 피격
     MonsterState curState;
-    public virtual IEnumerator GetHit()
+    protected IEnumerator GetHit()
     {
         Hp -= 10;
 
@@ -168,7 +168,7 @@ public class Monster : MonoBehaviour
     }
 
     // 죽음
-    public virtual void Die()
+    private void Die()
     {
         cg.alpha = 0;
         anim.SetTrigger("die");
@@ -176,13 +176,23 @@ public class Monster : MonoBehaviour
         this.enabled = false;
     }
 
-    // 실제 공격 
-    public virtual void AttackAction()
+    protected void Trigger(Collider other)
     {
-        if (isAttack)
+        // 피격
+        if (other.CompareTag("PlayerAttack"))
         {
-            player.GetHit(atk);
-            isAttack = false;
+            other.enabled = false;
+            StartCoroutine(GetHit());
+        }
+
+        // 공격
+        else if (other.CompareTag("Player"))
+        {
+            if (isAttack)
+            {
+                player.GetHit(atk);
+                isAttack = false;
+            }
         }
     }
 }

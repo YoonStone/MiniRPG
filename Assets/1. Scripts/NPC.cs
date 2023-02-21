@@ -20,7 +20,7 @@ public class NPC : MonoBehaviour
             case "Player": // player가 근처에 있을 때
                 nickName.SetActive(true);
                 player.actionState = ActionState.WithNPC;
-                player.npcName = other.name.Split('_')[1];
+                player.npcName = name.Split('_')[1];
                 break;
         }
     }

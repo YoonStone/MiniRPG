@@ -15,27 +15,10 @@ public class TurtleShell : Monster
 
     private void OnTriggerEnter(Collider other)
     {
-        // 피격
-        if (other.CompareTag("PlayerAttack"))
-        {
-            other.enabled = false;
-            StartCoroutine(GetHit());
-        }
+        base.Trigger(other);
 
-        // 공격
-        else if (other.CompareTag("Player"))
-        {
-            AttackAction();
-        }
-    }
-
-    public override void AttackAction()
-    {
-        // 진짜 공격
-        base.AttackAction();
-
-        // 닿기만 할 경우
-        if (!isAttack)
+        // 닿았을 때 데미지
+        if (other.CompareTag("Player") && !isAttack)
         {
             player.GetHit(atk_normal);
         }
