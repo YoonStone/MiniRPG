@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static PlayerAction;
 
 // 액션 버튼 상호작용 종류
 public enum ActionState
@@ -64,8 +65,9 @@ public class PlayerAction : MonoBehaviour
         
         // 공격 애니메이션이 끝날 때까지 기다렸다가 이동 가능상태로 변경
         yield return new WaitUntil(() 
-            => anim.GetCurrentAnimatorStateInfo(0).IsTag("Attack")
-            && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f);
+            => (anim.GetCurrentAnimatorStateInfo(0).IsTag("Attack")
+            && anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.9f)
+            || !playerMove.isCantMove);
 
         swordColl.enabled = false;
         playerMove.isCantMove = false;
@@ -85,6 +87,7 @@ public class PlayerAction : MonoBehaviour
 
     public void GetHit(float atk)
     {
+        playerMove.isCantMove = false;
         anim.SetTrigger("getHit");
         PlayUIManager.instance.Hp -= atk;
         StartCoroutine(PlayUIManager.instance.GetHitEffect());

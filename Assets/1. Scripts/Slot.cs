@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
 
 public class Slot : MonoBehaviour
 {
-    private Item item;
+    public Item item;
     public Item Item
     {
         get { return item; }
@@ -30,12 +29,14 @@ public class Slot : MonoBehaviour
         set
         {
             count = value;
-
-            // 수량이 1개 이하면 안 보이게
-            if (count <= 1) countImg.SetActive(false);
-            // 수량이 2개가 되면 보이게
-            else if(count >= 2) countImg.SetActive(true);
             countTxt.text = count.ToString();
+
+            if (!GetComponent<FoodUse>())
+            {
+                if (Item == foodBtn.Item) foodBtn.Count = count;
+                if (count <= 1) countImg.SetActive(false);
+                else if (count >= 2 && !countImg.activeSelf) countImg.SetActive(true);
+            }
         }
     }
 
@@ -43,6 +44,7 @@ public class Slot : MonoBehaviour
     GameObject countImg;
     TextMeshProUGUI countTxt;
     Drag drag;
+    Slot foodBtn;
 
     private void Start()
     {
@@ -50,6 +52,7 @@ public class Slot : MonoBehaviour
         countImg = transform.GetChild(1).gameObject;
         countTxt = countImg.GetComponentInChildren<TextMeshProUGUI>();
         drag = InventoryManager.instance.drag;
+        foodBtn = InventoryManager.instance.foodBtn;
     }
 
     // 슬롯 위에 손이 올라오면
@@ -75,17 +78,13 @@ public class Slot : MonoBehaviour
     // 슬롯에서 아이템 사라지는 경우
     public void ItemOut()
     {
-        item = null;
+        Count = 0;
         slotImage.sprite = null;
         slotImage.color = new Vector4(1, 1, 1, 0);
-        Count = 0;
+        item = null;
     }
 
     // 클릭했을 때
     // 1. 상점이 열려있으면 판매
     // 2. 상점이 안 열려 있으면 사용
-
-    // 드래그했을 때
-    // 1. 다른 슬롯 위에서 드랍 : 위치 이동
-    // 2. 인벤토리 UI 밖에서 드랍 : 아이템 버리기
 }

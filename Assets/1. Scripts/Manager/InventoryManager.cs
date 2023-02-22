@@ -6,6 +6,7 @@ public class InventoryManager : MonoBehaviour
 {
     // 슬롯 부모들
     public Transform itemSlot, protectSlot;
+    public Slot foodBtn;
     public Drag drag;
 
     Slot[] itemSlots;

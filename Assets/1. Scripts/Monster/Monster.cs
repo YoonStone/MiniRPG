@@ -130,7 +130,9 @@ public class Monster : MonoBehaviour
             }
             else
             {
-                transform.LookAt(playerTr, Vector3.up);
+                transform.LookAt(playerTr);
+                Quaternion rot = transform.rotation; rot.x = 0; rot.z = 0; // y축만 회전
+                transform.rotation = rot;
             }
             yield return null;
         }
