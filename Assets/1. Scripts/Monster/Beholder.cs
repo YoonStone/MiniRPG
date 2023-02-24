@@ -18,10 +18,10 @@ public class Beholder : Monster
 
     GameObject[] bonePool;
 
-    public MonsterState state;
+    public MonsterState _state;
     private void Update()
     {
-        state = State;
+        _state = State;
     }
 
     private void Start()

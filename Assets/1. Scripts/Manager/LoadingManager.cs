@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class LoadingManager : MonoBehaviour
 {
-    // ·Îµù °ÅÃÄ¼­ ¾À ÀüÈ¯
+    // ë¡œë”©ì”¬ ê±°ì³ì„œ ì”¬ ë¡œë“œ
     public static void LoadScene(int index)
     {
         SceneManager.LoadScene(index);

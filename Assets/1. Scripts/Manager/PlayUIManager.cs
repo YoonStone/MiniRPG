@@ -33,11 +33,13 @@ public class PlayUIManager : MonoBehaviour
         set
         {
             hp = value;
+            hp = Mathf.Clamp(hp, 0, maxHp);
             hpImg.fillAmount = hp / maxHp;
         }
     }
 
-    PlayerAction player;
+    [HideInInspector]
+    public PlayerAction player;
 
     static public PlayUIManager instance;
     private void Awake()
@@ -108,9 +110,10 @@ public class PlayUIManager : MonoBehaviour
         if(to == 1) LoadingManager.LoadScene(2);
     }
 
-    public IEnumerator GetHitEffect()
+    // 체력바 이미지 색상 변경
+    public IEnumerator HpImgColor(Color color)
     {
-        hpImg.color = Color.red;
+        hpImg.color = color;
         yield return new WaitForSeconds(0.5f);
         hpImg.color = Color.white;
     }

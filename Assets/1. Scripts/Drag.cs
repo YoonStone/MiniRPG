@@ -61,7 +61,6 @@ public class Drag : MonoBehaviour
         img.sprite = dragItem.itemSprite;
         img.color = Color.white;
         isDrag = true;
-        cameraTurn.enabled = false;
     }
 
     // 드래그 종료 시 공통적으로 할 일

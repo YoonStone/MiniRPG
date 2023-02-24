@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Slime : Monster
 {
-    public MonsterState state;
+    public MonsterState _state;
 
     private void Update()
     {
-        state = State;   
+        _state = State;   
     }
 
     private void OnTriggerEnter(Collider other)

@@ -1,11 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor.EventSystems;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class Slot : MonoBehaviour
 {
+    // 퀵슬롯인지
+    public bool isQuitSlot;
+
     public Item item;
     public Item Item
     {
@@ -31,10 +36,11 @@ public class Slot : MonoBehaviour
             count = value;
             countTxt.text = count.ToString();
 
-            if (!GetComponent<FoodUse>())
+            if (!isQuitSlot)
             {
                 if (Item == foodBtn.Item) foodBtn.Count = count;
-                if (count <= 1) countImg.SetActive(false);
+                if (count == 0) ItemOut();
+                else if (count == 1) countImg.SetActive(false);
                 else if (count >= 2 && !countImg.activeSelf) countImg.SetActive(true);
             }
         }
@@ -45,6 +51,7 @@ public class Slot : MonoBehaviour
     TextMeshProUGUI countTxt;
     Drag drag;
     Slot foodBtn;
+    CameraTurn cameraTurn;
 
     private void Start()
     {
@@ -53,6 +60,18 @@ public class Slot : MonoBehaviour
         countTxt = countImg.GetComponentInChildren<TextMeshProUGUI>();
         drag = InventoryManager.instance.drag;
         foodBtn = InventoryManager.instance.foodBtn;
+        cameraTurn = FindObjectOfType<CameraTurn>();
+    }
+
+    // 슬롯 클릭하면 아이템 사용
+    public void OnClick()
+    {
+        if (item == null || Count == 0) return;
+
+        // 상점이 안 열려있다면 사용
+        InventoryManager.instance.UseItem(this);
+
+        // 상점이 열려있다면 판매
     }
 
     // 슬롯 위에 손이 올라오면
@@ -67,24 +86,40 @@ public class Slot : MonoBehaviour
         drag.pointEnterSlot = null;
     }
 
-    // 슬롯 클릭
+    // 슬롯 드래그 시작
+    public bool isDown;
     public void OnDown()
     {
         if (item == null) return;
+        StartCoroutine(DownCheck());
+    }
+
+    IEnumerator DownCheck()
+    {
+        cameraTurn.enabled = false;
+        isDown = true;
+
+        // 0.5초 후에도 누르고 있다면
+        yield return new WaitForSeconds(0.5f);
+        if (!isDown) yield break;
+
         drag.gameObject.SetActive(true);
         drag.DragStart(this, item, count);
+    }
+
+    public void OnUp()
+    {
+        isDown = false;
+        cameraTurn.enabled = true;
     }
 
     // 슬롯에서 아이템 사라지는 경우
     public void ItemOut()
     {
-        Count = 0;
+        count = 0;
+        countImg.SetActive(false);
         slotImage.sprite = null;
         slotImage.color = new Vector4(1, 1, 1, 0);
         item = null;
     }
-
-    // 클릭했을 때
-    // 1. 상점이 열려있으면 판매
-    // 2. 상점이 안 열려 있으면 사용
 }

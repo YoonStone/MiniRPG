@@ -7,10 +7,10 @@ public class TurtleShell : Monster
     [Header("닿았을 때 공격력")]
     public float atk_normal;
 
-    public MonsterState state;
+    public MonsterState _state;
     private void Update()
     {
-        state = State;
+        _state = State;
     }
 
     private void OnTriggerEnter(Collider other)

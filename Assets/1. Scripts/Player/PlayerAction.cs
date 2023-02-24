@@ -13,7 +13,8 @@ public enum ActionState
 public class PlayerAction : MonoBehaviour
 {
     public ActionState actionState; // 상호작용 종류
-    public BoxCollider swordColl;   // 칼 콜라이더
+    public GameObject sword, shield; // 칼, 방패
+    BoxCollider swordColl;   // 칼 콜라이더
     
     [HideInInspector] public string npcName; // 대화할 NPC의 이름
 
@@ -24,6 +25,7 @@ public class PlayerAction : MonoBehaviour
     {
         playerMove = GetComponent<PlayerMove>();
         anim = GetComponent<Animator>();
+        swordColl = sword.GetComponent<BoxCollider>();
 
         PlayUIManager.instance.playerActionBtn.onClick.AddListener(OnClickPlayerActionBtn);
     }
@@ -90,6 +92,16 @@ public class PlayerAction : MonoBehaviour
         playerMove.isCantMove = false;
         anim.SetTrigger("getHit");
         PlayUIManager.instance.Hp -= atk;
-        StartCoroutine(PlayUIManager.instance.GetHitEffect());
+        StartCoroutine(PlayUIManager.instance.HpImgColor(Color.red));
+    }
+
+    // 장비 장착
+    public void Equip(string itemName)
+    {
+        switch (itemName)
+        {
+            case "Sword": sword.SetActive(true); break;
+            case "Shield": shield.SetActive(true); break;
+        }
     }
 }

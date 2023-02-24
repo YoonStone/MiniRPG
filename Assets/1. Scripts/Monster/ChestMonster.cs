@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class ChestMonster : Monster
 {
-    public MonsterState state;
+    public MonsterState _state;
     public float distance;
 
     private void Update()
     {
-        state = State;
+        _state = State;
     }
 
     private void OnTriggerEnter(Collider other)
