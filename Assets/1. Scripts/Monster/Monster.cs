@@ -144,7 +144,7 @@ public class Monster : MonoBehaviour
     MonsterState curState;
     protected IEnumerator GetHit()
     {
-        Hp -= 10;
+        Hp -= player.atk;
 
         cg.alpha = 1;
         agent.isStopped = true;

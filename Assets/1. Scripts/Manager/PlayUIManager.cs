@@ -4,6 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+[System.Serializable]
+public struct Skill
+{
+    public Button skillBtn;
+    public Image skillCool;
+    public float skillAtk;
+    public float skillCoolTime;
+}
+
 public class PlayUIManager : MonoBehaviour
 {
     [Header("-- UI 애니메이터 -- ")]
@@ -13,6 +22,7 @@ public class PlayUIManager : MonoBehaviour
 
     [Header("-- 버튼 -- ")]
     public Button playerActionBtn; // 플레이어 액션 버튼
+    public Skill[] skills;         // 공격 스킬 배열
 
     [Header("-- 텍스트 -- ")]
     public TextMeshProUGUI popupTxt;
@@ -116,5 +126,27 @@ public class PlayUIManager : MonoBehaviour
         hpImg.color = color;
         yield return new WaitForSeconds(0.5f);
         hpImg.color = Color.white;
+    }
+
+    // 스킬 쿨타임
+    public IEnumerator SkiilCoolTime(int skillNumber)
+    {
+        skills[skillNumber].skillBtn.interactable = false;
+        skills[skillNumber].skillCool.gameObject.SetActive(true);
+
+        // 쿨타임 이미지
+        Image coolImg = skills[skillNumber].skillCool;
+        float coolTime = skills[skillNumber].skillCoolTime;
+
+        float time = 0;
+        while (time < 1)
+        {
+            time += Time.deltaTime / coolTime;
+            coolImg.fillAmount = Mathf.Lerp(1, 0, time);
+            yield return null;
+        }
+
+        skills[skillNumber].skillCool.gameObject.SetActive(false);
+        skills[skillNumber].skillBtn.interactable = true;
     }
 }

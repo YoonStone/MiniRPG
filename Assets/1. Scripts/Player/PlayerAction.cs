@@ -14,12 +14,15 @@ public class PlayerAction : MonoBehaviour
 {
     public ActionState actionState; // 상호작용 종류
     public GameObject sword, shield; // 칼, 방패
-    BoxCollider swordColl;   // 칼 콜라이더
-    
-    [HideInInspector] public string npcName; // 대화할 NPC의 이름
 
+    [HideInInspector] public string npcName; // 대화할 NPC의 이름
+    [HideInInspector] public float atk;      // 현재 공격력
+
+    BoxCollider swordColl;   // 칼 콜라이더
     PlayerMove playerMove;
     Animator anim;
+
+    bool isHasSword; // 검을 갖고 있는지
 
     void Start()
     {
@@ -27,7 +30,15 @@ public class PlayerAction : MonoBehaviour
         anim = GetComponent<Animator>();
         swordColl = sword.GetComponent<BoxCollider>();
 
-        PlayUIManager.instance.playerActionBtn.onClick.AddListener(OnClickPlayerActionBtn);
+        PlayUIManager.instance.playerActionBtn.onClick
+            .AddListener(OnClickPlayerActionBtn);
+
+        for (int i = 0; i < PlayUIManager.instance.skills.Length; i++)
+        {
+            int ii = i;
+            PlayUIManager.instance.skills[ii].skillBtn.onClick
+                .AddListener(() => Attack(2 + ii));
+        }
     }
 
     private void Update()
@@ -48,8 +59,13 @@ public class PlayerAction : MonoBehaviour
 
     void Attack(int attackIdx)
     {
-        // 공격 중일 때 재공격 불가
-        if (anim.GetCurrentAnimatorStateInfo(0).IsTag("Attack")) return;
+        // 공격 중일 때, 무기를 들고 있지 않을 때 공격 불가
+        if (anim.GetCurrentAnimatorStateInfo(0).IsTag("Attack") || !isHasSword)
+            return;
+
+        // 공격력 수정
+        atk = attackIdx <= 1 ?
+            10 : PlayUIManager.instance.skills[attackIdx - 2].skillAtk;
 
         // 이동 불가능 + 공격 애니메이션
         playerMove.isCantMove = true;
@@ -58,6 +74,9 @@ public class PlayerAction : MonoBehaviour
         anim.SetInteger("attackIdx", attackIdx);
 
         StartCoroutine(AttackEndCheck());
+
+        if (attackIdx > 1)
+            StartCoroutine(PlayUIManager.instance.SkiilCoolTime(attackIdx - 2));
     }
 
     // 공격 종료 (애니메이션이벤트)
@@ -100,7 +119,7 @@ public class PlayerAction : MonoBehaviour
     {
         switch (itemName)
         {
-            case "Sword": sword.SetActive(true); break;
+            case "Sword": sword.SetActive(true); isHasSword = true; break;
             case "Shield": shield.SetActive(true); break;
         }
     }
