@@ -13,7 +13,10 @@ public enum ActionState
 public class PlayerAction : MonoBehaviour
 {
     public ActionState actionState; // 상호작용 종류
-    public GameObject sword, shield; // 칼, 방패
+    public GameObject sword, shield, bow, arrow; // 칼, 방패, 활
+    public GameObject arrowPref;
+    public int arrowCount;
+    public float shootPower;
 
     [HideInInspector] public string npcName; // 대화할 NPC의 이름
     [HideInInspector] public float atk;      // 현재 공격력
@@ -21,14 +24,28 @@ public class PlayerAction : MonoBehaviour
     BoxCollider swordColl;   // 칼 콜라이더
     PlayerMove playerMove;
     Animator anim;
+    Animator bowAnim;
+    Animator arrowAnim;
 
-    bool isHasSword; // 검을 갖고 있는지
+    GameObject[] arrowPool;
+
+    // 들고 있는 무기 종류
+    enum WeaponType
+    {
+        None,
+        Sword,
+        Bow
+    }
+
+    WeaponType hasWeapon; // 들고 있는 무기
 
     void Start()
     {
+        swordColl = sword.GetComponent<BoxCollider>();
         playerMove = GetComponent<PlayerMove>();
         anim = GetComponent<Animator>();
-        swordColl = sword.GetComponent<BoxCollider>();
+        bowAnim = bow.GetComponent<Animator>();
+        arrowAnim = arrow.GetComponent<Animator>();
 
         PlayUIManager.instance.playerActionBtn.onClick
             .AddListener(OnClickPlayerActionBtn);
@@ -38,6 +55,15 @@ public class PlayerAction : MonoBehaviour
             int ii = i;
             PlayUIManager.instance.skills[ii].skillBtn.onClick
                 .AddListener(() => Attack(2 + ii));
+        }
+
+        // 활 오브젝트풀 생성
+        arrowPool = new GameObject[arrowCount];
+        for (int i = 0; i < arrowPool.Length; i++)
+        {
+            arrowPool[i] = Instantiate(arrowPref);
+            arrowPool[i].GetComponent<Rigidbody>().centerOfMass = arrowPool[i].transform.forward * 1.5f;
+            arrowPool[i].SetActive(false);
         }
     }
 
@@ -59,8 +85,11 @@ public class PlayerAction : MonoBehaviour
 
     void Attack(int attackIdx)
     {
-        // 공격 중일 때, 무기를 들고 있지 않을 때 공격 불가
-        if (anim.GetCurrentAnimatorStateInfo(0).IsTag("Attack") || !isHasSword)
+        // 공격 중이거나 알맞은 무기를 들고 있지 않을 때 공격 불가
+        if (anim.GetCurrentAnimatorStateInfo(0).IsTag("Attack")
+            || hasWeapon == WeaponType.None
+            || (attackIdx < 3 && hasWeapon != WeaponType.Sword)
+            || (attackIdx >= 3 && hasWeapon != WeaponType.Bow))
             return;
 
         // 공격력 수정
@@ -72,6 +101,13 @@ public class PlayerAction : MonoBehaviour
         playerMove.MoveEnd();
         anim.SetTrigger("attack");
         anim.SetInteger("attackIdx", attackIdx);
+        if(attackIdx >= 3)
+        {
+            bowAnim.SetTrigger("bowAttack");
+            bowAnim.SetInteger("bowIdx", attackIdx);
+            arrowAnim.SetTrigger("arrowAttack");
+            arrowAnim.SetInteger("arrowIdx", attackIdx);
+        }
 
         StartCoroutine(AttackEndCheck());
 
@@ -92,6 +128,45 @@ public class PlayerAction : MonoBehaviour
 
         swordColl.enabled = false;
         playerMove.isCantMove = false;
+    }
+
+    void Shoot()
+    {
+        foreach (var arrowPref in arrowPool)
+        {
+            if (!arrowPref.activeSelf)
+            {
+                arrowPref.transform.position = arrow.transform.position + arrowPref.transform.forward;
+                Rigidbody rigid = arrowPref.GetComponent<Rigidbody>();
+                rigid.velocity = Vector3.zero;
+
+                Collider[] monsters = Physics.OverlapSphere(transform.position, 3f, 1 << 7);
+                print(monsters.Length);
+                if (monsters.Length != 0)
+                {
+                    float minDist = 0;
+                    Transform minMonster = monsters[0].transform;
+                    for (int i = 0; i < monsters.Length; i++)
+                    {
+                        float dist = Vector3.Distance(transform.position, monsters[i].transform.position);
+                        if (minDist > dist)
+                        {
+                            minDist = dist;
+                            minMonster = monsters[i].transform;
+                        }
+                    }
+
+                    Vector3 dir = (minMonster.position + Vector3.up - arrowPref.transform.position).normalized;
+                    arrowPref.transform.rotation = Quaternion.LookRotation(dir);
+                }
+                else arrowPref.transform.rotation = arrow.transform.rotation;
+                arrowPref.transform.rotation *= Quaternion.Euler(0, 0, 20);
+                arrowPref.SetActive(true);
+
+                rigid.AddForce(arrowPref.transform.forward * shootPower, ForceMode.Impulse);
+                break;
+            }
+        }
     }
 
     // NPC와의 상호작용
@@ -119,8 +194,45 @@ public class PlayerAction : MonoBehaviour
     {
         switch (itemName)
         {
-            case "Sword": sword.SetActive(true); isHasSword = true; break;
-            case "Shield": shield.SetActive(true); break;
+            case "Sword":
+                sword.SetActive(true);
+                if (hasWeapon == WeaponType.Bow)
+                {
+                    bow.SetActive(false);
+                    arrow.SetActive(false);
+                    InventoryManager.instance.AddItem(3);
+                }
+                anim.SetTrigger("weaponChange");
+                anim.SetBool("isBow", false);
+                hasWeapon = WeaponType.Sword; break;
+            case "Shield":
+                shield.SetActive(true);
+                if (hasWeapon == WeaponType.Bow)
+                {
+                    bow.SetActive(false);
+                    arrow.SetActive(false);
+                    InventoryManager.instance.AddItem(3);
+                    anim.SetTrigger("weaponChange");
+                    anim.SetBool("isBow", false);
+                    hasWeapon = WeaponType.None;
+                }
+                break;
+            case "Bow":
+                bow.SetActive(true);
+                arrow.SetActive(true);
+                if (hasWeapon == WeaponType.Sword)
+                {
+                    sword.SetActive(false);
+                    InventoryManager.instance.AddItem(0);
+                }
+                if (shield.activeSelf)
+                {
+                    shield.SetActive(false);
+                    InventoryManager.instance.AddItem(2);
+                }
+                anim.SetTrigger("weaponChange");
+                anim.SetBool("isBow", true);
+                hasWeapon = WeaponType.Bow; break;
         }
     }
 }

@@ -25,12 +25,13 @@ public class InventoryManager : MonoBehaviour
         itemSlots = itemSlot.GetComponentsInChildren<Slot>();
         protectSlots = protectSlot.GetComponentsInChildren<Slot>();
 
-        // 칼, 방패 지급 (예시)
-        AddItem(items[0]);
-        AddItem(items[2]);
+        // 칼, 방패, 활 지급 (예시)
+        AddItem(0);
+        AddItem(2);
+        AddItem(3);
     }
 
-    // 아이템 추가
+    // 아이템 추가 (아이템)
     public void AddItem(Item item)
     {
         foreach (var itemSlot in itemSlots)
@@ -49,6 +50,31 @@ public class InventoryManager : MonoBehaviour
             if (itemSlot.Item == null)
             {
                 itemSlot.Item = item;
+                itemSlot.Count = 1;
+                return;
+            }
+        }
+    }
+
+    // 아이템 추가 (번호)
+    public void AddItem(int itemIdx)
+    {
+        foreach (var itemSlot in itemSlots)
+        {
+            // 같은 아이템을 가진 슬롯이 있다면 개수 변경
+            if (itemSlot.Item == items[itemIdx])
+            {
+                itemSlot.Count += 1;
+                return;
+            }
+        }
+
+        foreach (var itemSlot in itemSlots)
+        {
+            // 내용물이 없는 슬롯에 추가
+            if (itemSlot.Item == null)
+            {
+                itemSlot.Item = items[itemIdx];
                 itemSlot.Count = 1;
                 return;
             }
