@@ -175,6 +175,20 @@ public class PlayerAction : MonoBehaviour
         // NPC 이름에 따라
         switch (npcName)
         {
+            case "Who": // 아저씨
+                PlayUIManager.instance.ChatBubbleOpen();
+                break;
+
+
+            case "Merchant": // 상인
+                // 퀘스트 전 : 사용 불가
+                // 퀘스트 있음 : 대화창
+                // 퀘스트 수락 : 상점
+                // 퀘스트 완료 : 대화창
+                // 퀘스트 이후 : 상점
+                break;
+
+
             case "Boy": // 꼬마애 (페이드인 후 씬 전환)
                 actionState = ActionState.Attack; npcName = "";
                 StartCoroutine(PlayUIManager.instance.Fade(0, 1)); break;

@@ -19,6 +19,7 @@ public class PlayUIManager : MonoBehaviour
     public Animator anim_Setting;
     public Animator anim_Inventory;
     public Animator anim_Popup;
+    public Animator anim_Chat;
 
     [Header("-- 버튼 -- ")]
     public Button playerActionBtn; // 플레이어 액션 버튼
@@ -28,9 +29,11 @@ public class PlayUIManager : MonoBehaviour
     public TextMeshProUGUI popupTxt;
     public TextMeshProUGUI popupBtn1Txt;
     public TextMeshProUGUI popupBtn2Txt;
+    public TextMeshProUGUI chatTxt;
 
     [Header("-- 이미지 -- ")]
     public Image hpImg;
+    public Image questOKImg; // 퀘스트 수락 이미지
 
     [Header("-- Fade -- ")]
     public Transform fadeImg; // 페이드인,페이드아웃
@@ -45,6 +48,17 @@ public class PlayUIManager : MonoBehaviour
             hp = value;
             hp = Mathf.Clamp(hp, 0, maxHp);
             hpImg.fillAmount = hp / maxHp;
+        }
+    }
+
+    private bool isChatOK; // 퀘스트 수락인지
+    public bool IsChatOK
+    {
+        get { return isChatOK; }
+        set
+        {
+            isChatOK = value;
+            questOKImg.color = isChatOK ? Color.yellow : Color.white;
         }
     }
 
@@ -83,11 +97,14 @@ public class PlayUIManager : MonoBehaviour
         anim_Inventory.SetTrigger(triggerName);
     }
 
+    [HideInInspector]
+    public bool isPopup;
     GameObject popupFrom; // 팝업창을 사용한 오브젝트
 
     // 팝업창 열기
     public void PopupOpen(GameObject from, string message, string btn1, string btn2)
     {
+        isPopup = true;
         popupFrom = from;
         popupTxt.text = message;
         popupBtn1Txt.text = btn1;
@@ -101,6 +118,46 @@ public class PlayUIManager : MonoBehaviour
         // 팝업창을 사용한 오브젝트에게 어떤 버튼을 선택했는지 알려주기
         popupFrom.SendMessage("PopupCallback", isChoice1);
         anim_Popup.SetTrigger("Close");
+        isPopup = false;
+    }
+
+    // 대화창 열기
+    public void ChatBubbleOpen()
+    {
+        DataManager dm = DataManager.instance;
+        chatTxt.text = dm.chatList[dm.data.chatNum]["Script"].ToString();
+        anim_Chat.SetTrigger("Open");
+    }
+
+    // 대화창 끄기
+    public void OnClickChatCancle()
+    {
+        IsChatOK = false;
+        anim_Chat.SetTrigger("Close");
+    }
+
+    // 대화창 다음 or 수락
+    public void OnClickChatNextOK()
+    {
+        if (IsChatOK) // 퀘스트 수락
+        {
+            OnClickChatCancle();
+        }
+        else // 다음 대화창
+        {
+            DataManager dm = DataManager.instance;
+            dm.data.chatNum++;
+            ChatBubbleOpen();
+
+            // 이번 대화창이 마지막이라면 IsChatOK 트루로 변경
+            // (= 다음 대화의 퀘스트번호가 다르다면)
+            if (dm.chatList.Count > dm.data.chatNum + 1 &&
+                int.Parse(dm.chatList[dm.data.chatNum + 1]["QuestNum"].ToString()) != dm.data.questNum)
+            {
+                dm.data.questNum++;
+                IsChatOK = true;
+            }
+        }
     }
 
     // 페이드인, 페이드아웃

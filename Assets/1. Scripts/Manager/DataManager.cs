@@ -7,11 +7,14 @@ using System.IO;
 public class Data
 {
     public string nickname;
+    public int questNum = 1;
+    public int chatNum = 0;
 }
 
 public class DataManager : MonoBehaviour
 {
     public Data data;
+    public List<Dictionary<string, object>> chatList;
 
     // 싱글톤
     static public DataManager instance;
@@ -21,6 +24,7 @@ public class DataManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+            chatList = CSVReader.Read("ChatList");
         }
         else if (instance != this) Destroy(gameObject);
     }
