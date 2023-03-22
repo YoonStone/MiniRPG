@@ -16901,9 +16901,10 @@ MonoBehaviour:
   popupBtn2Txt: {fileID: 735227002}
   chatTxt: {fileID: 719919068}
   hpImg: {fileID: 1096077596}
-  questOKImg: {fileID: 0}
+  questOKImg: {fileID: 1764158368}
   fadeImg: {fileID: 515013146}
   player: {fileID: 0}
+  isPopup: 0
 --- !u!4 &1292975037
 Transform:
   m_ObjectHideFlags: 0
@@ -19513,6 +19514,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data:
     nickname: 
+    questNum: 1
+    chatNum: 0
 --- !u!4 &1534049936
 Transform:
   m_ObjectHideFlags: 0
@@ -27393,7 +27396,7 @@ RectTransform:
   m_GameObject: {fileID: 1892588694}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 719919067}
