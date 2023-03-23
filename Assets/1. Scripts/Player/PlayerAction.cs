@@ -1,24 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static NPC;
 using static PlayerAction;
-
-// 액션 버튼 상호작용 종류
-public enum ActionState
-{
-    Attack,
-    WithNPC
-}
 
 public class PlayerAction : MonoBehaviour
 {
-    public ActionState actionState; // 상호작용 종류
+    public NPC withNpc; // 가까이 있는 npc
     public GameObject sword, shield, bow, arrow; // 칼, 방패, 활
     public GameObject arrowPref;
     public int arrowCount;
     public float shootPower;
 
-    [HideInInspector] public string npcName; // 대화할 NPC의 이름
     [HideInInspector] public float atk;      // 현재 공격력
 
     BoxCollider swordColl;   // 칼 콜라이더
@@ -75,12 +68,8 @@ public class PlayerAction : MonoBehaviour
     // 액션 버튼
     void OnClickPlayerActionBtn()
     {
-        switch (actionState)
-        {
-            // 공격 기능 실행
-            case ActionState.Attack: Attack(Random.Range(0,2)); break;
-            case ActionState.WithNPC: NPCInteract(); break;
-        }
+        if (withNpc) NPCInteract();
+        else Attack(Random.Range(0, 2));
     }
 
     void Attack(int attackIdx)
@@ -172,27 +161,47 @@ public class PlayerAction : MonoBehaviour
     // NPC와의 상호작용
     void NPCInteract()
     {
-        // NPC 이름에 따라
-        switch (npcName)
+        DataManager dm = DataManager.instance;
+
+        switch (withNpc.npcQuestState)
         {
-            case "Who": // 아저씨
+            case NPC.NPCQuestState.Have: // 퀘스트가 있음
                 PlayUIManager.instance.ChatBubbleOpen();
                 break;
 
+            case NPC.NPCQuestState.Wait: // 퀘스트 완료를 기다리는 중
+                if(dm.data.questState == QuestState.Complete)
+                {
+                    PlayUIManager.instance.ChatBubbleOpen();
+                    dm.data.questState = QuestState.None;
 
-            case "Merchant": // 상인
-                // 퀘스트 전 : 사용 불가
-                // 퀘스트 있음 : 대화창
-                // 퀘스트 수락 : 상점
-                // 퀘스트 완료 : 대화창
-                // 퀘스트 이후 : 상점
+                    // 다음 퀘스트가 내꺼라면
+                    if(DataManager.instance.chatList[dm.data.questNum]["NPCName"].ToString() == withNpc.npcName)
+                    {
+                        withNpc.npcQuestState = NPC.NPCQuestState.Have;
+                        withNpc.headTxt.text = "?";
+
+                    }
+                    // 다음 퀘스트가 다른 npc꺼라면
+                    else
+                    {
+                        withNpc.npcQuestState = NPC.NPCQuestState.None;
+                        withNpc.headTxt.text = "";
+                    }
+
+                }
                 break;
-
-
-            case "Boy": // 꼬마애 (페이드인 후 씬 전환)
-                actionState = ActionState.Attack; npcName = "";
-                StartCoroutine(PlayUIManager.instance.Fade(0, 1)); break;
         }
+
+        // 상인은
+        // 퀘스트 전 : 사용 불가
+        // 퀘스트 있음 : 대화창
+        // 퀘스트 수락 : 상점
+        // 퀘스트 완료 : 대화창
+        // 퀘스트 이후 : 상점
+
+        // 남자아이는 던전 씬으로 전환 (npc 연결 해제해야 함)
+        //StartCoroutine(PlayUIManager.instance.Fade(0, 1)); break;
     }
 
     public void GetHit(float atk)

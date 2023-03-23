@@ -43,7 +43,7 @@ public class Drag : MonoBehaviour
                 // 슬롯이 아닌 곳에 드롭한 경우
                 else if(!pointEnterSlot)
                 {
-                    PlayUIManager.instance.PopupOpen(gameObject, "이 아이템을 버리시겠습니까?", "예", "아니오");
+                    StartCoroutine(PopupCall_ItemDrop());
                 }
 
                 DragEnd();
@@ -81,9 +81,20 @@ public class Drag : MonoBehaviour
         drgaItemCount = 0;
     }
 
-    void PopupCallback(bool isChoice1)
+    // 팝업창 사용 (아이템 버리기)
+    IEnumerator PopupCall_ItemDrop()
     {
-        if(isChoice1) dragStartSlot.ItemOut();
+        PlayUIManager.instance.popupState = PopupState.None;
+        PlayUIManager.instance.PopupOpen("이 아이템을 버리시겠습니까?", "예", "아니오");
+
+        // 예/아니오를 누를 때까지 기다리기
+        yield return new WaitUntil(() => PlayUIManager.instance.popupState != PopupState.None);
+
+        // 예를 눌렀다면 버리기
+        if (PlayUIManager.instance.popupState == PopupState.Left)
+            dragStartSlot.ItemOut();
+
         DragReset();
+        PlayUIManager.instance.popupState = PopupState.None;
     }
 }

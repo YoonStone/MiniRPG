@@ -13,6 +13,14 @@ public struct Skill
     public float skillCoolTime;
 }
 
+// 팝업창 상태
+public enum PopupState
+{
+    None, // 팝업창에 답변 없음
+    Left, // 팝업창 왼쪽 버튼 클릭
+    Right // 팝업창 오른쪽 버튼 클릭
+}
+
 public class PlayUIManager : MonoBehaviour
 {
     [Header("-- UI 애니메이터 -- ")]
@@ -33,7 +41,7 @@ public class PlayUIManager : MonoBehaviour
 
     [Header("-- 이미지 -- ")]
     public Image hpImg;
-    public Image questOKImg; // 퀘스트 수락 이미지
+    public GameObject chatBtns;
 
     [Header("-- Fade -- ")]
     public Transform fadeImg; // 페이드인,페이드아웃
@@ -48,17 +56,6 @@ public class PlayUIManager : MonoBehaviour
             hp = value;
             hp = Mathf.Clamp(hp, 0, maxHp);
             hpImg.fillAmount = hp / maxHp;
-        }
-    }
-
-    private bool isChatOK; // 퀘스트 수락인지
-    public bool IsChatOK
-    {
-        get { return isChatOK; }
-        set
-        {
-            isChatOK = value;
-            questOKImg.color = isChatOK ? Color.yellow : Color.white;
         }
     }
 
@@ -82,7 +79,9 @@ public class PlayUIManager : MonoBehaviour
 
         // 머리 위 닉네임 설정
         player.GetComponentInChildren<TextMeshPro>().text = $"[ {DataManager.instance.data.nickname} ]";
-        Hp = maxHp;
+
+        // 저장되어있던 체력 불러오기 (저장할 때 체력할 것*)
+        Hp = DataManager.instance.data.hp;
     }
 
     // 설정 버튼
@@ -99,13 +98,13 @@ public class PlayUIManager : MonoBehaviour
 
     [HideInInspector]
     public bool isPopup;
-    GameObject popupFrom; // 팝업창을 사용한 오브젝트
+    //GameObject popupFrom; // 팝업창을 사용한 오브젝트
+    public PopupState popupState;
 
     // 팝업창 열기
-    public void PopupOpen(GameObject from, string message, string btn1, string btn2)
+    public void PopupOpen(string message, string btn1, string btn2)
     {
         isPopup = true;
-        popupFrom = from;
         popupTxt.text = message;
         popupBtn1Txt.text = btn1;
         popupBtn2Txt.text = btn2;
@@ -113,10 +112,10 @@ public class PlayUIManager : MonoBehaviour
     }
 
     // 팝업창의 버튼
-    public void OnClickPopupBtn(bool isChoice1)
+    public void OnClickPopupBtn(bool isLeft)
     {
         // 팝업창을 사용한 오브젝트에게 어떤 버튼을 선택했는지 알려주기
-        popupFrom.SendMessage("PopupCallback", isChoice1);
+        popupState = isLeft ? PopupState.Left : PopupState.Right;
         anim_Popup.SetTrigger("Close");
         isPopup = false;
     }
@@ -126,37 +125,39 @@ public class PlayUIManager : MonoBehaviour
     {
         DataManager dm = DataManager.instance;
         chatTxt.text = dm.chatList[dm.data.chatNum]["Script"].ToString();
+        chatBtns.SetActive(true);
+
+        // 이번 대화창이 마지막이라면 (= 다음 대화의 퀘스트번호가 다르다면)
+        if (dm.chatList.Count > dm.data.chatNum + 1
+            && int.Parse(dm.chatList[dm.data.chatNum + 1]["QuestNum"].ToString()) != dm.data.questNum
+            && dm.data.questState == QuestState.None)
+        {
+            chatBtns.SetActive(false);
+            StartCoroutine(PopupCall_Quest());
+        }
+
         anim_Chat.SetTrigger("Open");
     }
 
     // 대화창 끄기
     public void OnClickChatCancle()
     {
-        IsChatOK = false;
         anim_Chat.SetTrigger("Close");
     }
 
-    // 대화창 다음 or 수락
-    public void OnClickChatNextOK()
+    // 대화창 다음
+    public void OnClickChatNext()
     {
-        if (IsChatOK) // 퀘스트 수락
-        {
-            OnClickChatCancle();
-        }
-        else // 다음 대화창
-        {
-            DataManager dm = DataManager.instance;
-            dm.data.chatNum++;
-            ChatBubbleOpen();
+        DataManager dm = DataManager.instance;
+        dm.data.chatNum++;
+        ChatBubbleOpen();
 
-            // 이번 대화창이 마지막이라면 IsChatOK 트루로 변경
-            // (= 다음 대화의 퀘스트번호가 다르다면)
-            if (dm.chatList.Count > dm.data.chatNum + 1 &&
-                int.Parse(dm.chatList[dm.data.chatNum + 1]["QuestNum"].ToString()) != dm.data.questNum)
-            {
-                dm.data.questNum++;
-                IsChatOK = true;
-            }
+        // 이번 대화창이 마지막이라면 (= 다음 대화의 퀘스트번호가 다르다면)
+        if (dm.chatList.Count > dm.data.chatNum + 1 &&
+            int.Parse(dm.chatList[dm.data.chatNum + 1]["QuestNum"].ToString()) != dm.data.questNum)
+        {
+            chatBtns.SetActive(false);
+            StartCoroutine(PopupCall_Quest());
         }
     }
 
@@ -205,5 +206,27 @@ public class PlayUIManager : MonoBehaviour
 
         skills[skillNumber].skillCool.gameObject.SetActive(false);
         skills[skillNumber].skillBtn.interactable = true;
+    }
+
+    // 팝업창 사용 (퀘스트)
+    IEnumerator PopupCall_Quest()
+    {
+        PlayUIManager.instance.popupState = PopupState.None;
+        PlayUIManager.instance.PopupOpen("퀘스트를 수락하시겠습니까?", "예", "아니오");
+
+        // 예/아니오를 누를 때까지 기다리기
+        yield return new WaitUntil(() => PlayUIManager.instance.popupState != PopupState.None);
+        DataManager dm = DataManager.instance;
+
+        // 퀘스트 수락
+        if (PlayUIManager.instance.popupState == PopupState.Left)
+        {
+            //dm.data.questNum++;
+            dm.data.questState = QuestState.Accept;
+            player.withNpc.SendMessage("QuestStart", dm.chatList[dm.data.chatNum]["QuestName"].ToString());
+        }
+
+        OnClickChatCancle();
+        PlayUIManager.instance.popupState = PopupState.None;
     }
 }

@@ -3,10 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
+// 퀘스트 상태
+public enum QuestState
+{
+    None,    // 퀘스트 받기 전 + 퀘스트 완료, 대화 완료
+    Accept,  // 퀘스트 수락, 완료 전
+    Complete // 퀘스트 완료, 대화 전
+}
+
 [System.Serializable]
 public class Data
 {
     public string nickname;
+    public float hp = 90;
+
+    public QuestState questState = QuestState.None;
     public int questNum = 1;
     public int chatNum = 0;
 }
