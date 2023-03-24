@@ -16,6 +16,10 @@ public class Data
 {
     public string nickname;
     public float hp = 90;
+    public float exp = 0;
+    public int level = 1;
+
+    public float atk; // 현재 공격력
 
     public QuestState questState = QuestState.None;
     public int questNum = 1;

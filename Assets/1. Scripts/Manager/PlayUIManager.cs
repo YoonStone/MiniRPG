@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Newtonsoft.Json.Linq;
 
 [System.Serializable]
 public struct Skill
@@ -34,6 +35,7 @@ public class PlayUIManager : MonoBehaviour
     public Skill[] skills;         // 공격 스킬 배열
 
     [Header("-- 텍스트 -- ")]
+    public TextMeshProUGUI levelTxt;
     public TextMeshProUGUI popupTxt;
     public TextMeshProUGUI popupBtn1Txt;
     public TextMeshProUGUI popupBtn2Txt;
@@ -41,26 +43,47 @@ public class PlayUIManager : MonoBehaviour
 
     [Header("-- 이미지 -- ")]
     public Image hpImg;
+    public Image expImg;
     public GameObject chatBtns;
 
     [Header("-- Fade -- ")]
     public Transform fadeImg; // 페이드인,페이드아웃
 
     private float maxHp = 100;
-    private float hp; // 플레이어 체력
-    public float Hp
+    public float Hp // 플레이어 체력
     {
-        get { return hp; }
+        get { return dm.data.hp; }
         set
         {
-            hp = value;
-            hp = Mathf.Clamp(hp, 0, maxHp);
-            hpImg.fillAmount = hp / maxHp;
+            dm.data.hp = value;
+            value = Mathf.Clamp(value, 0, maxHp);
+            hpImg.fillAmount = value / maxHp;
+        }
+    }
+
+    public float Exp // 경험치
+    {
+        get { return dm.data.exp; }
+        set
+        {
+            StartCoroutine(IncreaseExp(dm.data.exp, value));
+            dm.data.exp = value;
+        }
+    }
+
+    public int Level // 레벨
+    {
+        get { return dm.data.level; }
+        set
+        {
+            dm.data.level = value;
+            levelTxt.text = value.ToString();
         }
     }
 
     [HideInInspector]
     public PlayerAction player;
+    DataManager dm;
 
     static public PlayUIManager instance;
     private void Awake()
@@ -75,13 +98,14 @@ public class PlayUIManager : MonoBehaviour
 
     private void Start()
     {
+        dm = DataManager.instance;
         player = FindObjectOfType<PlayerAction>();
 
         // 머리 위 닉네임 설정
-        player.GetComponentInChildren<TextMeshPro>().text = $"[ {DataManager.instance.data.nickname} ]";
+        player.GetComponentInChildren<TextMeshPro>().text = $"[ {dm.data.nickname} ]";
 
         // 저장되어있던 체력 불러오기 (저장할 때 체력할 것*)
-        Hp = DataManager.instance.data.hp;
+        Hp = dm.data.hp;
     }
 
     // 설정 버튼
@@ -123,7 +147,6 @@ public class PlayUIManager : MonoBehaviour
     // 대화창 열기
     public void ChatBubbleOpen()
     {
-        DataManager dm = DataManager.instance;
         chatTxt.text = dm.chatList[dm.data.chatNum]["Script"].ToString();
         chatBtns.SetActive(true);
 
@@ -139,6 +162,18 @@ public class PlayUIManager : MonoBehaviour
         anim_Chat.SetTrigger("Open");
     }
 
+    // 퀘스트 완료창 열었다가 닫기
+    public IEnumerator QuestCompleteOpen(string npcName)
+    {
+        chatTxt.text = $"퀘스트를 완료했습니다!\nNPC에게 돌아가세요\n({npcName})";
+        chatBtns.SetActive(false);
+        anim_Chat.SetTrigger("Open");
+
+        yield return new WaitForSeconds(1f);
+
+        anim_Chat.SetTrigger("Close");
+    }
+
     // 대화창 끄기
     public void OnClickChatCancle()
     {
@@ -148,7 +183,6 @@ public class PlayUIManager : MonoBehaviour
     // 대화창 다음
     public void OnClickChatNext()
     {
-        DataManager dm = DataManager.instance;
         dm.data.chatNum++;
         ChatBubbleOpen();
 
@@ -211,22 +245,38 @@ public class PlayUIManager : MonoBehaviour
     // 팝업창 사용 (퀘스트)
     IEnumerator PopupCall_Quest()
     {
-        PlayUIManager.instance.popupState = PopupState.None;
-        PlayUIManager.instance.PopupOpen("퀘스트를 수락하시겠습니까?", "예", "아니오");
+        popupState = PopupState.None;
+        PopupOpen("퀘스트를 수락하시겠습니까?", "예", "아니오");
 
         // 예/아니오를 누를 때까지 기다리기
-        yield return new WaitUntil(() => PlayUIManager.instance.popupState != PopupState.None);
-        DataManager dm = DataManager.instance;
+        yield return new WaitUntil(() => popupState != PopupState.None);
 
         // 퀘스트 수락
-        if (PlayUIManager.instance.popupState == PopupState.Left)
+        if (popupState == PopupState.Left)
         {
-            //dm.data.questNum++;
             dm.data.questState = QuestState.Accept;
             player.withNpc.SendMessage("QuestStart", dm.chatList[dm.data.chatNum]["QuestName"].ToString());
         }
 
         OnClickChatCancle();
-        PlayUIManager.instance.popupState = PopupState.None;
+        popupState = PopupState.None;
+    }
+
+    IEnumerator IncreaseExp(float from, float to)
+    {
+        print("경험치 증가");
+        float timer = 0;
+        while (timer < 0.5f)
+        {
+            expImg.fillAmount = Mathf.Lerp(from, to, timer * 2);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        if (expImg.fillAmount >= 1)
+        {
+            Exp = 0;
+            Level++;
+        }
     }
 }

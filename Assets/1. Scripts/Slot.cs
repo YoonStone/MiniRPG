@@ -90,7 +90,7 @@ public class Slot : MonoBehaviour
     public bool isDown;
     public void OnDown()
     {
-        if (item == null || PlayUIManager.instance.isPopup) return;
+        if (item == null || !item.isCanDrop || PlayUIManager.instance.isPopup) return;
         StartCoroutine(DownCheck());
     }
 

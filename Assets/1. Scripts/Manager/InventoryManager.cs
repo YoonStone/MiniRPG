@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -10,8 +11,12 @@ public class InventoryManager : MonoBehaviour
     public Drag drag;
     public Item[] items;
 
-    Slot[] itemSlots;
+    [HideInInspector]
+    public Slot[] itemSlots;
     Slot[] protectSlots;
+
+    //[HideInInspector]
+    public int questItemCount;
 
     // 싱글톤
     public static InventoryManager instance;
@@ -25,15 +30,16 @@ public class InventoryManager : MonoBehaviour
         itemSlots = itemSlot.GetComponentsInChildren<Slot>();
         protectSlots = protectSlot.GetComponentsInChildren<Slot>();
 
-        // 칼, 방패, 활 지급 (예시)
-        AddItem(0);
-        AddItem(2);
-        AddItem(3);
+        AddItem(0); // 칼 지급
     }
 
     // 아이템 추가 (아이템)
     public void AddItem(Item item)
     {
+        // 퀘스트용 아이템
+        if (item.itemType == ItemType.Quest)
+            questItemCount++;
+
         foreach (var itemSlot in itemSlots)
         {
             // 같은 아이템을 가진 슬롯이 있다면 개수 변경

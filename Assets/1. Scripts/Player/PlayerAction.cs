@@ -6,21 +6,29 @@ using static PlayerAction;
 
 public class PlayerAction : MonoBehaviour
 {
+    [Header("상호작용 중인 NPC")]
     public NPC withNpc; // 가까이 있는 npc
-    public GameObject sword, shield, bow, arrow; // 칼, 방패, 활
+
+    [Header("칼, 방패")]
+    public GameObject sword;
+    public GameObject shield;
+
+    [Header("활, 화살")]
+    public GameObject bow;
+    public GameObject arrow;
     public GameObject arrowPref;
     public int arrowCount;
     public float shootPower;
-
-    [HideInInspector] public float atk;      // 현재 공격력
 
     BoxCollider swordColl;   // 칼 콜라이더
     PlayerMove playerMove;
     Animator anim;
     Animator bowAnim;
     Animator arrowAnim;
+    DataManager dm;
 
     GameObject[] arrowPool;
+    NPC[] npcs;
 
     // 들고 있는 무기 종류
     enum WeaponType
@@ -39,6 +47,8 @@ public class PlayerAction : MonoBehaviour
         anim = GetComponent<Animator>();
         bowAnim = bow.GetComponent<Animator>();
         arrowAnim = arrow.GetComponent<Animator>();
+        dm = DataManager.instance;
+
 
         PlayUIManager.instance.playerActionBtn.onClick
             .AddListener(OnClickPlayerActionBtn);
@@ -58,6 +68,8 @@ public class PlayerAction : MonoBehaviour
             arrowPool[i].GetComponent<Rigidbody>().centerOfMass = arrowPool[i].transform.forward * 1.5f;
             arrowPool[i].SetActive(false);
         }
+
+        npcs = FindObjectsOfType<NPC>();
     }
 
     private void Update()
@@ -81,8 +93,8 @@ public class PlayerAction : MonoBehaviour
             || (attackIdx >= 3 && hasWeapon != WeaponType.Bow))
             return;
 
-        // 공격력 수정
-        atk = attackIdx <= 1 ?
+        // 공격력 수정 (기본 공격력 10)
+        dm.data.atk = attackIdx <= 1 ?
             10 : PlayUIManager.instance.skills[attackIdx - 2].skillAtk;
 
         // 이동 불가능 + 공격 애니메이션
@@ -161,8 +173,6 @@ public class PlayerAction : MonoBehaviour
     // NPC와의 상호작용
     void NPCInteract()
     {
-        DataManager dm = DataManager.instance;
-
         switch (withNpc.npcQuestState)
         {
             case NPC.NPCQuestState.Have: // 퀘스트가 있음
@@ -172,23 +182,7 @@ public class PlayerAction : MonoBehaviour
             case NPC.NPCQuestState.Wait: // 퀘스트 완료를 기다리는 중
                 if(dm.data.questState == QuestState.Complete)
                 {
-                    PlayUIManager.instance.ChatBubbleOpen();
-                    dm.data.questState = QuestState.None;
-
-                    // 다음 퀘스트가 내꺼라면
-                    if(DataManager.instance.chatList[dm.data.questNum]["NPCName"].ToString() == withNpc.npcName)
-                    {
-                        withNpc.npcQuestState = NPC.NPCQuestState.Have;
-                        withNpc.headTxt.text = "?";
-
-                    }
-                    // 다음 퀘스트가 다른 npc꺼라면
-                    else
-                    {
-                        withNpc.npcQuestState = NPC.NPCQuestState.None;
-                        withNpc.headTxt.text = "";
-                    }
-
+                    QuestComplete();
                 }
                 break;
         }
@@ -202,6 +196,28 @@ public class PlayerAction : MonoBehaviour
 
         // 남자아이는 던전 씬으로 전환 (npc 연결 해제해야 함)
         //StartCoroutine(PlayUIManager.instance.Fade(0, 1)); break;
+    }
+
+    // 퀘스트 완료 행동
+    void QuestComplete()
+    {
+        // 보상 받기
+        string getItem = dm.chatList[dm.data.chatNum]["GetItem"].ToString();
+        string getExp = dm.chatList[dm.data.chatNum]["GetExp"].ToString();
+        if (getItem != "") InventoryManager.instance.AddItem(int.Parse(getItem));
+        if (getExp != "") PlayUIManager.instance.Exp += float.Parse(getExp);
+
+        // 다음 대화
+        dm.data.chatNum++;
+        dm.data.questNum++;
+        dm.data.questState = QuestState.None;
+        PlayUIManager.instance.ChatBubbleOpen();
+
+        // 모든 Npc에게 방금 퀘스트가 완료되었음을 전달
+        foreach (var npc in npcs)
+        {
+            npc.SendMessage("SetQuestState");
+        }
     }
 
     public void GetHit(float atk)

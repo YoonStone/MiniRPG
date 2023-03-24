@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Events;
 
 public class NPC : MonoBehaviour
 {
@@ -16,42 +17,19 @@ public class NPC : MonoBehaviour
     public TextMeshProUGUI headTxt;
     public NPCQuestState npcQuestState;
     public string npcName;
+    public string koreanName;
 
     PlayerAction player;
+    DataManager dm;
 
     void Start()
     {
         player = FindObjectOfType<PlayerAction>();
         npcName = name.Split('_')[1];
+        koreanName = nickName.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
 
-        DataManager dm = DataManager.instance;
-
-        // 현재 퀘스트를 진행해야 하는 npc가 아니라면
-        if (dm.chatList[dm.data.questNum]["NPCName"].ToString() != npcName)
-        {
-            npcQuestState = NPCQuestState.None;
-            headTxt.text = "";
-        }
-        // 현재 퀘스트를 진행해야 하는 npc이고,
-        else
-        {
-            switch (dm.data.questState)
-            {
-                case QuestState.None: // 퀘스트 수락 전
-                    npcQuestState = NPCQuestState.Have;
-                    headTxt.text = "?"; break;
-
-                case QuestState.Accept: // 퀘스트 수락한 상태 (수행 중)
-                    npcQuestState = NPCQuestState.Wait;
-                    headTxt.text = "..."; break;
-
-
-                case QuestState.Complete: // 퀘스트 완료한 상태 (수행 후 말 걸지 않음)
-                    npcQuestState = NPCQuestState.Wait;
-                    headTxt.text = "!"; break;
-
-            }
-        }
+        dm = DataManager.instance;
+        SetQuestState();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -85,14 +63,45 @@ public class NPC : MonoBehaviour
         StartCoroutine("Quest_" + questName);
     }
 
+    // 퀘스트 조건 완료
     protected void QuestComplete()
     {
         Data data = DataManager.instance.data;
-
         data.questState = QuestState.Complete;
+        npcQuestState = NPCQuestState.Wait;
         headTxt.text = "!";
-        data.chatNum++;
-        data.questNum++;
-        // 머리 위에 느낌표
+
+        StartCoroutine(PlayUIManager.instance.QuestCompleteOpen(koreanName));
+    }
+
+    // 퀘스트 상태 재정비
+    void SetQuestState()
+    {
+        // 현재 퀘스트를 진행해야 하는 npc가 아니라면
+        if (dm.chatList[dm.data.chatNum]["NPCName"].ToString() != npcName)
+        {
+            npcQuestState = NPCQuestState.None;
+            headTxt.text = "";
+        }
+        // 현재 퀘스트를 진행해야 하는 npc이고,
+        else
+        {
+            switch (dm.data.questState)
+            {
+                case QuestState.None: // 퀘스트 수락 전
+                    npcQuestState = NPCQuestState.Have;
+                    headTxt.text = "?"; break;
+
+                case QuestState.Accept: // 퀘스트 수락한 상태 (수행 중)
+                    npcQuestState = NPCQuestState.Wait;
+                    headTxt.text = "..."; break;
+
+
+                case QuestState.Complete: // 퀘스트 완료한 상태 (수행 후 말 걸지 않음)
+                    npcQuestState = NPCQuestState.Wait;
+                    headTxt.text = "!"; break;
+
+            }
+        }
     }
 }

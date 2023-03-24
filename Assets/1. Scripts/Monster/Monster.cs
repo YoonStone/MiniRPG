@@ -144,7 +144,7 @@ public class Monster : MonoBehaviour
     MonsterState curState;
     protected IEnumerator GetHit()
     {
-        Hp -= player.atk;
+        Hp -= DataManager.instance.data.atk;
 
         cg.alpha = 1;
         agent.isStopped = true;
@@ -176,6 +176,9 @@ public class Monster : MonoBehaviour
         anim.SetTrigger("die");
         GetComponent<Collider>().enabled = false;
         this.enabled = false;
+
+        // 경험치 증가
+        PlayUIManager.instance.Exp += Random.Range(0.15f, 0.3f);
     }
 
     protected void Trigger(Collider other)
