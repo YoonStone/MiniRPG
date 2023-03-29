@@ -173,18 +173,22 @@ public class PlayerAction : MonoBehaviour
     // NPC와의 상호작용
     void NPCInteract()
     {
+
         switch (withNpc.npcQuestState)
         {
             case NPC.NPCQuestState.Have: // 퀘스트가 있음
-                PlayUIManager.instance.ChatBubbleOpen();
-                break;
+                PlayUIManager.instance.ChatBubbleOpen(); break;
 
             case NPC.NPCQuestState.Wait: // 퀘스트 완료를 기다리는 중
-                if(dm.data.questState == QuestState.Complete)
-                {
-                    QuestComplete();
-                }
+                if (dm.data.questState == QuestState.Complete) QuestComplete();
+
+                // 퀘스트를 기다리는 중이지만 완료하지 못했을 때 상호작용 시도
+                else if (withNpc.npcName == "Merchant" || withNpc.npcName == "Boy")
+                    withNpc.SendMessage("Interact");
                 break;
+
+            // 상호작용 가능한 상태라면 상호작용 시도
+            default: if(withNpc.isInteractable) withNpc.SendMessage("Interact"); break;
         }
 
         // 상인은

@@ -13,7 +13,7 @@ public class NPC : MonoBehaviour
         Wait  // 플레이어가 수락했고, 기다리는 중
     }
 
-    public GameObject nickName;
+    public GameObject onoff;
     public TextMeshProUGUI headTxt;
     public NPCQuestState npcQuestState;
     public string npcName;
@@ -22,11 +22,14 @@ public class NPC : MonoBehaviour
     PlayerAction player;
     DataManager dm;
 
+    [HideInInspector]
+    public bool isInteractable; // 상호작용 가능한지
+
     void Start()
     {
         player = FindObjectOfType<PlayerAction>();
         npcName = name.Split('_')[1];
-        koreanName = nickName.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
+        koreanName = onoff.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
 
         dm = DataManager.instance;
         SetQuestState();
@@ -37,7 +40,7 @@ public class NPC : MonoBehaviour
         switch (other.tag)
         {
             case "Player": // player가 근처에 있을 때
-                nickName.SetActive(true);
+                onoff.SetActive(true);
                 player.withNpc = this;
                 break;
         }
@@ -48,7 +51,7 @@ public class NPC : MonoBehaviour
         switch (other.tag)
         {
             case "Player": // player와 헤어졌을 때
-                nickName.SetActive(false);
+                onoff.SetActive(false);
                 player.withNpc = null;
                 break;
         }

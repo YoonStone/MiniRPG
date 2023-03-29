@@ -8,6 +8,13 @@ public class ItemObject : MonoBehaviour
     public Item item;
 
     float moveSpeed = 4f;
+    public bool isGet; // 아이템을 먹었다면
+
+    private IEnumerator Start()
+    {
+        yield return new WaitForSeconds(1);
+        gameObject.layer = 6;
+    }
 
     private void Update()
     {
@@ -29,11 +36,19 @@ public class ItemObject : MonoBehaviour
             distance = Vector3.Distance(transform.position, targetPos);
             yield return null;
         }
-        while (distance > 0.5f); // 가까워질 때까지 반복
+        while (!isGet); // 가까워질 때까지 반복
 
-        // 충돌하면 삭제
-        Destroy(gameObject);
-        InventoryManager.instance.AddItem(item);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        // 충돌하면 삭제
+        if (collision.transform.CompareTag("Player"))
+        {
+            // 플레이어랑 충돌하면 삭제 및 아이템 획득
+            isGet = true;
+            Destroy(gameObject);
+            InventoryManager.instance.AddItem(item);
+        }
+    }
 }

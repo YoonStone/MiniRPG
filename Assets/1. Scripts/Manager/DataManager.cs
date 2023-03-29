@@ -18,6 +18,7 @@ public class Data
     public float hp = 90;
     public float exp = 0;
     public int level = 1;
+    public int gold = 100;
 
     public float atk; // 현재 공격력
 

@@ -2,15 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Slime : Monster
+public class Slime : MonsterBase
 {
-    public MonsterState _state;
-
-    private void Update()
-    {
-        _state = State;   
-    }
-
+    // 충돌 시 부모 클래스에 전달
     private void OnTriggerEnter(Collider other)
     {
         base.Trigger(other);

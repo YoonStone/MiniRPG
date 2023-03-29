@@ -98,6 +98,8 @@ public class InventoryManager : MonoBehaviour
             // 음식은 체력이 100보다 작을 때만 섭취 가능
             case ItemType.Food: if (PlayUIManager.instance.Hp >= 100) return;
                 Eat(slot.Item.itemName); break;
+
+            default: return;
         }
 
         if (slot.Count == 1 && !slot.isQuitSlot) slot.ItemOut();

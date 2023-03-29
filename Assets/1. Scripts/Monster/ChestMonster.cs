@@ -2,16 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChestMonster : Monster
+public class ChestMonster : MonsterBase
 {
-    public MonsterState _state;
-    public float distance;
-
-    private void Update()
-    {
-        _state = State;
-    }
-
+    // 충돌 시 부모 클래스에 전달
     private void OnTriggerEnter(Collider other)
     {
         base.Trigger(other);
@@ -25,12 +18,10 @@ public class ChestMonster : Monster
         while (State == MonsterState.Attack)
         {
             // 플레이어와의 거리에 따라 다른 공격 애니메이션
-            distance = Vector3.Distance(transform.position, player.transform.position);
-            anim.SetFloat("attackDist", distance);
+            anim.SetFloat("attackDist", Vector3.Distance(transform.position, player.transform.position));
             yield return null;
         }
 
         yield break;
     }
-
 }

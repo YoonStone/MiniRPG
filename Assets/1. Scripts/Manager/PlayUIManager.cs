@@ -29,6 +29,7 @@ public class PlayUIManager : MonoBehaviour
     public Animator anim_Inventory;
     public Animator anim_Popup;
     public Animator anim_Chat;
+    public Animator anim_Shop;
 
     [Header("-- 버튼 -- ")]
     public Button playerActionBtn; // 플레이어 액션 버튼
@@ -36,6 +37,7 @@ public class PlayUIManager : MonoBehaviour
 
     [Header("-- 텍스트 -- ")]
     public TextMeshProUGUI levelTxt;
+    public TextMeshProUGUI goldTxt;
     public TextMeshProUGUI popupTxt;
     public TextMeshProUGUI popupBtn1Txt;
     public TextMeshProUGUI popupBtn2Txt;
@@ -78,6 +80,16 @@ public class PlayUIManager : MonoBehaviour
         {
             dm.data.level = value;
             levelTxt.text = value.ToString();
+        }
+    }
+
+    public int Gold // 골드 (화폐)
+    {
+        get { return dm.data.gold; }
+        set
+        {
+            dm.data.gold = value;
+            goldTxt.text = value.ToString() + " G";
         }
     }
 

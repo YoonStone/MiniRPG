@@ -27,8 +27,8 @@ public class NPC_Who : NPC
 
     IEnumerator Quest_Delivery()
     {
-        // 뿔 아이템의 개수가 10개 이상이 될 때까지 기다리기
-        yield return new WaitUntil(() => InventoryManager.instance.questItemCount >= 6);
+        // 뿔 아이템의 개수가 8개 이상이 될 때까지 기다리기
+        yield return new WaitUntil(() => InventoryManager.instance.questItemCount >= 8);
         GameObject.Find("NPC_Merchant").SendMessage("QuestComplete");
 
         // 상인을 만나 해당 퀘스트가 끝나면
@@ -44,6 +44,5 @@ public class NPC_Who : NPC
                 yield break;
             }
         }
-
     }
 }

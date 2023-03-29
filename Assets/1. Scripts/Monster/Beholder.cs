@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Beholder : Monster
+public class Beholder : MonsterBase
 {
     [Header("닿았을 때 공격력")]
-    public float atk_normal;
+    public float atk_touch;
 
     [Header("뼈다귀 던질 위치")]
     public Transform bonePos;
@@ -18,12 +18,6 @@ public class Beholder : Monster
 
     GameObject[] bonePool;
 
-    public MonsterState _state;
-    private void Update()
-    {
-        _state = State;
-    }
-
     private void Start()
     {
         // 뼈다귀 오브젝트풀 생성
@@ -31,11 +25,12 @@ public class Beholder : Monster
         for (int i = 0; i < bonePool.Length; i++)
         {
             bonePool[i] = Instantiate(bonePref);
-            bonePool[i].GetComponent<Bone>().atk = atk;
+            bonePool[i].GetComponent<Bone>().atk = monsterInfo.atk;
             bonePool[i].SetActive(false);
         }
     }
 
+    // 충돌 시 부모 클래스에 전달
     private void OnTriggerEnter(Collider other)
     {
         base.Trigger(other);
@@ -43,7 +38,7 @@ public class Beholder : Monster
         // 닿았을 때 데미지
         if (other.CompareTag("Player") && !isAttack)
         {
-            player.GetHit(atk_normal);
+            player.GetHit(atk_touch);
         }
     }
 
