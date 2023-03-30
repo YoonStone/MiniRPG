@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class Drag : MonoBehaviour
 {
@@ -22,6 +23,12 @@ public class Drag : MonoBehaviour
         img = GetComponent<Image>();
     }
 
+    private void OnEnable()
+    {
+        img.color = Color.clear;
+        transform.position = Input.mousePosition;
+    }
+
     private void Update()
     {
         // 드래그
@@ -32,21 +39,21 @@ public class Drag : MonoBehaviour
             // 드래그 종료 (나중에 터치아이디 사용해야 함**)
             if (Input.GetMouseButtonUp(0))
             {
+                DragEnd();
+
                 // 다른 '비어있는' 슬롯 위에서 드롭한 경우
                 if (pointEnterSlot && pointEnterSlot != dragStartSlot && pointEnterSlot.Item == null)
                 {
                     pointEnterSlot.Item = dragItem;
                     pointEnterSlot.Count = drgaItemCount;
-                    dragStartSlot.ItemOut();
+                    dragStartSlot.Count = 0;
                 }
 
-                // 슬롯이 아닌 곳에 드롭한 경우
-                else if(!pointEnterSlot)
+                // 슬롯이 아닌 곳에 드롭한 경우 + 버릴 수 있는 아이템인 경우
+                else if(!pointEnterSlot && dragItem.isCanDrop)
                 {
                     StartCoroutine(PopupCall_ItemDrop());
                 }
-
-                DragEnd();
             }
         }
     }
@@ -92,7 +99,7 @@ public class Drag : MonoBehaviour
 
         // 예를 눌렀다면 버리기
         if (PlayUIManager.instance.popupState == PopupState.Left)
-            dragStartSlot.ItemOut();
+            dragStartSlot.Count = 0;
 
         DragReset();
         PlayUIManager.instance.popupState = PopupState.None;

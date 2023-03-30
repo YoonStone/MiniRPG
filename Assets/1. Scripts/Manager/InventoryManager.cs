@@ -15,8 +15,11 @@ public class InventoryManager : MonoBehaviour
     public Slot[] itemSlots;
     Slot[] protectSlots;
 
-    //[HideInInspector]
+    [HideInInspector]
     public int questItemCount;
+
+    [HideInInspector]
+    public bool isOpenShop; // 상점이 열려있는지
 
     // 싱글톤
     public static InventoryManager instance;
@@ -102,10 +105,10 @@ public class InventoryManager : MonoBehaviour
             default: return;
         }
 
-        if (slot.Count == 1 && !slot.isQuitSlot) slot.ItemOut();
+        if (slot.Count == 1 && !slot.isQuickSlot) slot.Count = 0;
         else slot.Count--;
 
-        if (slot.isQuitSlot && slot.Item.itemType == ItemType.Food) UseQuitSlot(slot);
+        if (slot.isQuickSlot && slot.Item.itemType == ItemType.Food) UseQuitSlot(slot);
     }
 
     // 아이템 판매

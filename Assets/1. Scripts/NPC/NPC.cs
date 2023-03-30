@@ -22,7 +22,7 @@ public class NPC : MonoBehaviour
     PlayerAction player;
     DataManager dm;
 
-    [HideInInspector]
+    //[HideInInspector]
     public bool isInteractable; // 상호작용 가능한지
 
     void Start()
@@ -53,6 +53,8 @@ public class NPC : MonoBehaviour
             case "Player": // player와 헤어졌을 때
                 onoff.SetActive(false);
                 player.withNpc = null;
+
+                if(npcName == "Merchant") gameObject.SendMessage("PlayerBye"); 
                 break;
         }
     }

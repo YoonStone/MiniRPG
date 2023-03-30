@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemIdx: 2
   itemName: Shield
+  itemName_kr: "\uB4E0\uB4E0\uD55C \uBC29\uD328"
   itemType: 0
-  itemInfo: "\uBC29\uD328, \uB4E4\uACE0\uB9CC \uC788\uC5B4\uB3C4 \uB4E0\uB4E0\uD558\uB2E4"
   itemSprite: {fileID: 21300000, guid: 2c825955da79e48bba83d3e72bcbdb29, type: 3}
-  itemPrice: 0
-  isCanDrop: 0
-  isCanSell: 0
+  itemPrice: 100
+  isCanDrop: 1
+  isCanSell: 1

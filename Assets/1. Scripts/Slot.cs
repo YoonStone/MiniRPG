@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 public class Slot : MonoBehaviour
 {
     // 퀵슬롯인지
-    public bool isQuitSlot;
+    public bool isQuickSlot;
 
     public Item item;
     public Item Item
@@ -36,7 +36,7 @@ public class Slot : MonoBehaviour
             count = value;
             countTxt.text = count.ToString();
 
-            if (!isQuitSlot)
+            if (!isQuickSlot)
             {
                 if (Item == foodBtn.Item) foodBtn.Count = count;
                 if (count == 0) ItemOut();
@@ -49,6 +49,8 @@ public class Slot : MonoBehaviour
     Image slotImage;
     GameObject countImg;
     TextMeshProUGUI countTxt;
+    InventoryManager inventory;
+    PlayUIManager manager;
     Drag drag;
     Slot foodBtn;
     CameraTurn cameraTurn;
@@ -58,8 +60,11 @@ public class Slot : MonoBehaviour
         slotImage = transform.GetChild(0).GetComponent<Image>();
         countImg = transform.GetChild(1).gameObject;
         countTxt = countImg.GetComponentInChildren<TextMeshProUGUI>();
-        drag = InventoryManager.instance.drag;
-        foodBtn = InventoryManager.instance.foodBtn;
+
+        inventory = InventoryManager.instance;
+        manager = PlayUIManager.instance;
+        drag = inventory.drag;
+        foodBtn = inventory.foodBtn;
         cameraTurn = FindObjectOfType<CameraTurn>();
     }
 
@@ -69,9 +74,10 @@ public class Slot : MonoBehaviour
         if (item == null || Count == 0) return;
 
         // 상점이 안 열려있다면 사용
-        InventoryManager.instance.UseItem(this);
+        if (!inventory.isOpenShop) inventory.UseItem(this);
 
         // 상점이 열려있다면 판매
+        else StartCoroutine(SellItem());
     }
 
     // 슬롯 위에 손이 올라오면
@@ -87,10 +93,10 @@ public class Slot : MonoBehaviour
     }
 
     // 슬롯 드래그 시작
-    public bool isDown;
+    [HideInInspector] public bool isDown;
     public void OnDown()
     {
-        if (item == null || !item.isCanDrop || PlayUIManager.instance.isPopup) return;
+        if (item == null || manager.isPopup) return;
         StartCoroutine(DownCheck());
     }
 
@@ -114,12 +120,33 @@ public class Slot : MonoBehaviour
     }
 
     // 슬롯에서 아이템 사라지는 경우
-    public void ItemOut()
+    void ItemOut()
     {
-        count = 0;
         countImg.SetActive(false);
         slotImage.sprite = null;
         slotImage.color = new Vector4(1, 1, 1, 0);
         item = null;
+    }
+
+    // 팝업창 사용 (아이템 판매)
+    IEnumerator SellItem()
+    {
+        // 팔 수 없는 아이템이라면 실행 불가
+        if (!item.isCanSell) yield break;
+
+        PlayUIManager.instance.popupState = PopupState.None;
+        PlayUIManager.instance.PopupOpen("이 아이템을 판매하시겠습니까?", "예", "아니오");
+
+        // 예/아니오를 누를 때까지 기다리기
+        yield return new WaitUntil(() => PlayUIManager.instance.popupState != PopupState.None);
+
+        // 예를 눌렀다면 아이템 판매
+        if (PlayUIManager.instance.popupState == PopupState.Left)
+        {
+            manager.Gold += item.itemPrice;
+            Count--;
+        }
+
+        PlayUIManager.instance.popupState = PopupState.None;
     }
 }

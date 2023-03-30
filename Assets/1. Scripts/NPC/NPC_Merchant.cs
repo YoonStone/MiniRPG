@@ -9,9 +9,15 @@ public class NPC_Merchant : NPC
     // 상호작용
     void Interact()
     {
-        print("상호작용 - 상점");
-        PlayUIManager.instance.anim_Shop.SetTrigger("open");
-        PlayUIManager.instance.anim_Inventory.SetTrigger("open");
+        PlayUIManager.instance.anim_Shop.SetBool("isOpen", true);
+        PlayUIManager.instance.anim_Inventory.SetBool("isOpen", true);
+        InventoryManager.instance.isOpenShop = true;
+    }
+
+    void PlayerBye()
+    {
+        PlayUIManager.instance.anim_Shop.SetBool("isOpen", false);
+        InventoryManager.instance.isOpenShop = false;
     }
 
     IEnumerator Quest_Buy()

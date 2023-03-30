@@ -19,11 +19,11 @@ public class Item : ScriptableObject
     [Header("아이템 이름")]
     public string itemName;
 
+    [Header("아이템 한글 이름")]
+    public string itemName_kr;
+
     [Header("아이템 종류")]
     public ItemType itemType;
-
-    [Header("아이템 설명")] [TextArea]
-    public string itemInfo;
 
     [Header("아이템 이미지")]
     public Sprite itemSprite;

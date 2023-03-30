@@ -96,6 +96,7 @@ public class PlayUIManager : MonoBehaviour
     [HideInInspector]
     public PlayerAction player;
     DataManager dm;
+    CameraTurn cameraTurn;
 
     static public PlayUIManager instance;
     private void Awake()
@@ -110,8 +111,9 @@ public class PlayUIManager : MonoBehaviour
 
     private void Start()
     {
-        dm = DataManager.instance;
         player = FindObjectOfType<PlayerAction>();
+        dm = DataManager.instance;
+        cameraTurn = FindObjectOfType<CameraTurn>();
 
         // 머리 위 닉네임 설정
         player.GetComponentInChildren<TextMeshPro>().text = $"[ {dm.data.nickname} ]";
@@ -121,20 +123,19 @@ public class PlayUIManager : MonoBehaviour
     }
 
     // 설정 버튼
-    public void OnClickSettingBtn(string triggerName)
+    public void OnClickSettingBtn(bool isOpen)
     {
-        anim_Setting.SetTrigger(triggerName);
+        anim_Setting.SetBool("isOpen", isOpen);
     }
 
     // 인벤토리 버튼
-    public void OnClickInventoryBtn(string triggerName)
+    public void OnClickInventoryBtn(bool isOpen)
     {
-        anim_Inventory.SetTrigger(triggerName);
+        anim_Inventory.SetBool("isOpen", isOpen);
     }
 
     [HideInInspector]
     public bool isPopup;
-    //GameObject popupFrom; // 팝업창을 사용한 오브젝트
     public PopupState popupState;
 
     // 팝업창 열기
@@ -145,6 +146,8 @@ public class PlayUIManager : MonoBehaviour
         popupBtn1Txt.text = btn1;
         popupBtn2Txt.text = btn2;
         anim_Popup.SetTrigger("Open");
+
+        cameraTurn.enabled = false;
     }
 
     // 팝업창의 버튼
@@ -154,6 +157,7 @@ public class PlayUIManager : MonoBehaviour
         popupState = isLeft ? PopupState.Left : PopupState.Right;
         anim_Popup.SetTrigger("Close");
         isPopup = false;
+        cameraTurn.enabled = true;
     }
 
     // 대화창 열기
