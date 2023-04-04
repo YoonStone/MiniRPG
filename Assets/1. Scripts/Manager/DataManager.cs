@@ -21,6 +21,7 @@ public class Data
     public int gold = 100;
 
     public float atk; // 현재 공격력
+    public float def = 1; // 현재 방패 내구력
 
     public QuestState questState = QuestState.None;
     public int questNum = 1;

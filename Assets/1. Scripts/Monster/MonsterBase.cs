@@ -189,7 +189,7 @@ public class MonsterBase : MonoBehaviour
                 int minCount = monsterInfo.dropItems[i].dropCount_min;
                 int maxCount = monsterInfo.dropItems[i].dropCount_max;
                 int randCount = Random.Range(minCount, maxCount + 1);
-                print(randCount);
+
                 for (int j = 0; j < randCount; j++)
                 {
                     Vector3 spawnPos = transform.position + Vector3.up;

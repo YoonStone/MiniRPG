@@ -26,6 +26,7 @@ public class PlayerAction : MonoBehaviour
     Animator bowAnim;
     Animator arrowAnim;
     DataManager dm;
+    PlayUIManager manager;
 
     GameObject[] arrowPool;
     NPC[] npcs;
@@ -48,16 +49,15 @@ public class PlayerAction : MonoBehaviour
         bowAnim = bow.GetComponent<Animator>();
         arrowAnim = arrow.GetComponent<Animator>();
         dm = DataManager.instance;
+        manager = PlayUIManager.instance;
 
 
-        PlayUIManager.instance.playerActionBtn.onClick
-            .AddListener(OnClickPlayerActionBtn);
+        manager.playerActionBtn.onClick.AddListener(OnClickPlayerActionBtn);
 
         for (int i = 0; i < PlayUIManager.instance.skills.Length; i++)
         {
             int ii = i;
-            PlayUIManager.instance.skills[ii].skillBtn.onClick
-                .AddListener(() => Attack(2 + ii));
+            manager.skills[ii].skillBtn.onClick.AddListener(() => Attack(2 + ii));
         }
 
         // 활 오브젝트풀 생성
@@ -65,7 +65,8 @@ public class PlayerAction : MonoBehaviour
         for (int i = 0; i < arrowPool.Length; i++)
         {
             arrowPool[i] = Instantiate(arrowPref);
-            arrowPool[i].GetComponent<Rigidbody>().centerOfMass = arrowPool[i].transform.forward * 1.5f;
+            arrowPool[i].GetComponent<Rigidbody>().centerOfMass
+                = arrowPool[i].transform.forward * 1.5f;
             arrowPool[i].SetActive(false);
         }
 
@@ -94,8 +95,7 @@ public class PlayerAction : MonoBehaviour
             return;
 
         // 공격력 수정 (기본 공격력 10)
-        dm.data.atk = attackIdx <= 1 ?
-            10 : PlayUIManager.instance.skills[attackIdx - 2].skillAtk;
+        dm.data.atk = attackIdx <= 1 ? 10 : manager.skills[attackIdx - 2].skillAtk;
 
         // 이동 불가능 + 공격 애니메이션
         playerMove.isCantMove = true;
@@ -113,7 +113,7 @@ public class PlayerAction : MonoBehaviour
         StartCoroutine(AttackEndCheck());
 
         if (attackIdx > 1)
-            StartCoroutine(PlayUIManager.instance.SkiilCoolTime(attackIdx - 2));
+            StartCoroutine(manager.SkiilCoolTime(attackIdx - 2));
     }
 
     // 공격 종료 (애니메이션이벤트)
@@ -177,7 +177,7 @@ public class PlayerAction : MonoBehaviour
         switch (withNpc.npcQuestState)
         {
             case NPC.NPCQuestState.Have: // 퀘스트가 있음
-                PlayUIManager.instance.ChatBubbleOpen(); break;
+                manager.ChatBubbleOpen(); break;
 
             case NPC.NPCQuestState.Wait: // 퀘스트 완료를 기다리는 중
                 if (dm.data.questState == QuestState.Complete) QuestComplete();
@@ -209,13 +209,13 @@ public class PlayerAction : MonoBehaviour
         string getItem = dm.chatList[dm.data.chatNum]["GetItem"].ToString();
         string getExp = dm.chatList[dm.data.chatNum]["GetExp"].ToString();
         if (getItem != "") InventoryManager.instance.AddItem(int.Parse(getItem));
-        if (getExp != "") PlayUIManager.instance.Exp += float.Parse(getExp);
+        if (getExp != "") manager.Exp += float.Parse(getExp);
 
         // 다음 대화
         dm.data.chatNum++;
         dm.data.questNum++;
         dm.data.questState = QuestState.None;
-        PlayUIManager.instance.ChatBubbleOpen();
+        manager.ChatBubbleOpen();
 
         // 모든 Npc에게 방금 퀘스트가 완료되었음을 전달
         foreach (var npc in npcs)
@@ -224,12 +224,21 @@ public class PlayerAction : MonoBehaviour
         }
     }
 
+    // 공격 받음
     public void GetHit(float atk)
     {
         playerMove.isCantMove = false;
         anim.SetTrigger("getHit");
-        PlayUIManager.instance.Hp -= atk;
-        StartCoroutine(PlayUIManager.instance.HpImgColor(Color.red));
+
+        // 방패를 들고 있다면
+        if (manager.defImg.color == Color.white)
+        {
+            manager.Def -= atk * 0.01f;
+            manager.Hp -= atk * 0.6f;
+        }
+        else manager.Hp -= atk;
+
+        StartCoroutine(manager.HpImgColor(Color.red));
     }
 
     // 장비 장착
@@ -238,43 +247,50 @@ public class PlayerAction : MonoBehaviour
         switch (itemName)
         {
             case "Sword":
-                sword.SetActive(true);
                 if (hasWeapon == WeaponType.Bow)
                 {
                     bow.SetActive(false);
                     arrow.SetActive(false);
-                    InventoryManager.instance.AddItem(3);
-                }
-                anim.SetTrigger("weaponChange");
-                anim.SetBool("isBow", false);
-                hasWeapon = WeaponType.Sword; break;
-            case "Shield":
-                shield.SetActive(true);
-                if (hasWeapon == WeaponType.Bow)
-                {
-                    bow.SetActive(false);
-                    arrow.SetActive(false);
-                    InventoryManager.instance.AddItem(3);
                     anim.SetTrigger("weaponChange");
                     anim.SetBool("isBow", false);
+                    InventoryManager.instance.EquipItemMove(3, false);
+                }
+                sword.SetActive(true);
+                InventoryManager.instance.EquipItemMove(0, true);
+                hasWeapon = WeaponType.Sword; break;
+
+            case "Shield":
+                if (hasWeapon == WeaponType.Bow)
+                {
+                    bow.SetActive(false);
+                    arrow.SetActive(false);
+                    anim.SetTrigger("weaponChange");
+                    anim.SetBool("isBow", false);
+                    InventoryManager.instance.EquipItemMove(3, false);
                     hasWeapon = WeaponType.None;
                 }
+                shield.SetActive(true);
+                InventoryManager.instance.EquipItemMove(2, true);
+                manager.defImg.color = Color.white;
                 break;
+
             case "Bow":
-                bow.SetActive(true);
-                arrow.SetActive(true);
                 if (hasWeapon == WeaponType.Sword)
                 {
                     sword.SetActive(false);
-                    InventoryManager.instance.AddItem(0);
+                    InventoryManager.instance.EquipItemMove(0, false);
                 }
                 if (shield.activeSelf)
                 {
                     shield.SetActive(false);
-                    InventoryManager.instance.AddItem(2);
+                    InventoryManager.instance.EquipItemMove(2, false);
+                    manager.defImg.color = Color.clear;
                 }
                 anim.SetTrigger("weaponChange");
                 anim.SetBool("isBow", true);
+                bow.SetActive(true);
+                arrow.SetActive(true);
+                InventoryManager.instance.EquipItemMove(3, true);
                 hasWeapon = WeaponType.Bow; break;
         }
     }

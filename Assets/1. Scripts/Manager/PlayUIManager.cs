@@ -46,6 +46,7 @@ public class PlayUIManager : MonoBehaviour
     [Header("-- 이미지 -- ")]
     public Image hpImg;
     public Image expImg;
+    public Image defImg;
     public GameObject chatBtns;
 
     [Header("-- Fade -- ")]
@@ -90,6 +91,33 @@ public class PlayUIManager : MonoBehaviour
         {
             dm.data.gold = value;
             goldTxt.text = value.ToString() + " G";
+        }
+    }
+
+    public float Def // 방패 내구력
+    {
+        get { return dm.data.def; }
+        set
+        {
+            dm.data.def = value;
+            value = Mathf.Clamp(value, 0, 1);
+            defImg.fillAmount = value;
+
+            if(value == 0)
+            {
+                // 방패 아이템 삭제
+                Slot shieldSlot = InventoryManager.instance.FindItemSlot(2);
+                shieldSlot.Count--;
+
+                // 방패가 없다면 투명하게
+                if(shieldSlot.Count <= 0)
+                {
+                    defImg.color = Color.clear;
+                    player.shield.SetActive(false);
+                }
+
+                dm.data.def = 1;
+            }
         }
     }
 
@@ -280,7 +308,6 @@ public class PlayUIManager : MonoBehaviour
 
     IEnumerator IncreaseExp(float from, float to)
     {
-        print("경험치 증가");
         float timer = 0;
         while (timer < 0.5f)
         {

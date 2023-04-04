@@ -1,19 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using static UnityEditor.Progress;
 
 public class InventoryManager : MonoBehaviour
 {
     // 슬롯 부모들
-    public Transform itemSlot, protectSlot;
+    public Transform itemSlot, equipSlot;
     public Slot foodBtn;
     public Drag drag;
     public Item[] items;
+    
 
     [HideInInspector]
     public Slot[] itemSlots;
-    Slot[] protectSlots;
+    public Slot[] equipSlots;
 
     [HideInInspector]
     public int questItemCount;
@@ -31,9 +33,11 @@ public class InventoryManager : MonoBehaviour
     private void Start()
     {
         itemSlots = itemSlot.GetComponentsInChildren<Slot>();
-        protectSlots = protectSlot.GetComponentsInChildren<Slot>();
+        equipSlots = equipSlot.GetComponentsInChildren<Slot>();
 
         AddItem(0); // 칼 지급
+        AddItem(2); // 칼 지급
+        AddItem(3); // 칼 지급
     }
 
     // 아이템 추가 (아이템)
@@ -47,6 +51,16 @@ public class InventoryManager : MonoBehaviour
         {
             // 같은 아이템을 가진 슬롯이 있다면 개수 변경
             if(itemSlot.Item == item)
+            {
+                itemSlot.Count += 1;
+                return;
+            }
+        }
+
+        foreach (var itemSlot in equipSlots)
+        {
+            // 같은 아이템을 가진 슬롯이 있다면 개수 변경
+            if (itemSlot.Item == item)
             {
                 itemSlot.Count += 1;
                 return;
@@ -78,6 +92,16 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
+        foreach (var itemSlot in equipSlots)
+        {
+            // 같은 아이템을 가진 슬롯이 있다면 개수 변경
+            if (itemSlot.Item == items[itemIdx])
+            {
+                itemSlot.Count += 1;
+                return;
+            }
+        }
+
         foreach (var itemSlot in itemSlots)
         {
             // 내용물이 없는 슬롯에 추가
@@ -90,25 +114,97 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
+    // 아이템 찾기 (번호)
+    public Slot FindItemSlot(int itemIdx, bool isEquip = false)
+    {
+        //// 장비 아이템인지 일반 아이템인지
+        //Slot[] slots = isEquip ? equipSlots : itemSlots;
+
+        foreach (var itemSlot in itemSlots)
+        {
+            // 같은 아이템을 가진 슬롯이 있다면 개수 변경
+            if (itemSlot.Item == items[itemIdx])
+            {
+                return itemSlot;
+            }
+        }
+
+        foreach (var itemSlot in equipSlots)
+        {
+            // 같은 아이템을 가진 슬롯이 있다면 개수 변경
+            if (itemSlot.Item == items[itemIdx])
+            {
+                return itemSlot;
+            }
+        }
+
+        //foreach (var itemSlot in slots)
+        //{
+        //    // 같은 아이템을 가진 슬롯이 있다면 슬롯 반환
+        //    if (itemSlot.Item == items[itemIdx])
+        //    {
+        //        return itemSlot;
+        //    }
+        //}
+
+        return null;
+    }
+
+    // 장비 착용/해제
+    public void EquipItemMove(int itemIdx, bool isPutOn)
+    {
+        // 장비를 착용하는건지 해제하는건지
+        Slot[] fromSlots = isPutOn ? itemSlots : equipSlots;
+        Slot[] toSlots = isPutOn ? equipSlots : itemSlots;
+
+        Slot toSlot = null, fromSlot = null;
+
+        foreach (var slot in fromSlots)
+        {
+            // 같은 아이템을 가진 슬롯이 있다면
+            if (slot.Item == items[itemIdx])
+            {
+                fromSlot = slot;
+                break;
+            }
+        }
+
+        foreach (var slot in toSlots)
+        {
+            // 내용물이 없는 슬롯이 있다면
+            if (slot.Item == null)
+            {
+                toSlot = slot;
+                break;
+            }
+        }
+
+        // 아이템 옮기기
+        toSlot.Item = fromSlot.Item;
+        toSlot.Count = fromSlot.Count;
+        fromSlot.Count = 0;
+    }
+
     // 아이템 사용
     public void UseItem(Slot slot)
     {
         switch (slot.Item.itemType)
         {
-            case ItemType.Equipment: PlayUIManager.instance.player.
-                    Equip(slot.Item.itemName);  break;
+            case ItemType.Equipment:
+                PlayUIManager.instance.player.Equip(slot.Item.itemName);
+                break;
 
             // 음식은 체력이 100보다 작을 때만 섭취 가능
-            case ItemType.Food: if (PlayUIManager.instance.Hp >= 100) return;
-                Eat(slot.Item.itemName); break;
+            case ItemType.Food:
+                if (PlayUIManager.instance.Hp >= 100) return;
+                Eat(slot.Item.itemName);
+                if (slot.isQuickSlot) UseQuickSlot(slot);
 
-            default: return;
+                if (slot.Count == 1 && !slot.isQuickSlot) slot.Count = 0;
+                else slot.Count--;
+                break;
         }
 
-        if (slot.Count == 1 && !slot.isQuickSlot) slot.Count = 0;
-        else slot.Count--;
-
-        if (slot.isQuickSlot && slot.Item.itemType == ItemType.Food) UseQuitSlot(slot);
     }
 
     // 아이템 판매
@@ -131,7 +227,7 @@ public class InventoryManager : MonoBehaviour
     }
 
     //  퀵슬롯 사용 시 인벤토리 슬롯 개수 맞추기
-    void UseQuitSlot(Slot quitSlot)
+    void UseQuickSlot(Slot quitSlot)
     {
         foreach (var itemSlot in itemSlots)
         {
