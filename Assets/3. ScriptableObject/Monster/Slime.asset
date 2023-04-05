@@ -18,6 +18,10 @@ MonoBehaviour:
   exp_max: 0.15
   gold_min: 30
   gold_max: 50
-  dropItems: []
+  dropItems:
+  - itemPref: {fileID: 7227286451347753642, guid: 4b8ea8526d0474e519751a0d2ba2e8fe, type: 3}
+    dropCount_min: 2
+    dropCount_max: 3
+    percent: 1
   dist_Follow: 4
   dist_Attack: 1.5

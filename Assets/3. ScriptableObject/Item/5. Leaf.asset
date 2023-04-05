@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dae5b23a9dfe5d48a5ad5b44abbc855, type: 3}
+  m_Name: 5. Leaf
+  m_EditorClassIdentifier: 
+  itemIdx: 5
+  itemName: Leaf
+  itemName_kr: "\uC2AC\uB77C\uC784\uC758 \uC8FC\uC2DD"
+  itemType: 2
+  itemSprite: {fileID: 21300000, guid: 24ee32429ecca4cdf8d21b5d8f493af8, type: 3}
+  itemPrice: 8
+  isCanDrop: 1
+  isCanSell: 1
