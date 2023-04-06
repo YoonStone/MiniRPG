@@ -36,8 +36,8 @@ public class InventoryManager : MonoBehaviour
         equipSlots = equipSlot.GetComponentsInChildren<Slot>();
 
         AddItem(0); // 칼 지급
-        AddItem(2); // 칼 지급
-        AddItem(3); // 칼 지급
+        //AddItem(2); // 칼 지급
+        //AddItem(3); // 칼 지급
     }
 
     // 아이템 추가 (아이템)

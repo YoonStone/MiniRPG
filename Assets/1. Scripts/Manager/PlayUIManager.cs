@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Newtonsoft.Json.Linq;
+using Unity.VisualScripting;
 
 [System.Serializable]
 public struct Skill
@@ -32,8 +32,10 @@ public class PlayUIManager : MonoBehaviour
     public Animator anim_Shop;
 
     [Header("-- 버튼 -- ")]
-    public Button playerActionBtn; // 플레이어 액션 버튼
-    public Skill[] skills;         // 공격 스킬 배열
+    public Button playerActionBtn;   // 플레이어 액션 버튼
+    public Skill[] skills;           // 공격 스킬 배열
+    public GameObject chatNextBtn;   // 말풍선 다음 버튼
+    public GameObject chatCancleBtn; // 말풍선 종료 버튼
 
     [Header("-- 텍스트 -- ")]
     public TextMeshProUGUI levelTxt;
@@ -47,7 +49,6 @@ public class PlayUIManager : MonoBehaviour
     public Image hpImg;
     public Image expImg;
     public Image defImg;
-    public GameObject chatBtns;
 
     [Header("-- Fade -- ")]
     public Transform fadeImg; // 페이드인,페이드아웃
@@ -188,21 +189,58 @@ public class PlayUIManager : MonoBehaviour
         cameraTurn.enabled = true;
     }
 
-    // 대화창 열기
+    // 채팅 대화창 열기
     public void ChatBubbleOpen()
     {
         chatTxt.text = dm.chatList[dm.data.chatNum]["Script"].ToString();
-        chatBtns.SetActive(true);
+                // 다음 대화가 있고, 대사의 주인이 현재 대화 중인 NPC라면
+                if (++dm.data.chatNum < dm.chatList.Count
+                    && dm.chatList[dm.data.chatNum]["ToNPC"].ToString() == player.withNpc.npcName)
+                {
+                    chatNextBtn.SetActive(true);
+                    chatCancleBtn.SetActive(true);
+                }
+                // 다음 대사가 없거나 다른 NPC의 것이라면
+                else
+                {
+                    chatNextBtn.SetActive(false);
+                    chatCancleBtn.SetActive(true);
+                }
+        anim_Chat.SetTrigger("Open");
+    }
 
-        // 이번 대화창이 마지막이라면 (= 다음 대화의 퀘스트번호가 다르다면)
-        if (dm.chatList.Count > dm.data.chatNum + 1
-            && int.Parse(dm.chatList[dm.data.chatNum + 1]["QuestNum"].ToString()) != dm.data.questNum
-            && dm.data.questState == QuestState.None)
+    // 퀘스트 대화창 열기
+    public void QuestBubbleOpen()
+    {
+        switch (dm.data.questState)
         {
-            chatBtns.SetActive(false);
-            StartCoroutine(PopupCall_Quest());
-        }
+            // 퀘스트 받기 전
+            case QuestState.None:
+                chatTxt.text = dm.questList[dm.data.questNum]["Request"].ToString();
+                chatNextBtn.SetActive(false);
+                chatCancleBtn.SetActive(false);
+                StartCoroutine(PopupCall_Quest());
+                break;
 
+            // 퀘스트 완료
+            case QuestState.Accept:
+                chatTxt.text = dm.questList[dm.data.questNum]["Complete"].ToString();
+
+                // 다음 대화가 있고, 대사의 주인이 현재 대화 중인 NPC라면
+                if (++dm.data.chatNum < dm.chatList.Count
+                    && dm.chatList[dm.data.chatNum]["ToNPC"].ToString() == player.withNpc.npcName)
+                {
+                    chatNextBtn.SetActive(true);
+                    chatCancleBtn.SetActive(true);
+                }
+                // 다음 대사가 없거나 다른 NPC의 것이라면
+                else
+                {
+                    chatNextBtn.SetActive(false);
+                    chatCancleBtn.SetActive(true);
+                }
+                break;
+        }
         anim_Chat.SetTrigger("Open");
     }
 
@@ -210,10 +248,11 @@ public class PlayUIManager : MonoBehaviour
     public IEnumerator QuestCompleteOpen(string npcName)
     {
         chatTxt.text = $"퀘스트를 완료했습니다!\nNPC에게 돌아가세요\n({npcName})";
-        chatBtns.SetActive(false);
+        chatNextBtn.SetActive(false);
+        chatCancleBtn.SetActive(false);
         anim_Chat.SetTrigger("Open");
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
 
         anim_Chat.SetTrigger("Close");
     }
@@ -228,23 +267,23 @@ public class PlayUIManager : MonoBehaviour
     public void OnClickChatNext()
     {
         dm.data.chatNum++;
-        ChatBubbleOpen();
 
-        // 이번 대화창이 마지막이라면 (= 다음 대화의 퀘스트번호가 다르다면)
-        if (dm.chatList.Count > dm.data.chatNum + 1 &&
-            int.Parse(dm.chatList[dm.data.chatNum + 1]["QuestNum"].ToString()) != dm.data.questNum)
+        // 마지막 대사라면 대화창 끄기
+        if (dm.chatList.Count > dm.data.chatNum) OnClickChatCancle();
+
+        // 다음에 퀘스트가 나올 차례
+        else if (dm.chatList[dm.data.chatNum]["NPC"].ToString() == "")
         {
-            chatBtns.SetActive(false);
-            StartCoroutine(PopupCall_Quest());
+            QuestBubbleOpen();
         }
+
+        // 다음에도 대사가 나올 차례
+        else ChatBubbleOpen();
     }
 
     // 페이드인, 페이드아웃
-    public IEnumerator Fade(int from, int to)
+    public IEnumerator Fade(Vector3 fromScale, Vector3 toScale)
     {
-        Vector3 fromScale = new Vector3(from, from, from);
-        Vector3 toScale = new Vector3(to, to, to);
-
         float time = 0;
         while(time < 1)
         {
@@ -253,7 +292,7 @@ public class PlayUIManager : MonoBehaviour
             yield return null;
         }
 
-        if(to == 1) LoadingManager.LoadScene(2);
+        if(toScale == Vector3.one) LoadingManager.LoadScene(2);
     }
 
     // 체력바 이미지 색상 변경

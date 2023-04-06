@@ -20,13 +20,15 @@ public class PlayerAction : MonoBehaviour
     public int arrowCount;
     public float shootPower;
 
-    BoxCollider swordColl;   // 칼 콜라이더
+    BoxCollider swordColl;
     PlayerMove playerMove;
     Animator anim;
     Animator bowAnim;
     Animator arrowAnim;
+
     DataManager dm;
     PlayUIManager manager;
+    InventoryManager inventory;
 
     GameObject[] arrowPool;
     NPC[] npcs;
@@ -48,13 +50,14 @@ public class PlayerAction : MonoBehaviour
         anim = GetComponent<Animator>();
         bowAnim = bow.GetComponent<Animator>();
         arrowAnim = arrow.GetComponent<Animator>();
+
         dm = DataManager.instance;
         manager = PlayUIManager.instance;
-
+        inventory = InventoryManager.instance;
 
         manager.playerActionBtn.onClick.AddListener(OnClickPlayerActionBtn);
 
-        for (int i = 0; i < PlayUIManager.instance.skills.Length; i++)
+        for (int i = 0; i < manager.skills.Length; i++)
         {
             int ii = i;
             manager.skills[ii].skillBtn.onClick.AddListener(() => Attack(2 + ii));
@@ -102,6 +105,7 @@ public class PlayerAction : MonoBehaviour
         playerMove.MoveEnd();
         anim.SetTrigger("attack");
         anim.SetInteger("attackIdx", attackIdx);
+
         if(attackIdx >= 3)
         {
             bowAnim.SetTrigger("bowAttack");
@@ -173,14 +177,15 @@ public class PlayerAction : MonoBehaviour
     // NPC와의 상호작용
     void NPCInteract()
     {
-
         switch (withNpc.npcQuestState)
         {
             case NPC.NPCQuestState.Have: // 퀘스트가 있음
                 manager.ChatBubbleOpen(); break;
 
             case NPC.NPCQuestState.Wait: // 퀘스트 완료를 기다리는 중
-                if (dm.data.questState == QuestState.Complete) QuestComplete();
+
+                // 퀘스트 조건에 만족한다면 퀘스트 완료
+                if (IsQuestComplete()) AfterQuestComplete();
 
                 // 퀘스트를 기다리는 중이지만 완료하지 못했을 때 상호작용 시도
                 else if (withNpc.npcName == "Merchant" || withNpc.npcName == "Boy")
@@ -191,24 +196,23 @@ public class PlayerAction : MonoBehaviour
             default: if(withNpc.isInteractable) withNpc.SendMessage("Interact"); break;
         }
 
-        // 상인은
-        // 퀘스트 전 : 사용 불가
-        // 퀘스트 있음 : 대화창
-        // 퀘스트 수락 : 상점
-        // 퀘스트 완료 : 대화창
-        // 퀘스트 이후 : 상점
-
         // 남자아이는 던전 씬으로 전환 (npc 연결 해제해야 함)
         //StartCoroutine(PlayUIManager.instance.Fade(0, 1)); break;
     }
 
+    // 퀘스트 조건에 만족하는지 확인
+    bool IsQuestComplete()
+    {
+        return false;
+    }
+
     // 퀘스트 완료 행동
-    void QuestComplete()
+    void AfterQuestComplete()
     {
         // 보상 받기
-        string getItem = dm.chatList[dm.data.chatNum]["GetItem"].ToString();
-        string getExp = dm.chatList[dm.data.chatNum]["GetExp"].ToString();
-        if (getItem != "") InventoryManager.instance.AddItem(int.Parse(getItem));
+        string getItem = dm.questList[dm.data.questNum]["GetItem"].ToString();
+        string getExp = dm.questList[dm.data.questNum]["GetExp"].ToString();
+        if (getItem != "") inventory.AddItem(int.Parse(getItem));
         if (getExp != "") manager.Exp += float.Parse(getExp);
 
         // 다음 대화
@@ -256,7 +260,7 @@ public class PlayerAction : MonoBehaviour
                     InventoryManager.instance.EquipItemMove(3, false);
                 }
                 sword.SetActive(true);
-                InventoryManager.instance.EquipItemMove(0, true);
+                inventory.EquipItemMove(0, true);
                 hasWeapon = WeaponType.Sword; break;
 
             case "Shield":
@@ -266,11 +270,11 @@ public class PlayerAction : MonoBehaviour
                     arrow.SetActive(false);
                     anim.SetTrigger("weaponChange");
                     anim.SetBool("isBow", false);
-                    InventoryManager.instance.EquipItemMove(3, false);
+                    inventory.EquipItemMove(3, false);
                     hasWeapon = WeaponType.None;
                 }
                 shield.SetActive(true);
-                InventoryManager.instance.EquipItemMove(2, true);
+                inventory.EquipItemMove(2, true);
                 manager.defImg.color = Color.white;
                 break;
 
@@ -278,19 +282,19 @@ public class PlayerAction : MonoBehaviour
                 if (hasWeapon == WeaponType.Sword)
                 {
                     sword.SetActive(false);
-                    InventoryManager.instance.EquipItemMove(0, false);
+                    inventory.EquipItemMove(0, false);
                 }
                 if (shield.activeSelf)
                 {
                     shield.SetActive(false);
-                    InventoryManager.instance.EquipItemMove(2, false);
+                    inventory.EquipItemMove(2, false);
                     manager.defImg.color = Color.clear;
                 }
                 anim.SetTrigger("weaponChange");
                 anim.SetBool("isBow", true);
                 bow.SetActive(true);
                 arrow.SetActive(true);
-                InventoryManager.instance.EquipItemMove(3, true);
+                inventory.EquipItemMove(3, true);
                 hasWeapon = WeaponType.Bow; break;
         }
     }

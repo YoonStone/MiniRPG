@@ -20,7 +20,7 @@ public class DungeonManager : MonoBehaviour
         playerCC.transform.rotation = playerPos.rotation;
         playerCC.enabled = true;
       
-        StartCoroutine(PlayUIManager.instance.Fade(1, 0));
+        StartCoroutine(PlayUIManager.instance.Fade(Vector3.one, Vector3.zero));
     }
 
     // Update is called once per frame

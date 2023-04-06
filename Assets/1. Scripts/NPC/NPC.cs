@@ -21,17 +21,24 @@ public class NPC : MonoBehaviour
 
     PlayerAction player;
     DataManager dm;
+    protected PlayUIManager manager;
+    protected InventoryManager inventory;
 
-    //[HideInInspector]
+    [HideInInspector]
     public bool isInteractable; // 상호작용 가능한지
+
+    bool isFirst = true; // 게임이 시작되는 순간의 퀘스트 상태 정리
 
     void Start()
     {
         player = FindObjectOfType<PlayerAction>();
+        dm = DataManager.instance;
+        manager = PlayUIManager.instance;
+        inventory = InventoryManager.instance;
+
         npcName = name.Split('_')[1];
         koreanName = onoff.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
 
-        dm = DataManager.instance;
         SetQuestState();
     }
 
@@ -71,8 +78,7 @@ public class NPC : MonoBehaviour
     // 퀘스트 조건 완료
     protected void QuestComplete()
     {
-        Data data = DataManager.instance.data;
-        data.questState = QuestState.Complete;
+        dm.data.questState = QuestState.None;
         npcQuestState = NPCQuestState.Wait;
         headTxt.text = "!";
 
@@ -85,12 +91,14 @@ public class NPC : MonoBehaviour
         // 현재 퀘스트를 진행해야 하는 npc가 아니라면
         if (dm.chatList[dm.data.chatNum]["NPCName"].ToString() != npcName)
         {
+            print(npcName + "은/는 퀘스트 없는 상태");
             npcQuestState = NPCQuestState.None;
             headTxt.text = "";
         }
         // 현재 퀘스트를 진행해야 하는 npc이고,
         else
         {
+            print(npcName + "은/는 퀘스트 있는 상태");
             switch (dm.data.questState)
             {
                 case QuestState.None: // 퀘스트 수락 전
@@ -99,14 +107,12 @@ public class NPC : MonoBehaviour
 
                 case QuestState.Accept: // 퀘스트 수락한 상태 (수행 중)
                     npcQuestState = NPCQuestState.Wait;
-                    headTxt.text = "..."; break;
-
-
-                case QuestState.Complete: // 퀘스트 완료한 상태 (수행 후 말 걸지 않음)
-                    npcQuestState = NPCQuestState.Wait;
-                    headTxt.text = "!"; break;
-
+                    headTxt.text = "...";
+                    gameObject.SendMessage("QuestStart", dm.chatList[dm.data.chatNum]["QuestName"].ToString());
+                    break;
             }
         }
+
+        isFirst = false;
     }
 }
