@@ -23,8 +23,8 @@ public class Data
     public float def = 1; // 현재 방패 내구력
 
     public QuestState questState = QuestState.None;
-    public int chatNum = 1;
-    public int questNum = 1;
+    public int chatNum = 0;
+    public int questNum = 0;
 }
 
 public class DataManager : MonoBehaviour

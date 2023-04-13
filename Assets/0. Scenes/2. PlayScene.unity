@@ -14117,7 +14117,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 842846770}
-  m_LocalRotation: {x: 0.06669864, y: 0.7444768, z: -0.07523178, w: 0.6600348}
+  m_LocalRotation: {x: 0.06669864, y: 0.74447674, z: -0.075231776, w: 0.6600348}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -21714,6 +21714,8 @@ MonoBehaviour:
     skillCool: {fileID: 569489543}
     skillAtk: 20
     skillCoolTime: 3
+  chatNextBtn: {fileID: 1287917469}
+  chatCancleBtn: {fileID: 181564861}
   levelTxt: {fileID: 26340653}
   goldTxt: {fileID: 106071701}
   popupTxt: {fileID: 918728167}
@@ -21723,7 +21725,6 @@ MonoBehaviour:
   hpImg: {fileID: 1096077596}
   expImg: {fileID: 144054057}
   defImg: {fileID: 1699343206}
-  chatBtns: {fileID: 890678328}
   fadeImg: {fileID: 515013146}
   player: {fileID: 0}
   isPopup: 0
@@ -24567,8 +24568,8 @@ MonoBehaviour:
     atk: 0
     def: 1
     questState: 0
-    questNum: 1
     chatNum: 0
+    questNum: 1
 --- !u!4 &1534049936
 Transform:
   m_ObjectHideFlags: 0

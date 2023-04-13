@@ -180,12 +180,12 @@ public class PlayerAction : MonoBehaviour
         switch (withNpc.npcQuestState)
         {
             case NPC.NPCQuestState.Have: // 퀘스트가 있음
-                manager.ChatBubbleOpen(); break;
+                manager.CheckBubble(); break;
 
             case NPC.NPCQuestState.Wait: // 퀘스트 완료를 기다리는 중
 
                 // 퀘스트 조건에 만족한다면 퀘스트 완료
-                if (IsQuestComplete()) AfterQuestComplete();
+                if (dm.data.questState == QuestState.Complete) AfterQuestComplete();
 
                 // 퀘스트를 기다리는 중이지만 완료하지 못했을 때 상호작용 시도
                 else if (withNpc.npcName == "Merchant" || withNpc.npcName == "Boy")
@@ -200,26 +200,17 @@ public class PlayerAction : MonoBehaviour
         //StartCoroutine(PlayUIManager.instance.Fade(0, 1)); break;
     }
 
-    // 퀘스트 조건에 만족하는지 확인
-    bool IsQuestComplete()
-    {
-        return false;
-    }
-
     // 퀘스트 완료 행동
     void AfterQuestComplete()
     {
         // 보상 받기
-        string getItem = dm.questList[dm.data.questNum]["GetItem"].ToString();
+        string getItem = dm.questList[dm.data.questNum]["GetItemIndex"].ToString();
         string getExp = dm.questList[dm.data.questNum]["GetExp"].ToString();
         if (getItem != "") inventory.AddItem(int.Parse(getItem));
         if (getExp != "") manager.Exp += float.Parse(getExp);
 
-        // 다음 대화
-        dm.data.chatNum++;
-        dm.data.questNum++;
-        dm.data.questState = QuestState.None;
-        manager.ChatBubbleOpen();
+        // 보상에 대한 대화
+        manager.CheckBubble();
 
         // 모든 Npc에게 방금 퀘스트가 완료되었음을 전달
         foreach (var npc in npcs)

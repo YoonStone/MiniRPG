@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -624,6 +624,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data:
     nickname: 
+    hp: 90
+    exp: 0
+    level: 1
+    gold: 100
+    atk: 0
+    def: 1
+    questState: 0
+    chatNum: 0
+    questNum: 0
 --- !u!4 &476129285
 Transform:
   m_ObjectHideFlags: 0

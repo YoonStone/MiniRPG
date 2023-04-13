@@ -193,20 +193,25 @@ public class PlayUIManager : MonoBehaviour
     public void ChatBubbleOpen()
     {
         chatTxt.text = dm.chatList[dm.data.chatNum]["Script"].ToString();
-                // 다음 대화가 있고, 대사의 주인이 현재 대화 중인 NPC라면
-                if (++dm.data.chatNum < dm.chatList.Count
-                    && dm.chatList[dm.data.chatNum]["ToNPC"].ToString() == player.withNpc.npcName)
-                {
-                    chatNextBtn.SetActive(true);
-                    chatCancleBtn.SetActive(true);
-                }
-                // 다음 대사가 없거나 다른 NPC의 것이라면
-                else
-                {
-                    chatNextBtn.SetActive(false);
-                    chatCancleBtn.SetActive(true);
-                }
         anim_Chat.SetTrigger("Open");
+
+        // 다음 대화가 있다면
+        if (dm.data.chatNum + 1 < dm.chatList.Count)
+        {
+            // 다음 대화가 퀘스트거나 대사의 주인이 현재 대화 중인 NPC라면
+            string nextNpc = dm.chatList[dm.data.chatNum + 1]["NPC"].ToString();
+
+            if(nextNpc == "" || (nextNpc != "" && nextNpc == player.withNpc.npcName))
+            {
+                chatNextBtn.SetActive(true);
+                chatCancleBtn.SetActive(true);
+                return;
+            }
+        }
+
+        // 다음 대사가 없거나 다른 NPC의 것이라면
+        chatNextBtn.SetActive(false);
+        chatCancleBtn.SetActive(true);
     }
 
     // 퀘스트 대화창 열기
@@ -223,12 +228,14 @@ public class PlayUIManager : MonoBehaviour
                 break;
 
             // 퀘스트 완료
-            case QuestState.Accept:
+            case QuestState.Complete:
                 chatTxt.text = dm.questList[dm.data.questNum]["Complete"].ToString();
+                dm.data.questState = QuestState.None;
+                dm.data.questNum++;
 
                 // 다음 대화가 있고, 대사의 주인이 현재 대화 중인 NPC라면
-                if (++dm.data.chatNum < dm.chatList.Count
-                    && dm.chatList[dm.data.chatNum]["ToNPC"].ToString() == player.withNpc.npcName)
+                if (dm.data.chatNum + 1 < dm.chatList.Count
+                    && dm.chatList[dm.data.chatNum + 1]["NPC"].ToString() == player.withNpc.npcName)
                 {
                     chatNextBtn.SetActive(true);
                     chatCancleBtn.SetActive(true);
@@ -254,7 +261,7 @@ public class PlayUIManager : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
-        anim_Chat.SetTrigger("Close");
+        //anim_Chat.SetTrigger("Close");
     }
 
     // 대화창 끄기
@@ -267,15 +274,15 @@ public class PlayUIManager : MonoBehaviour
     public void OnClickChatNext()
     {
         dm.data.chatNum++;
+        CheckBubble();
+    }
 
-        // 마지막 대사라면 대화창 끄기
-        if (dm.chatList.Count > dm.data.chatNum) OnClickChatCancle();
-
+    // 지금 열릴 말풍선이 대화인지 퀘스트인지
+    public void CheckBubble()
+    {
         // 다음에 퀘스트가 나올 차례
-        else if (dm.chatList[dm.data.chatNum]["NPC"].ToString() == "")
-        {
+        if (dm.chatList[dm.data.chatNum]["NPC"].ToString() == "")
             QuestBubbleOpen();
-        }
 
         // 다음에도 대사가 나올 차례
         else ChatBubbleOpen();
@@ -338,7 +345,7 @@ public class PlayUIManager : MonoBehaviour
         if (popupState == PopupState.Left)
         {
             dm.data.questState = QuestState.Accept;
-            player.withNpc.SendMessage("QuestStart", dm.chatList[dm.data.chatNum]["QuestName"].ToString());
+            player.withNpc.SendMessage("QuestStart", dm.questList[dm.data.questNum]["QuestName"].ToString());
         }
 
         OnClickChatCancle();

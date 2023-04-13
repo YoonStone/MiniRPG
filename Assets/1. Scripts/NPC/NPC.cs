@@ -78,7 +78,7 @@ public class NPC : MonoBehaviour
     // 퀘스트 조건 완료
     protected void QuestComplete()
     {
-        dm.data.questState = QuestState.None;
+        dm.data.questState = QuestState.Complete;
         npcQuestState = NPCQuestState.Wait;
         headTxt.text = "!";
 
@@ -88,29 +88,48 @@ public class NPC : MonoBehaviour
     // 퀘스트 상태 재정비
     void SetQuestState()
     {
-        // 현재 퀘스트를 진행해야 하는 npc가 아니라면
-        if (dm.chatList[dm.data.chatNum]["NPCName"].ToString() != npcName)
+        string fromNpc = dm.questList[dm.data.questNum]["FromNPC"].ToString();
+        string toNpc = dm.questList[dm.data.questNum]["ToNPC"].ToString();
+
+
+        // 퀘스트를 줄 NPC + 퀘스트 아직 안 받은 상태
+        if (fromNpc == npcName && dm.data.questState == QuestState.None)
+        {
+            print(npcName + "은/는 퀘스트를 갖고 있는 상태");
+            npcQuestState = NPCQuestState.Have;
+            headTxt.text = "?";
+        }
+
+        // 퀘스트를 준 NPC + 퀘스트 받은 상태
+        else if (fromNpc == npcName && dm.data.questState == QuestState.Accept)
+        {
+            print(npcName + "은/는 퀘스트를 준 상태");
+            gameObject.SendMessage("QuestStart", dm.questList[dm.data.questNum]["QuestName"].ToString());
+            
+        }
+
+        // 퀘스트를 완료할 NPC + 퀘스트 받은 상태
+        else if (toNpc == npcName && dm.data.questState == QuestState.Accept)
+        {
+            print(npcName + "은/는 퀘스트 완료를 기다리는 상태");
+            gameObject.SendMessage("QuestStart", dm.questList[dm.data.questNum]["QuestName"].ToString());
+
+        }
+
+        // 퀘스트를 완료할 NPC + 퀘스트 완료한 상태
+        else if (toNpc == npcName && dm.data.questState == QuestState.Complete)
+        {
+            print(npcName + "은/는 퀘스트 완료된 상태");
+            npcQuestState = NPCQuestState.Have;
+            headTxt.text = "!";
+        }
+
+        // 현재 퀘스트와 관련 없는 NPC라면
+        else
         {
             print(npcName + "은/는 퀘스트 없는 상태");
             npcQuestState = NPCQuestState.None;
             headTxt.text = "";
-        }
-        // 현재 퀘스트를 진행해야 하는 npc이고,
-        else
-        {
-            print(npcName + "은/는 퀘스트 있는 상태");
-            switch (dm.data.questState)
-            {
-                case QuestState.None: // 퀘스트 수락 전
-                    npcQuestState = NPCQuestState.Have;
-                    headTxt.text = "?"; break;
-
-                case QuestState.Accept: // 퀘스트 수락한 상태 (수행 중)
-                    npcQuestState = NPCQuestState.Wait;
-                    headTxt.text = "...";
-                    gameObject.SendMessage("QuestStart", dm.chatList[dm.data.chatNum]["QuestName"].ToString());
-                    break;
-            }
         }
 
         isFirst = false;
