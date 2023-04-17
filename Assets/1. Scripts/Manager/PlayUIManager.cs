@@ -124,8 +124,8 @@ public class PlayUIManager : MonoBehaviour
 
     [HideInInspector]
     public PlayerAction player;
-    DataManager dm;
     CameraTurn cameraTurn;
+    DataManager dm;
 
     static public PlayUIManager instance;
     private void Awake()
@@ -141,11 +141,18 @@ public class PlayUIManager : MonoBehaviour
     private void Start()
     {
         player = FindObjectOfType<PlayerAction>();
-        dm = DataManager.instance;
         cameraTurn = FindObjectOfType<CameraTurn>();
+        dm = DataManager.instance;
 
         // 머리 위 닉네임 설정
         player.GetComponentInChildren<TextMeshPro>().text = $"[ {dm.data.nickname} ]";
+
+        if (dm.isLoad) dm.Load();
+        else
+        {
+            dm.Save();
+            InventoryManager.instance.AddItem(0); // 칼 지급
+        }
 
         // 저장되어있던 체력 불러오기 (저장할 때 체력할 것*)
         Hp = dm.data.hp;

@@ -10,33 +10,31 @@ public class InventoryManager : MonoBehaviour
     public Slot foodBtn;
     public Drag drag;
     public Item[] items;
-    
 
-    [HideInInspector]
-    public Slot[] itemSlots;
-    public Slot[] equipSlots;
-
-    [HideInInspector]
-    public int questItemCount;
-
-    [HideInInspector]
-    public bool isOpenShop; // 상점이 열려있는지
+    [HideInInspector] public Slot[] itemSlots;
+    [HideInInspector] public Slot[] equipSlots;
+    [HideInInspector] public int questItemCount;
+    [HideInInspector] public bool isOpenShop; // 상점이 열려있는지
 
     // 싱글톤
     public static InventoryManager instance;
     private void Awake()
     {
-        if(!instance) instance = this;
+        if (!instance)
+        {
+            instance = this;
+            itemSlots = itemSlot.GetComponentsInChildren<Slot>();
+            equipSlots = equipSlot.GetComponentsInChildren<Slot>();
+        }
     }
 
     private void Start()
     {
-        itemSlots = itemSlot.GetComponentsInChildren<Slot>();
-        equipSlots = equipSlot.GetComponentsInChildren<Slot>();
-
-        AddItem(0); // 칼 지급
-        //AddItem(2); // 칼 지급
-        //AddItem(3); // 칼 지급
+        if (FindItemSlot(1))
+        {
+            FindItemSlot(1).foodBtn = foodBtn;
+            foodBtn.Count = FindItemSlot(1).Count;
+        }
     }
 
     // 아이템 추가 (아이템)

@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Net.NetworkInformation;
 using UnityEngine;
 
 public class NPC_Merchant : NPC

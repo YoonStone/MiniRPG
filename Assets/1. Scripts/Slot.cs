@@ -37,7 +37,7 @@ public class Slot : MonoBehaviour
 
             if (!isQuickSlot)
             {
-                if (Item == foodBtn.Item) foodBtn.Count = count;
+                if (foodBtn) foodBtn.Count = count;
                 if (count == 0) ItemOut();
                 else if (count == 1) countImg.SetActive(false);
                 else if (count >= 2 && !countImg.activeSelf) countImg.SetActive(true);
@@ -51,20 +51,22 @@ public class Slot : MonoBehaviour
     InventoryManager inventory;
     PlayUIManager manager;
     Drag drag;
-    Slot foodBtn;
     CameraTurn cameraTurn;
+    [HideInInspector] public Slot foodBtn;
 
-    private void Start()
+    private void Awake()
     {
         slotImage = transform.GetChild(0).GetComponent<Image>();
         countImg = transform.GetChild(1).gameObject;
         countTxt = countImg.GetComponentInChildren<TextMeshProUGUI>();
+        cameraTurn = FindObjectOfType<CameraTurn>();
+    }
 
+    private void Start()
+    {
         inventory = InventoryManager.instance;
         manager = PlayUIManager.instance;
         drag = inventory.drag;
-        foodBtn = inventory.foodBtn;
-        cameraTurn = FindObjectOfType<CameraTurn>();
     }
 
     // 슬롯 클릭하면 아이템 사용

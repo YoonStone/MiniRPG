@@ -14117,7 +14117,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 842846770}
-  m_LocalRotation: {x: 0.06669864, y: 0.74447674, z: -0.075231776, w: 0.6600348}
+  m_LocalRotation: {x: 0.06669866, y: 0.74447674, z: -0.0752318, w: 0.66003484}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -16312,7 +16312,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.07038543, y: 0.75086343, z: -0.08109916, w: 0.6516694}
+  m_LocalRotation: {x: 0.070385434, y: 0.7508635, z: -0.08109918, w: 0.6516693}
   m_LocalPosition: {x: -12.999048, y: -2.7653556, z: -11.105252}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -21144,7 +21144,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1269989559}
-  m_LocalRotation: {x: 0.074957535, y: 0.7438204, z: -0.084637724, w: 0.65874815}
+  m_LocalRotation: {x: 0.074957535, y: 0.74382037, z: -0.084637724, w: 0.65874815}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -24567,9 +24567,13 @@ MonoBehaviour:
     gold: 200
     atk: 0
     def: 1
+    curPos: {x: 0, y: 0, z: 0}
     questState: 0
     chatNum: 0
-    questNum: 1
+    questNum: 0
+    itemSlots: 0000000000000000000000000000000000000000000000000000000000000000
+    equipSlots: 0000000000000000
+  isLoad: 0
 --- !u!4 &1534049936
 Transform:
   m_ObjectHideFlags: 0
@@ -33174,7 +33178,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1854457980}
-  m_LocalRotation: {x: 0.07038543, y: 0.7508634, z: -0.08109915, w: 0.6516694}
+  m_LocalRotation: {x: 0.07038542, y: 0.75086343, z: -0.08109916, w: 0.65166944}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -35462,6 +35466,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ca5b1ce1f93824827b0ab8951634c730, type: 2}
   - {fileID: 11400000, guid: 91752b573c02b43ed8c5b12c2455866e, type: 2}
   - {fileID: 11400000, guid: dbe57c1acf0d4483a82cddadfad362b0, type: 2}
+  - {fileID: 11400000, guid: 9a4b1df6255ee48d193b4d29abb01d0c, type: 2}
+  - {fileID: 11400000, guid: 3fa54cb5d40ae4c7c9c7585ac29bbca4, type: 2}
+  - {fileID: 11400000, guid: 001183ec5768a49ef8182df1fb0900ea, type: 2}
   itemSlots: []
   equipSlots: []
   questItemCount: 0

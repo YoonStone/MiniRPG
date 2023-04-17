@@ -48,13 +48,13 @@ public class StartUIManager : MonoBehaviour
     // 새로 플레이
     void FirstPlay()
     {
-        // 저장 먼저하기
-        dataManager.Save();
+
+        dataManager.isLoad = false;
     }
 
     void LoadPlay()
     {
-        dataManager.Load();
+        dataManager.isLoad = true;
     }
 
     // 시작 버튼
