@@ -52,7 +52,8 @@ public class Slot : MonoBehaviour
     PlayUIManager manager;
     Drag drag;
     CameraTurn cameraTurn;
-    [HideInInspector] public Slot foodBtn;
+    //[HideInInspector] 
+    public Slot foodBtn;
 
     private void Awake()
     {
@@ -135,10 +136,13 @@ public class Slot : MonoBehaviour
         // 팔 수 없는 아이템이라면 실행 불가
         if (!item.isCanSell) yield break;
 
-        PlayUIManager.instance.popupState = PopupState.None;
-        PlayUIManager.instance.PopupOpen("이 아이템을 판매하시겠습니까?", "예", "아니오");
+        bool isCanPopup = PlayUIManager.instance.PopupOpen("이 아이템을 판매하시겠습니까?", "예", "아니오");
+
+        // 이미 팝업창이 열려있었다면 실행 금지
+        if (!isCanPopup) yield break;
 
         // 예/아니오를 누를 때까지 기다리기
+        PlayUIManager.instance.popupState = PopupState.None;
         yield return new WaitUntil(() => PlayUIManager.instance.popupState != PopupState.None);
 
         // 예를 눌렀다면 아이템 판매

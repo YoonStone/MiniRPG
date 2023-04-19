@@ -19,22 +19,22 @@ public class NPC : MonoBehaviour
     public string npcName;
     public string koreanName;
 
-    PlayerAction player;
     DataManager dm;
     protected PlayUIManager manager;
     protected InventoryManager inventory;
+    protected PlayerAction player;
 
-    [HideInInspector]
+    //[HideInInspector]
     public bool isInteractable; // 상호작용 가능한지
 
     bool isFirst = true; // 게임이 시작되는 순간의 퀘스트 상태 정리
 
     void Start()
     {
-        player = FindObjectOfType<PlayerAction>();
         dm = DataManager.instance;
         manager = PlayUIManager.instance;
         inventory = InventoryManager.instance;
+        player = FindObjectOfType<PlayerAction>();
 
         npcName = name.Split('_')[1];
         koreanName = onoff.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;

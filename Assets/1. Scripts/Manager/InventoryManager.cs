@@ -30,6 +30,7 @@ public class InventoryManager : MonoBehaviour
 
     private void Start()
     {
+        // 슬롯 중에 음식이 있다면 연결
         if (FindItemSlot(1))
         {
             FindItemSlot(1).foodBtn = foodBtn;
@@ -71,6 +72,13 @@ public class InventoryManager : MonoBehaviour
             {
                 itemSlot.Item = item;
                 itemSlot.Count = 1;
+
+                // 음식 아이템이 처음으로 들어온 거라면
+                if(item.itemIdx == 1)
+                {
+                    itemSlot.foodBtn = foodBtn;
+                    foodBtn.Count = itemSlot.Count;
+                }
                 return;
             }
         }
@@ -188,7 +196,7 @@ public class InventoryManager : MonoBehaviour
         switch (slot.Item.itemType)
         {
             case ItemType.Equipment:
-                PlayUIManager.instance.player.Equip(slot.Item.itemName);
+                PlayUIManager.instance.playerAction.Equip(slot.Item.itemName);
                 break;
 
             // 음식은 체력이 100보다 작을 때만 섭취 가능

@@ -7,9 +7,14 @@ public class NPC_Merchant : NPC
     // 상호작용
     void Interact()
     {
-        manager.anim_Shop.SetBool("isOpen", true);
-        manager.anim_Inventory.SetBool("isOpen", true);
-        inventory.isOpenShop = true;
+        // 열려있다면 상점 종료
+        if (inventory.isOpenShop) PlayerBye();
+        else
+        {
+            manager.anim_Shop.SetBool("isOpen", true);
+            manager.anim_Inventory.SetBool("isOpen", true);
+            inventory.isOpenShop = true;
+        }
     }
 
     // 플레이어와 멀어졌을 때

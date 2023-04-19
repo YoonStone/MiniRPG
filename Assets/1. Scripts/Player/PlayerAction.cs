@@ -177,27 +177,23 @@ public class PlayerAction : MonoBehaviour
     // NPC와의 상호작용
     void NPCInteract()
     {
-        switch (withNpc.npcQuestState)
+        // 퀘스트를 갖고 있는 상태
+        if(withNpc.npcQuestState == NPCQuestState.Have) manager.CheckBubble();
+
+        // 퀘스트를 기다리고 있는 상태
+        else if(withNpc.npcQuestState == NPCQuestState.Wait
+            && dm.questList[dm.data.questNum]["ToNPC"].ToString() == withNpc.npcName)
         {
-            case NPC.NPCQuestState.Have: // 퀘스트가 있음
-                manager.CheckBubble(); break;
+            // 퀘스트 조건에 만족한다면 퀘스트 완료
+            if(dm.data.questState == QuestState.Complete) AfterQuestComplete();
 
-            case NPC.NPCQuestState.Wait: // 퀘스트 완료를 기다리는 중
-
-                // 퀘스트 조건에 만족한다면 퀘스트 완료
-                if (dm.data.questState == QuestState.Complete) AfterQuestComplete();
-
-                // 퀘스트를 기다리는 중이지만 완료하지 못했을 때 상호작용 시도
-                else if (withNpc.npcName == "Merchant" || withNpc.npcName == "Boy")
-                    withNpc.SendMessage("Interact");
-                break;
-
-            // 상호작용 가능한 상태라면 상호작용 시도
-            default: if(withNpc.isInteractable) withNpc.SendMessage("Interact"); break;
+            // 퀘스트를 기다리는 중이지만 완료하지 못했을 때 상호작용 시도
+            else if (withNpc.npcName == "Merchant" || withNpc.npcName == "Boy")
+                withNpc.SendMessage("Interact");
         }
 
-        // 남자아이는 던전 씬으로 전환 (npc 연결 해제해야 함)
-        //StartCoroutine(PlayUIManager.instance.Fade(0, 1)); break;
+        // 현재 퀘스트와 관련 없지만 상호작용 가능한 상태
+        else if (withNpc.isInteractable) withNpc.SendMessage("Interact");
     }
 
     // 퀘스트 완료 행동

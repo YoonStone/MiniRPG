@@ -2444,6 +2444,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isQuickSlot: 0
   item: {fileID: 0}
+  foodBtn: {fileID: 0}
   isDown: 0
 --- !u!114 &113313587
 MonoBehaviour:
@@ -6353,6 +6354,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isQuickSlot: 0
   item: {fileID: 0}
+  foodBtn: {fileID: 0}
   isDown: 0
 --- !u!114 &399205192
 MonoBehaviour:
@@ -11442,6 +11444,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isQuickSlot: 1
   item: {fileID: 11400000, guid: b4f2d045744cffc46a903708d3e68413, type: 2}
+  foodBtn: {fileID: 0}
   isDown: 0
 --- !u!1 &666129873
 GameObject:
@@ -14117,7 +14120,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 842846770}
-  m_LocalRotation: {x: 0.06669866, y: 0.74447674, z: -0.0752318, w: 0.66003484}
+  m_LocalRotation: {x: 0.06554762, y: 0.7403913, z: -0.07298102, w: 0.6649797}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -16312,8 +16315,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.070385434, y: 0.7508635, z: -0.08109918, w: 0.6516693}
-  m_LocalPosition: {x: -12.999048, y: -2.7653556, z: -11.105252}
+  m_LocalRotation: {x: 0.07599335, y: 0.74140155, z: -0.08520096, w: 0.66127884}
+  m_LocalPosition: {x: -12.999042, y: -2.6627119, z: -11.30768}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18203,6 +18206,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isQuickSlot: 0
   item: {fileID: 0}
+  foodBtn: {fileID: 0}
   isDown: 0
 --- !u!1 &1075431403
 GameObject:
@@ -19286,6 +19290,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isQuickSlot: 0
   item: {fileID: 0}
+  foodBtn: {fileID: 0}
   isDown: 0
 --- !u!114 &1149095656
 MonoBehaviour:
@@ -21144,7 +21149,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1269989559}
-  m_LocalRotation: {x: 0.074957535, y: 0.74382037, z: -0.084637724, w: 0.65874815}
+  m_LocalRotation: {x: 0.07395515, y: 0.73854744, z: -0.0821243, w: 0.665082}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -22750,6 +22755,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isQuickSlot: 0
   item: {fileID: 0}
+  foodBtn: {fileID: 0}
   isDown: 0
 --- !u!114 &1396607007
 MonoBehaviour:
@@ -23996,6 +24002,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isQuickSlot: 0
   item: {fileID: 0}
+  foodBtn: {fileID: 0}
   isDown: 0
 --- !u!114 &1496035287
 MonoBehaviour:
@@ -24491,6 +24498,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isQuickSlot: 0
   item: {fileID: 0}
+  foodBtn: {fileID: 0}
   isDown: 0
 --- !u!114 &1530369775
 MonoBehaviour:
@@ -24571,8 +24579,10 @@ MonoBehaviour:
     questState: 0
     chatNum: 0
     questNum: 0
-    itemSlots: 0000000000000000000000000000000000000000000000000000000000000000
-    equipSlots: 0000000000000000
+    itemSlots_Number: 0000000000000000000000000000000000000000000000000000000000000000
+    itemSlots_Count: 0000000000000000000000000000000000000000000000000000000000000000
+    equipSlots_Number: 0000000000000000
+    equipSlots_Count: 0000000000000000
   isLoad: 0
 --- !u!4 &1534049936
 Transform:
@@ -33178,7 +33188,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1854457980}
-  m_LocalRotation: {x: 0.07038542, y: 0.75086343, z: -0.08109916, w: 0.65166944}
+  m_LocalRotation: {x: 0.075993344, y: 0.7414015, z: -0.085200936, w: 0.66127884}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -33378,6 +33388,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isQuickSlot: 0
   item: {fileID: 0}
+  foodBtn: {fileID: 0}
   isDown: 0
 --- !u!114 &1861576712
 MonoBehaviour:
@@ -35923,6 +35934,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isQuickSlot: 0
   item: {fileID: 0}
+  foodBtn: {fileID: 0}
   isDown: 0
 --- !u!114 &2019100292
 MonoBehaviour:
@@ -36480,6 +36492,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isQuickSlot: 0
   item: {fileID: 0}
+  foodBtn: {fileID: 0}
   isDown: 0
 --- !u!114 &2061243475
 MonoBehaviour:
@@ -69067,7 +69080,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!135 &8801644183311234542
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -69106,7 +69119,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8801644183311234541}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd1cbbd5aea3ca14593fe44c569b96d1, type: 3}
+  m_Script: {fileID: 11500000, guid: 055cc1f0d863fb249a61ccdc500af21e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   onoff: {fileID: 1370521168}
