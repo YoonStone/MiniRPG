@@ -31,9 +31,9 @@ public class Beholder : MonsterBase
     }
 
     // 충돌 시 부모 클래스에 전달
-    private void OnTriggerEnter(Collider other)
+    protected override void OnTriggerEnter(Collider other)
     {
-        base.Trigger(other);
+        base.OnTriggerEnter(other);
 
         // 닿았을 때 데미지
         if (other.CompareTag("Player") && !isAttack)

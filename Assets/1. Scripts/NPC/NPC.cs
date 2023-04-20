@@ -27,8 +27,6 @@ public class NPC : MonoBehaviour
     //[HideInInspector]
     public bool isInteractable; // 상호작용 가능한지
 
-    bool isFirst = true; // 게임이 시작되는 순간의 퀘스트 상태 정리
-
     void Start()
     {
         dm = DataManager.instance;
@@ -131,7 +129,5 @@ public class NPC : MonoBehaviour
             npcQuestState = NPCQuestState.None;
             headTxt.text = "";
         }
-
-        isFirst = false;
     }
 }

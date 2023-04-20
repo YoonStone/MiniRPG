@@ -107,7 +107,7 @@ public class PlayUIManager : MonoBehaviour
             if(value == 0)
             {
                 // 방패 아이템 삭제
-                Slot shieldSlot = InventoryManager.instance.FindItemSlot(2);
+                Slot shieldSlot = inventory.FindItemSlot(2);
                 shieldSlot.Count--;
 
                 // 방패가 없다면 투명하게
@@ -127,6 +127,7 @@ public class PlayUIManager : MonoBehaviour
     [HideInInspector] public PlayerMove playerMove;
     CameraTurn cameraTurn;
     DataManager dm;
+    InventoryManager inventory;
 
     static public PlayUIManager instance;
     private void Awake()
@@ -141,10 +142,20 @@ public class PlayUIManager : MonoBehaviour
 
     private void Start()
     {
+        StartCoroutine(SceneFade(Vector3.one, Vector3.zero, -1));
+
+        // 던전에서 돌아오는 경우에만
+        //playerCC.enabled = false;
+        //playerCC.transform.position = new Vector3(-18, 3.45f, -17);
+        //playerCC.transform.rotation = Quaternion.Euler(0, 145, 0);
+        //playerCC.enabled = true;
+
+
         playerAction = FindObjectOfType<PlayerAction>();
         playerMove = playerAction.GetComponent<PlayerMove>();
         cameraTurn = FindObjectOfType<CameraTurn>();
         dm = DataManager.instance;
+        inventory = InventoryManager.instance;
 
         // 머리 위 닉네임 설정
         playerAction.GetComponentInChildren<TextMeshPro>().text = $"[ {dm.data.nickname} ]";
@@ -153,7 +164,7 @@ public class PlayUIManager : MonoBehaviour
         else
         {
             dm.Save();
-            InventoryManager.instance.AddItem(0); // 칼 지급
+            inventory.AddItem(0); // 칼 지급
         }
 
         // 저장되어있던 체력 불러오기 (저장할 때 체력할 것*)
@@ -237,6 +248,10 @@ public class PlayUIManager : MonoBehaviour
         // 액션 버튼, 이동 비활성화
         playerActionBtn.interactable = false;
         playerMove.isCantMove = true;
+
+        // 상점이 열려있다면 끄기
+        anim_Shop.SetBool("isOpen", false);
+        inventory.isOpenShop = false;
 
         // 다음에 퀘스트가 나올 차례
         if (dm.chatList[dm.data.chatNum]["NPC"].ToString() == "")
@@ -339,7 +354,7 @@ public class PlayUIManager : MonoBehaviour
     #endregion
     
     // 페이드인, 페이드아웃
-    public IEnumerator Fade(Vector3 fromScale, Vector3 toScale)
+    public IEnumerator SceneFade(Vector3 fromScale, Vector3 toScale, int sceneIdx)
     {
         float time = 0;
         while(time < 1)
@@ -348,8 +363,8 @@ public class PlayUIManager : MonoBehaviour
             fadeImg.localScale = Vector3.Lerp(fromScale, toScale, time);
             yield return null;
         }
-
-        if(toScale == Vector3.one) LoadingManager.LoadScene(2);
+        
+        if(sceneIdx != -1) LoadingManager.LoadScene(sceneIdx);
     }
 
     // 체력바 이미지 색상 변경

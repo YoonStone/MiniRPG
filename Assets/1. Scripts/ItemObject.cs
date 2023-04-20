@@ -8,17 +8,19 @@ public class ItemObject : MonoBehaviour
     public Item item;
 
     float moveSpeed = 4f;
+    float rotateSpeed;
     public bool isGet; // 아이템을 먹었다면
 
     private IEnumerator Start()
     {
+        rotateSpeed = Random.Range(0.5f, 0.8f);
         yield return new WaitForSeconds(1);
         gameObject.layer = 6;
     }
 
     private void Update()
     {
-        transform.Rotate(Vector3.up,Space.World);
+        transform.Rotate(Vector3.up  * rotateSpeed, Space.World);
     }
 
     // 자석 움직임

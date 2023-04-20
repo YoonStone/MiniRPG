@@ -4,11 +4,7 @@ using UnityEngine;
 
 public class ChestMonster : MonsterBase
 {
-    // 충돌 시 부모 클래스에 전달
-    private void OnTriggerEnter(Collider other)
-    {
-        base.Trigger(other);
-    }
+    public GameObject[] questItems;
 
     // 공격
     protected override IEnumerator Attack()
@@ -21,7 +17,24 @@ public class ChestMonster : MonsterBase
             anim.SetFloat("attackDist", Vector3.Distance(transform.position, player.transform.position));
             yield return null;
         }
+    }
 
-        yield break;
+    protected override IEnumerator Die()
+    {
+        DataManager dm = DataManager.instance;
+        Item[] items = InventoryManager.instance.items;
+
+        // 남자아이 돕는 퀘스트 진행 중일 때만 퀘스트 아이템 드랍
+        if (dm.data.questNum == 4 && dm.data.questState == QuestState.Accept)
+        {
+            for (int i = 0; i < questItems.Length; i++)
+            {
+                Vector3 spawnPos = transform.position + Vector3.up;
+                GameObject item = Instantiate(questItems[i], spawnPos, Quaternion.identity);
+                item.GetComponent<Rigidbody>().AddForce(Vector3.up * 5, ForceMode.Impulse);
+            }
+        }
+
+        return base.Die();
     }
 }

@@ -8,7 +8,7 @@ public class NPC_Boy : NPC
     void Interact()
     {
         // 던전 씬으로 전환, npc 연결 해제
-        StartCoroutine(PlayUIManager.instance.Fade(Vector3.zero, Vector3.one));
+        StartCoroutine(PlayUIManager.instance.SceneFade(Vector3.zero, Vector3.one, 2));
         player.withNpc = null;
     }
 

@@ -733,10 +733,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpImg: {fileID: 2581707150455286060}
-  dist_Follow: 4
-  dist_Attack: 4.8
   monsterInfo: {fileID: 11400000, guid: 404ce0a9b45f142cb9c4daf1482eac96, type: 2}
   isAttack: 0
+  questItems:
+  - {fileID: 500029925108316058, guid: f4cdacb07f7abc14ab47ca856a6c0b5f, type: 3}
+  - {fileID: 3033120725592978636, guid: 3888433f0031b2d4aa56529b5ad1272c, type: 3}
+  - {fileID: 4409701099067482686, guid: 5d5129dfb42077f48bcd0eb71f5eae29, type: 3}
 --- !u!195 &3196245146594184941
 NavMeshAgent:
   m_ObjectHideFlags: 0

@@ -164,8 +164,9 @@ public class MonsterBase : MonoBehaviour
     }
 
     // 죽음
-    private IEnumerator Die()
+    protected virtual IEnumerator Die()
     {
+        print("부모의 죽음 함수 호출");
         cg.alpha = 0;
         anim.SetTrigger("die");
         GetComponent<Collider>().enabled = false;
@@ -202,8 +203,7 @@ public class MonsterBase : MonoBehaviour
         Destroy(gameObject);
     }
 
-    // 자식에게 호출받는 함수
-    protected void Trigger(Collider other)
+    protected virtual void OnTriggerEnter(Collider other)
     {
         // 피격
         if (other.CompareTag("PlayerAttack"))

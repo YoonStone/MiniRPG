@@ -4648,6 +4648,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Slime (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 6532589731770669359, guid: 541cf1fd7df81452e843823d2f486456, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 541cf1fd7df81452e843823d2f486456, type: 3}
@@ -5163,7 +5167,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6879866747523406347, guid: a87a7fcf7f5144a88aedb39998a25384, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -13766,6 +13770,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Slime (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 6532589731770669359, guid: 541cf1fd7df81452e843823d2f486456, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 541cf1fd7df81452e843823d2f486456, type: 3}
@@ -13843,7 +13851,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 5
-  m_FollowOffset: {x: 0, y: 4, z: -10}
+  m_FollowOffset: {x: 0, y: 6, z: -12}
   m_XDamping: 0
   m_YDamping: 0
   m_ZDamping: 0
@@ -14120,7 +14128,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 842846770}
-  m_LocalRotation: {x: 0.06554762, y: 0.7403913, z: -0.07298102, w: 0.6649797}
+  m_LocalRotation: {x: 0.09144653, y: 0.74334216, z: -0.1038691, w: 0.6544397}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -15831,7 +15839,7 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_YAxis:
-    Value: 0
+    Value: 0.5
     m_SpeedMode: 0
     m_MaxSpeed: 2
     m_AccelTime: 0.2
@@ -15904,7 +15912,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 934710710}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -15.56942, y: -1.96, z: -10.883074}
+  m_LocalPosition: {x: -17.553305, y: 0.03999996, z: -10.629689}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -16315,8 +16323,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.07599335, y: 0.74140155, z: -0.08520096, w: 0.66127884}
-  m_LocalPosition: {x: -12.999042, y: -2.6627119, z: -11.30768}
+  m_LocalRotation: {x: 0.09144653, y: 0.74334216, z: -0.10386912, w: 0.65443957}
+  m_LocalPosition: {x: -17.436047, y: -0.5033445, z: -10.644666}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16823,6 +16831,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TurtleShell
       objectReference: {fileID: 0}
+    - target: {fileID: 6879866747523406347, guid: a87a7fcf7f5144a88aedb39998a25384, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: a87a7fcf7f5144a88aedb39998a25384, type: 3}
@@ -16976,6 +16988,10 @@ PrefabInstance:
     - target: {fileID: 6879866747523406347, guid: a87a7fcf7f5144a88aedb39998a25384, type: 3}
       propertyPath: m_Name
       value: TurtleShell (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6879866747523406347, guid: a87a7fcf7f5144a88aedb39998a25384, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -18979,6 +18995,10 @@ PrefabInstance:
     - target: {fileID: 6532589731770669359, guid: 541cf1fd7df81452e843823d2f486456, type: 3}
       propertyPath: m_Name
       value: Slime
+      objectReference: {fileID: 0}
+    - target: {fileID: 6532589731770669359, guid: 541cf1fd7df81452e843823d2f486456, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -21027,7 +21047,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 5
-  m_FollowOffset: {x: 0, y: 4, z: -10}
+  m_FollowOffset: {x: 0, y: 6, z: -12}
   m_XDamping: 0
   m_YDamping: 0
   m_ZDamping: 0
@@ -21149,7 +21169,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1269989559}
-  m_LocalRotation: {x: 0.07395515, y: 0.73854744, z: -0.0821243, w: 0.665082}
+  m_LocalRotation: {x: 0.10080301, y: 0.7417795, z: -0.11449661, w: 0.653064}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -21731,7 +21751,8 @@ MonoBehaviour:
   expImg: {fileID: 144054057}
   defImg: {fileID: 1699343206}
   fadeImg: {fileID: 515013146}
-  player: {fileID: 0}
+  playerAction: {fileID: 0}
+  playerMove: {fileID: 0}
   isPopup: 0
   popupState: 0
 --- !u!4 &1292975037
@@ -30209,6 +30230,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TurtleShell (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 6879866747523406347, guid: a87a7fcf7f5144a88aedb39998a25384, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: a87a7fcf7f5144a88aedb39998a25384, type: 3}
@@ -31112,7 +31137,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 5
-  m_FollowOffset: {x: 0, y: 4, z: -10}
+  m_FollowOffset: {x: 0, y: 6, z: -12}
   m_XDamping: 0
   m_YDamping: 0
   m_ZDamping: 0
@@ -32513,6 +32538,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TurtleShell (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 6879866747523406347, guid: a87a7fcf7f5144a88aedb39998a25384, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: a87a7fcf7f5144a88aedb39998a25384, type: 3}
@@ -33188,7 +33217,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1854457980}
-  m_LocalRotation: {x: 0.075993344, y: 0.7414015, z: -0.085200936, w: 0.66127884}
+  m_LocalRotation: {x: 0.09422622, y: 0.7428941, z: -0.10702639, w: 0.6540452}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -35480,6 +35509,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9a4b1df6255ee48d193b4d29abb01d0c, type: 2}
   - {fileID: 11400000, guid: 3fa54cb5d40ae4c7c9c7585ac29bbca4, type: 2}
   - {fileID: 11400000, guid: 001183ec5768a49ef8182df1fb0900ea, type: 2}
+  - {fileID: 11400000, guid: 0d3d4f5d5b8359a4c8d794d65c69ab5a, type: 2}
+  - {fileID: 11400000, guid: ebb29e345d408eb4d81248c9e33dbd88, type: 2}
+  - {fileID: 11400000, guid: 85f7304a8f25c624db842a3d35deba7a, type: 2}
   itemSlots: []
   equipSlots: []
   questItemCount: 0
@@ -67265,7 +67297,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8801644183311234541}
   m_LocalRotation: {x: -0, y: 0.48202744, z: -0, w: 0.8761562}
-  m_LocalPosition: {x: -17.31, y: 3.375, z: -17.98}
+  m_LocalPosition: {x: -19.38, y: 3.375, z: -21.72}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
