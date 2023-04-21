@@ -20,7 +20,7 @@ public class NPC : MonoBehaviour
     public string koreanName;
 
     DataManager dm;
-    protected PlayUIManager manager;
+    protected GameManager gm;
     protected InventoryManager inventory;
     protected PlayerAction player;
 
@@ -30,7 +30,7 @@ public class NPC : MonoBehaviour
     void Start()
     {
         dm = DataManager.instance;
-        manager = PlayUIManager.instance;
+        gm = GameManager.instance;
         inventory = InventoryManager.instance;
         player = FindObjectOfType<PlayerAction>();
 
@@ -80,12 +80,20 @@ public class NPC : MonoBehaviour
         npcQuestState = NPCQuestState.Wait;
         headTxt.text = "!";
 
-        StartCoroutine(PlayUIManager.instance.QuestCompleteOpen(koreanName));
+        StartCoroutine(GameManager.instance.QuestCompleteOpen(koreanName));
     }
 
     // 퀘스트 상태 재정비
     void SetQuestState()
     {
+        // 이후에 퀘스트가 없다면 끝
+        if (dm.data.questNum >= dm.questList.Count)
+        {
+            npcQuestState = NPCQuestState.None;
+            headTxt.text = "";
+            return;
+        }
+
         string fromNpc = dm.questList[dm.data.questNum]["FromNPC"].ToString();
         string toNpc = dm.questList[dm.data.questNum]["ToNPC"].ToString();
 

@@ -630,9 +630,16 @@ MonoBehaviour:
     gold: 100
     atk: 0
     def: 1
+    curPos: {x: 0, y: 0, z: 0}
+    curSceneIdx: 0
     questState: 0
     chatNum: 0
     questNum: 0
+    itemSlots_Number: 0000000000000000000000000000000000000000000000000000000000000000
+    itemSlots_Count: 0000000000000000000000000000000000000000000000000000000000000000
+    equipSlots_Number: 0000000000000000
+    equipSlots_Count: 0000000000000000
+  isLoad: 0
 --- !u!4 &476129285
 Transform:
   m_ObjectHideFlags: 0
@@ -1299,7 +1306,7 @@ GameObject:
   - component: {fileID: 1270906451}
   - component: {fileID: 1270906450}
   m_Layer: 0
-  m_Name: UIManager
+  m_Name: StartManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

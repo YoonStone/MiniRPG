@@ -21,7 +21,9 @@ public class Data
     public int gold = 100;
     public float atk; // 현재 공격력
     public float def = 1; // 현재 방패 내구력
+
     public Vector3 curPos;
+    public int curSceneIdx; // 현재 씬 번호
 
     public QuestState questState = QuestState.None;
     public int chatNum = 0;
@@ -107,13 +109,20 @@ public class DataManager : MonoBehaviour
     }
 
     // 불러오기
-    public void Load()
+    public int Load()
     {
         string path = Application.persistentDataPath + $"/{data.nickname}.json";
         string loadData = File.ReadAllText(path);
 
         data = JsonUtility.FromJson<Data>(loadData);
 
+        // 마지막에 위치했던 씬 번호 반환
+        return data.curSceneIdx;
+    }
+
+    // 불러오기한 내용 적용
+    public void AfterLoad()
+    {
         PlayerAction player = FindObjectOfType<PlayerAction>();
 
         // 위치 불러오기
@@ -140,7 +149,7 @@ public class DataManager : MonoBehaviour
             {
                 inventory.equipSlots[i].Item = inventory.items[data.equipSlots_Number[i]];
                 inventory.equipSlots[i].Count = data.equipSlots_Count[i];
-                player.Equip(inventory.equipSlots[i].Item.itemName);
+                player.EquipPutOn(data.equipSlots_Number[i]);
 
             }
         }

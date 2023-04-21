@@ -49,7 +49,7 @@ public class Slot : MonoBehaviour
     GameObject countImg;
     TextMeshProUGUI countTxt;
     InventoryManager inventory;
-    PlayUIManager manager;
+    GameManager gm;
     Drag drag;
     CameraTurn cameraTurn;
     //[HideInInspector] 
@@ -66,7 +66,7 @@ public class Slot : MonoBehaviour
     private void Start()
     {
         inventory = InventoryManager.instance;
-        manager = PlayUIManager.instance;
+        gm = GameManager.instance;
         drag = inventory.drag;
     }
 
@@ -98,7 +98,7 @@ public class Slot : MonoBehaviour
     [HideInInspector] public bool isDown;
     public void OnDown()
     {
-        if (item == null || manager.isPopup) return;
+        if (item == null || gm.isPopup) return;
         StartCoroutine(DownCheck());
     }
 
@@ -136,22 +136,22 @@ public class Slot : MonoBehaviour
         // 팔 수 없는 아이템이라면 실행 불가
         if (!item.isCanSell) yield break;
 
-        bool isCanPopup = PlayUIManager.instance.PopupOpen("이 아이템을 판매하시겠습니까?", "예", "아니오");
+        bool isCanPopup = GameManager.instance.PopupOpen("이 아이템을 판매하시겠습니까?", "예", "아니오");
 
         // 이미 팝업창이 열려있었다면 실행 금지
         if (!isCanPopup) yield break;
 
         // 예/아니오를 누를 때까지 기다리기
-        PlayUIManager.instance.popupState = PopupState.None;
-        yield return new WaitUntil(() => PlayUIManager.instance.popupState != PopupState.None);
+        GameManager.instance.popupState = PopupState.None;
+        yield return new WaitUntil(() => GameManager.instance.popupState != PopupState.None);
 
         // 예를 눌렀다면 아이템 판매
-        if (PlayUIManager.instance.popupState == PopupState.Left)
+        if (GameManager.instance.popupState == PopupState.Left)
         {
-            manager.Gold += item.itemPrice;
+            gm.Gold += item.itemPrice;
             Count--;
         }
 
-        PlayUIManager.instance.popupState = PopupState.None;
+        GameManager.instance.popupState = PopupState.None;
     }
 }

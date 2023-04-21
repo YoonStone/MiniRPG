@@ -7,16 +7,16 @@ public class NPC_Who : NPC
     IEnumerator Quest_Eat()
     {
         // 음식을 먹어 체력이 회복될 때까지 기다리기
-        yield return new WaitUntil(() => manager.Hp >= 100);
+        yield return new WaitUntil(() => gm.Hp >= 100);
         QuestComplete();
     }
 
     IEnumerator Quest_Kill()
     {
-        float curExp = manager.Exp;
+        float curExp = gm.Exp;
 
         // 몬스터를 죽여 경험치가 오를 때까지 기다리기
-        yield return new WaitUntil(() => manager.Exp > curExp);
+        yield return new WaitUntil(() => gm.Exp > curExp);
         QuestComplete();
     }
 

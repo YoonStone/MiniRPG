@@ -27,11 +27,10 @@ public class PlayerAction : MonoBehaviour
     Animator arrowAnim;
 
     DataManager dm;
-    PlayUIManager manager;
+    GameManager gm;
     InventoryManager inventory;
 
     GameObject[] arrowPool;
-    NPC[] npcs;
 
     // 들고 있는 무기 종류
     enum WeaponType
@@ -52,15 +51,15 @@ public class PlayerAction : MonoBehaviour
         arrowAnim = arrow.GetComponent<Animator>();
 
         dm = DataManager.instance;
-        manager = PlayUIManager.instance;
+        gm = GameManager.instance;
         inventory = InventoryManager.instance;
 
-        manager.playerActionBtn.onClick.AddListener(OnClickPlayerActionBtn);
+        gm.playerActionBtn.onClick.AddListener(OnClickPlayerActionBtn);
 
-        for (int i = 0; i < manager.skills.Length; i++)
+        for (int i = 0; i < gm.skills.Length; i++)
         {
             int ii = i;
-            manager.skills[ii].skillBtn.onClick.AddListener(() => Attack(2 + ii));
+            gm.skills[ii].skillBtn.onClick.AddListener(() => Attack(2 + ii));
         }
 
         // 활 오브젝트풀 생성
@@ -72,8 +71,6 @@ public class PlayerAction : MonoBehaviour
                 = arrowPool[i].transform.forward * 1.5f;
             arrowPool[i].SetActive(false);
         }
-
-        npcs = FindObjectsOfType<NPC>();
     }
 
     private void Update()
@@ -98,7 +95,7 @@ public class PlayerAction : MonoBehaviour
             return;
 
         // 공격력 수정 (기본 공격력 10)
-        dm.data.atk = attackIdx <= 1 ? 10 : manager.skills[attackIdx - 2].skillAtk;
+        dm.data.atk = attackIdx <= 1 ? 10 : gm.skills[attackIdx - 2].skillAtk;
 
         // 이동 불가능 + 공격 애니메이션
         playerMove.isCantMove = true;
@@ -117,7 +114,7 @@ public class PlayerAction : MonoBehaviour
         StartCoroutine(AttackEndCheck());
 
         if (attackIdx > 1)
-            StartCoroutine(manager.SkiilCoolTime(attackIdx - 2));
+            StartCoroutine(gm.SkiilCoolTime(attackIdx - 2));
     }
 
     // 공격 종료 (애니메이션이벤트)
@@ -178,7 +175,7 @@ public class PlayerAction : MonoBehaviour
     void NPCInteract()
     {
         // 퀘스트를 갖고 있는 상태
-        if(withNpc.npcQuestState == NPCQuestState.Have) manager.CheckBubble();
+        if(withNpc.npcQuestState == NPCQuestState.Have) gm.CheckBubble();
 
         // 퀘스트를 기다리고 있는 상태
         else if(withNpc.npcQuestState == NPCQuestState.Wait
@@ -203,16 +200,10 @@ public class PlayerAction : MonoBehaviour
         string getItem = dm.questList[dm.data.questNum]["GetItemIndex"].ToString();
         string getExp = dm.questList[dm.data.questNum]["GetExp"].ToString();
         if (getItem != "") inventory.AddItem(int.Parse(getItem));
-        if (getExp != "") manager.Exp += float.Parse(getExp);
+        if (getExp != "") gm.Exp += float.Parse(getExp);
 
         // 보상에 대한 대화
-        manager.CheckBubble();
-
-        // 모든 Npc에게 방금 퀘스트가 완료되었음을 전달
-        foreach (var npc in npcs)
-        {
-            npc.SendMessage("SetQuestState");
-        }
+        gm.CheckBubble();
     }
 
     // 공격 받음
@@ -222,67 +213,85 @@ public class PlayerAction : MonoBehaviour
         anim.SetTrigger("getHit");
 
         // 방패를 들고 있다면
-        if (manager.defImg.color == Color.white)
+        if (gm.defImg.color == Color.white)
         {
-            manager.Def -= atk * 0.01f;
-            manager.Hp -= atk * 0.6f;
+            gm.Def -= atk * 0.01f;
+            gm.Hp -= atk * 0.6f;
         }
-        else manager.Hp -= atk;
+        else gm.Hp -= atk;
 
-        StartCoroutine(manager.HpImgColor(Color.red));
+        StartCoroutine(gm.HpImgColor(Color.red));
     }
 
     // 장비 장착
-    public void Equip(string itemName)
+    public void EquipPutOn(int itemIdx)
     {
-        switch (itemName)
+        print(itemIdx + "장비장착");
+        switch (itemIdx)
         {
-            case "Sword":
+            // 칼
+            case 0:
                 if (hasWeapon == WeaponType.Bow)
                 {
-                    bow.SetActive(false);
-                    arrow.SetActive(false);
                     anim.SetTrigger("weaponChange");
                     anim.SetBool("isBow", false);
-                    InventoryManager.instance.EquipItemMove(3, false);
+                    EquipPutOff(3);
                 }
                 sword.SetActive(true);
-                inventory.EquipItemMove(0, true);
                 hasWeapon = WeaponType.Sword; break;
 
-            case "Shield":
+            // 방패
+            case 2:
                 if (hasWeapon == WeaponType.Bow)
                 {
-                    bow.SetActive(false);
-                    arrow.SetActive(false);
                     anim.SetTrigger("weaponChange");
                     anim.SetBool("isBow", false);
-                    inventory.EquipItemMove(3, false);
+                    EquipPutOff(3);
                     hasWeapon = WeaponType.None;
                 }
-                shield.SetActive(true);
-                inventory.EquipItemMove(2, true);
-                manager.defImg.color = Color.white;
-                break;
+                gm.defImg.color = Color.white;
+                shield.SetActive(true); break;
 
-            case "Bow":
+            // 활
+            case 3:
                 if (hasWeapon == WeaponType.Sword)
                 {
-                    sword.SetActive(false);
-                    inventory.EquipItemMove(0, false);
+                    EquipPutOff(0);
                 }
                 if (shield.activeSelf)
                 {
-                    shield.SetActive(false);
-                    inventory.EquipItemMove(2, false);
-                    manager.defImg.color = Color.clear;
+                    EquipPutOff(2);
                 }
                 anim.SetTrigger("weaponChange");
                 anim.SetBool("isBow", true);
                 bow.SetActive(true);
                 arrow.SetActive(true);
-                inventory.EquipItemMove(3, true);
                 hasWeapon = WeaponType.Bow; break;
         }
     }
+
+    // 장비 장착 해제
+    public void EquipPutOff(int itemIdx)
+    {
+        inventory.EquipItemMove(itemIdx, false);
+
+        switch (itemIdx)
+        {
+            // 칼
+            case 0:
+                sword.SetActive(false);
+                break;
+
+            // 방패
+            case 2:
+                gm.defImg.color = Color.clear;
+                shield.SetActive(false); break;
+
+            // 활
+            case 3:
+                bow.SetActive(false);
+                arrow.SetActive(false); break;
+        }
+    }
+
 }

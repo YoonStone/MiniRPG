@@ -8,7 +8,7 @@ public class NPC_Boy : NPC
     void Interact()
     {
         // 던전 씬으로 전환, npc 연결 해제
-        StartCoroutine(PlayUIManager.instance.SceneFade(Vector3.zero, Vector3.one, 2));
+        StartCoroutine(GameManager.instance.SceneFade(Vector3.zero, Vector3.one, 2));
         player.withNpc = null;
     }
 
@@ -16,7 +16,7 @@ public class NPC_Boy : NPC
     {
         // 심부름 아이템의 개수가 3개 이상이 될 때까지 기다리기
         yield return new WaitUntil(() => inventory.questItemCount >= 3);
-        gameObject.SendMessage("QuestComplete");
+        QuestComplete();
 
         // 퀘스트용 아이템 삭제
         InventoryManager.instance.questItemCount = 0;

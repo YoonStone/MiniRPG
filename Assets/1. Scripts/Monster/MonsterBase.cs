@@ -173,8 +173,8 @@ public class MonsterBase : MonoBehaviour
         this.enabled = false;
 
         // 경험치, 골드 증가
-        PlayUIManager.instance.Exp += Random.Range(monsterInfo.exp_min, monsterInfo.exp_max);
-        PlayUIManager.instance.Gold += Random.Range(monsterInfo.gold_min, monsterInfo.gold_max);
+        GameManager.instance.Exp += Random.Range(monsterInfo.exp_min, monsterInfo.exp_max);
+        GameManager.instance.Gold += Random.Range(monsterInfo.gold_min, monsterInfo.gold_max);
 
         // 죽는 애니메이션이 끝난 후
         yield return new WaitForSeconds(anim.GetCurrentAnimatorClipInfo(0).Length);

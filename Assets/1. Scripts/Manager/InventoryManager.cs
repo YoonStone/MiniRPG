@@ -16,6 +16,9 @@ public class InventoryManager : MonoBehaviour
     [HideInInspector] public int questItemCount;
     [HideInInspector] public bool isOpenShop; // 상점이 열려있는지
 
+    GameManager gm;
+    PlayerAction player;
+
     // 싱글톤
     public static InventoryManager instance;
     private void Awake()
@@ -30,6 +33,9 @@ public class InventoryManager : MonoBehaviour
 
     private void Start()
     {
+        gm = GameManager.instance;
+        player = FindObjectOfType<PlayerAction>();
+
         // 슬롯 중에 음식이 있다면 연결
         if (FindItemSlot(1))
         {
@@ -188,6 +194,9 @@ public class InventoryManager : MonoBehaviour
         toSlot.Item = fromSlot.Item;
         toSlot.Count = fromSlot.Count;
         fromSlot.Count = 0;
+
+        // 장비 실제로 착용
+        if (isPutOn) player.EquipPutOn(itemIdx);
     }
 
     // 아이템 사용
@@ -196,12 +205,12 @@ public class InventoryManager : MonoBehaviour
         switch (slot.Item.itemType)
         {
             case ItemType.Equipment:
-                PlayUIManager.instance.playerAction.Equip(slot.Item.itemName);
+                EquipItemMove(slot.Item.itemIdx, true);
                 break;
 
             // 음식은 체력이 100보다 작을 때만 섭취 가능
             case ItemType.Food:
-                if (PlayUIManager.instance.Hp >= 100) return;
+                if (gm.Hp >= 100) return;
                 Eat(slot.Item.itemName);
                 if (slot.isQuickSlot) UseQuickSlot(slot);
 
@@ -227,8 +236,8 @@ public class InventoryManager : MonoBehaviour
             case "Bread": changeHp = 10; break;
         }
 
-        PlayUIManager.instance.Hp += changeHp;
-        StartCoroutine(PlayUIManager.instance.HpImgColor(Color.green));
+        gm.Hp += changeHp;
+        StartCoroutine(gm.HpImgColor(Color.green));
     }
 
     //  퀵슬롯 사용 시 인벤토리 슬롯 개수 맞추기

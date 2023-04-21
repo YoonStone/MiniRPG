@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/0. Scenes/1. StartScene.unity
     guid: 06a8f443b58d2cf44955685ed92e08b9
   - enabled: 1
-    path: Assets/0. Scenes/2. PlayScene.unity
+    path: Assets/0. Scenes/2. IslandScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
     path: Assets/0. Scenes/3. DungeonScene.unity

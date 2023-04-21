@@ -10,6 +10,7 @@ public class Drag : MonoBehaviour
 
     CameraTurn cameraTurn;
     Image img;
+    GameManager gm;
     Slot dragStartSlot;
     Item dragItem;
 
@@ -20,6 +21,11 @@ public class Drag : MonoBehaviour
     {
         cameraTurn = FindObjectOfType<CameraTurn>();
         img = GetComponent<Image>();
+    }
+
+    private void Start()
+    {
+        gm = GameManager.instance;
     }
 
     private void OnEnable()
@@ -90,20 +96,21 @@ public class Drag : MonoBehaviour
     // 팝업창 사용 (아이템 버리기)
     IEnumerator PopupCall_ItemDrop()
     {
-        bool isCanPopup = PlayUIManager.instance.PopupOpen("이 아이템을 버리시겠습니까?", "예", "아니오");
+
+        bool isCanPopup = gm.PopupOpen("이 아이템을 버리시겠습니까?", "예", "아니오");
 
         // 이미 팝업창이 열려있었다면 실행 금지
         if (isCanPopup) yield break;
 
         // 예/아니오를 누를 때까지 기다리기
-        PlayUIManager.instance.popupState = PopupState.None;
-        yield return new WaitUntil(() => PlayUIManager.instance.popupState != PopupState.None);
+        gm.popupState = PopupState.None;
+        yield return new WaitUntil(() => gm.popupState != PopupState.None);
 
         // 예를 눌렀다면 버리기
-        if (PlayUIManager.instance.popupState == PopupState.Left)
+        if (gm.popupState == PopupState.Left)
             dragStartSlot.Count = 0;
 
         DragReset();
-        PlayUIManager.instance.popupState = PopupState.None;
+        gm.popupState = PopupState.None;
     }
 }

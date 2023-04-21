@@ -5,29 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class DungeonManager : MonoBehaviour
 {
-    public Transform playerPos;
-
     CharacterController playerCC;
     Transform player;
-    PlayUIManager uiMng;
 
-    void Start()
-    {
-        playerCC = FindObjectOfType<CharacterController>();
-
-        //player = playerCC.transform;
-        playerCC.enabled = false;
-        playerCC.transform.position = playerPos.position;
-        playerCC.transform.rotation = playerPos.rotation;
-        playerCC.enabled = true;
-      
-        StartCoroutine(PlayUIManager.instance.SceneFade(Vector3.one, Vector3.zero, -1));
-    }
-
-    // ¸¶À»·Î µ¹¾Æ°¡±â ¹öÆ°
+    // ë§ˆì„ë¡œ ëŒì•„ê°€ê¸° ë²„íŠ¼
     public void OnClickBackBtn()
     {
-        StartCoroutine(PlayUIManager.instance.SceneFade(Vector3.zero, Vector3.one, 1));
+        StartCoroutine(GameManager.instance.SceneFade(Vector3.zero, Vector3.one, 1));
     }
 
     // Update is called once per frame

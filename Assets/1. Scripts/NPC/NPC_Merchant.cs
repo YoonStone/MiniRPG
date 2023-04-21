@@ -11,8 +11,8 @@ public class NPC_Merchant : NPC
         if (inventory.isOpenShop) PlayerBye();
         else
         {
-            manager.anim_Shop.SetBool("isOpen", true);
-            manager.anim_Inventory.SetBool("isOpen", true);
+            gm.anim_Shop.SetBool("isOpen", true);
+            gm.anim_Inventory.SetBool("isOpen", true);
             inventory.isOpenShop = true;
         }
     }
@@ -20,7 +20,7 @@ public class NPC_Merchant : NPC
     // 플레이어와 멀어졌을 때
     void PlayerBye()
     {
-        manager.anim_Shop.SetBool("isOpen", false);
+        gm.anim_Shop.SetBool("isOpen", false);
         inventory.isOpenShop = false;
     }
 
@@ -29,10 +29,10 @@ public class NPC_Merchant : NPC
         // 이제 상호작용 가능
         isInteractable = true;
 
-        float curGold = manager.Gold;
+        float curGold = gm.Gold;
 
         // 물건을 구매하여 골드가 줄어들 때까지 기다리기
-        yield return new WaitUntil(() => manager.Gold < curGold);
+        yield return new WaitUntil(() => gm.Gold < curGold);
         QuestComplete();
     }
 }
