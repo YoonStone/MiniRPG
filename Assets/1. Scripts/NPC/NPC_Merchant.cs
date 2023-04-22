@@ -24,15 +24,20 @@ public class NPC_Merchant : NPC
         inventory.isOpenShop = false;
     }
 
-    IEnumerator Quest_Buy()
+    // 2번 퀘스트 완료 시 퀘스트 아이템 삭제
+    void OutQuestItem_2()
     {
-        // 이제 상호작용 가능
-        isInteractable = true;
-
-        float curGold = gm.Gold;
-
-        // 물건을 구매하여 골드가 줄어들 때까지 기다리기
-        yield return new WaitUntil(() => gm.Gold < curGold);
-        QuestComplete();
+        // 퀘스트 체크용 변수는 초기화, 뿔 8개 삭제하기
+        dm.data.questItemCount = 0;
+        foreach (var itemSlot in inventory.itemSlots)
+        {
+            // 같은 아이템을 가진 슬롯에서 아이템 제거
+            if (itemSlot.Item == inventory.items[4])
+            {
+                itemSlot.Count -= 8;
+                return;
+            }
+        }
     }
+
 }

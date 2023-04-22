@@ -175,11 +175,10 @@ public class PlayerAction : MonoBehaviour
     void NPCInteract()
     {
         // 퀘스트를 갖고 있는 상태
-        if(withNpc.npcQuestState == NPCQuestState.Have) gm.CheckBubble();
+        if(withNpc.NPCState == NPCQuestState.Have) gm.CheckBubble();
 
         // 퀘스트를 기다리고 있는 상태
-        else if(withNpc.npcQuestState == NPCQuestState.Wait
-            && dm.questList[dm.data.questNum]["ToNPC"].ToString() == withNpc.npcName)
+        else if(withNpc.NPCState == NPCQuestState.Wait)
         {
             // 퀘스트 조건에 만족한다면 퀘스트 완료
             if(dm.data.questState == QuestState.Complete) AfterQuestComplete();
@@ -273,6 +272,7 @@ public class PlayerAction : MonoBehaviour
     // 장비 장착 해제
     public void EquipPutOff(int itemIdx)
     {
+        print(itemIdx + "장비해제");
         inventory.EquipItemMove(itemIdx, false);
 
         switch (itemIdx)

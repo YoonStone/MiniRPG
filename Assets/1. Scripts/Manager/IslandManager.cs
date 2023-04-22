@@ -7,6 +7,6 @@ public class IslandManager : MonoBehaviour
     private void Start()
     {
         // NPC 정보 넘겨주기
-        GameManager.instance.npcs = FindObjectsOfType<NPC>();
+        //GameManager.instance.qm.npcs = FindObjectsOfType<NPC>();
     }
 }

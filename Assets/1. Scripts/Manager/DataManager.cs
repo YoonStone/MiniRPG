@@ -28,6 +28,7 @@ public class Data
     public QuestState questState = QuestState.None;
     public int chatNum = 0;
     public int questNum = 0;
+    public int questItemCount = 0;
 
     public int[] itemSlots_Number = new int[8];
     public int[] itemSlots_Count = new int[8];

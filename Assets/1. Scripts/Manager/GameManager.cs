@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 [System.Serializable]
 public struct Skill
@@ -49,9 +50,16 @@ public class GameManager : MonoBehaviour
     public Image hpImg;
     public Image expImg;
     public Image defImg;
-
-    [Header("-- Fade -- ")]
     public Transform fadeImg; // 페이드인,페이드아웃
+
+    [HideInInspector] public QuestManager qm;
+    [HideInInspector] public DataManager dm;
+    [HideInInspector] public InventoryManager inventory;
+    [HideInInspector] public PlayerAction playerAction;
+    [HideInInspector] public PlayerMove playerMove;
+    [HideInInspector] public CharacterController playerCC;
+
+    CameraTurn cameraTurn;
 
     #region [프로퍼티]
     private float maxHp = 100;
@@ -123,15 +131,6 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
-    [HideInInspector] public PlayerAction playerAction;
-    [HideInInspector] public PlayerMove playerMove;
-    [HideInInspector] public CharacterController playerCC;
-    CameraTurn cameraTurn;
-    DataManager dm;
-    InventoryManager inventory;
-
-    [HideInInspector] public NPC[] npcs;
-
     #region [싱글톤]
     static public GameManager instance;
     private void Awake()
@@ -140,6 +139,7 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+            qm = GetComponent<QuestManager>();
         }
         else if (instance != this) Destroy(gameObject);
     }
@@ -150,6 +150,7 @@ public class GameManager : MonoBehaviour
         // 씬 전환 이벤트 추가
         SceneManager.sceneLoaded += OnSceneLoaded;
 
+        qm = GetComponent<QuestManager>();
         playerAction = FindObjectOfType<PlayerAction>();
         playerMove = playerAction.GetComponent<PlayerMove>();
         playerCC = playerAction.GetComponent<CharacterController>();
@@ -240,7 +241,7 @@ public class GameManager : MonoBehaviour
         if (popupState == PopupState.Left)
         {
             dm.data.questState = QuestState.Accept;
-            playerAction.withNpc.SendMessage("QuestStart", dm.questList[dm.data.questNum]["QuestName"].ToString());
+            qm.StartQuest(dm.data.questNum); // 퀘스트 시작
         }
 
         OnClickChatCancle();
@@ -311,16 +312,10 @@ public class GameManager : MonoBehaviour
             case QuestState.Complete:
                 chatTxt.text = dm.questList[dm.data.questNum]["Complete"].ToString();
                 dm.data.questState = QuestState.None;
-
-                print($"퀘스트상태 : {dm.data.questState}, 대화 개수 : {dm.chatList.Count}");
-
                 dm.data.questNum++;
 
-                // 모든 Npc에게 방금 퀘스트가 완료되었음을 전달
-                foreach (var npc in npcs)
-                {
-                    npc.SendMessage("SetQuestState");
-                }
+                // 모든 NPC에게 퀘스트 끝났음을 전달
+                qm.RestNPCState();
 
                 // 다음 대화가 있고, 다음 대사의 주인이 현재 대화 중인 NPC라면
                 if (dm.data.chatNum + 1 < dm.chatList.Count && dm.chatList[dm.data.chatNum + 1]["NPC"].ToString() == playerAction.withNpc.npcName)
@@ -340,17 +335,16 @@ public class GameManager : MonoBehaviour
         anim_Chat.SetTrigger("Open");
     }
 
-    // 퀘스트 완료창 열었다가 닫기
-    public IEnumerator QuestCompleteOpen(string npcName)
+    // 퀘스트 완료창 열기
+    public void QuestCompleteOpen()
     {
+        int npcIdx = int.Parse(dm.questList[dm.data.questNum]["ToNPC"].ToString());
+        string npcName = qm.NPCKoreanName(npcIdx);
         chatTxt.text = $"퀘스트를 완료했습니다!\nNPC에게 돌아가세요\n({npcName})";
+
         chatNextBtn.SetActive(false);
         chatCancleBtn.SetActive(false);
         anim_Chat.SetTrigger("Open");
-
-        yield return new WaitForSeconds(1.5f);
-
-        //anim_Chat.SetTrigger("Close");
     }
 
     // 대화창 끄기
@@ -372,14 +366,15 @@ public class GameManager : MonoBehaviour
     // 페이드인, 페이드아웃
     public IEnumerator SceneFade(Vector3 fromScale, Vector3 toScale, int sceneIdx)
     {
+        print(sceneIdx + "씬으로 페이드 시작");
         float time = 0;
-        while(time < 1)
+        while (time < 1)
         {
             time += Time.deltaTime;
             fadeImg.localScale = Vector3.Lerp(fromScale, toScale, time);
             yield return null;
         }
-
+        print("페이드 끝");
         if (sceneIdx != -1)
         {
             dm.Save(); // 씬 전환 전 저장
@@ -438,12 +433,12 @@ public class GameManager : MonoBehaviour
     // 씬 전환 완료 시 실행할 이벤트
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        print($"{dm.data.curSceneIdx} > {scene.buildIndex}");
+
         dm.Load(); // 씬 전환 후 불러오기
 
         // 페이드 기능
         StartCoroutine(SceneFade(Vector3.one, Vector3.zero, -1));
-
-        print($"{dm.data.curSceneIdx} > {scene.buildIndex}");
 
         // 위치 이동 기능
         switch (scene.buildIndex)

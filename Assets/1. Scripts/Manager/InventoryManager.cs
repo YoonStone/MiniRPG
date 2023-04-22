@@ -13,10 +13,10 @@ public class InventoryManager : MonoBehaviour
 
     [HideInInspector] public Slot[] itemSlots;
     [HideInInspector] public Slot[] equipSlots;
-    [HideInInspector] public int questItemCount;
     [HideInInspector] public bool isOpenShop; // 상점이 열려있는지
 
     GameManager gm;
+    DataManager dm;
     PlayerAction player;
 
     // 싱글톤
@@ -34,6 +34,7 @@ public class InventoryManager : MonoBehaviour
     private void Start()
     {
         gm = GameManager.instance;
+        dm = DataManager.instance;
         player = FindObjectOfType<PlayerAction>();
 
         // 슬롯 중에 음식이 있다면 연결
@@ -49,7 +50,7 @@ public class InventoryManager : MonoBehaviour
     {
         // 퀘스트용 아이템
         if (item.itemType == ItemType.Quest)
-            questItemCount++;
+            dm.data.questItemCount++;
 
         foreach (var itemSlot in itemSlots)
         {
@@ -164,6 +165,9 @@ public class InventoryManager : MonoBehaviour
     // 장비 착용/해제
     public void EquipItemMove(int itemIdx, bool isPutOn)
     {
+        // 장비 실제로 착용
+        if (isPutOn) player.EquipPutOn(itemIdx);
+
         // 장비를 착용하는건지 해제하는건지
         Slot[] fromSlots = isPutOn ? itemSlots : equipSlots;
         Slot[] toSlots = isPutOn ? equipSlots : itemSlots;
@@ -194,9 +198,6 @@ public class InventoryManager : MonoBehaviour
         toSlot.Item = fromSlot.Item;
         toSlot.Count = fromSlot.Count;
         fromSlot.Count = 0;
-
-        // 장비 실제로 착용
-        if (isPutOn) player.EquipPutOn(itemIdx);
     }
 
     // 아이템 사용

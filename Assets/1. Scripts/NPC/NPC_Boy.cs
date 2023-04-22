@@ -12,18 +12,17 @@ public class NPC_Boy : NPC
         player.withNpc = null;
     }
 
-    IEnumerator Quest_Help()
+    // 4번 퀘스트 완료 시 퀘스트 아이템 삭제
+    void OutQuestItem_4()
     {
-        // 심부름 아이템의 개수가 3개 이상이 될 때까지 기다리기
-        yield return new WaitUntil(() => inventory.questItemCount >= 3);
-        QuestComplete();
-
-        // 퀘스트용 아이템 삭제
-        InventoryManager.instance.questItemCount = 0;
+        // 퀘스트 체크용 변수는 초기화, 심부름 아이템 3가지 삭제하기
+        dm.data.questItemCount = 0;
         foreach (var itemSlot in inventory.itemSlots)
         {
             // 퀘스트 아이템을 가진 슬롯에서 아이템 제거
-            if (itemSlot.Item == inventory.items[8] || itemSlot.Item == inventory.items[9] || itemSlot.Item == inventory.items[10])
+            if (itemSlot.Item == inventory.items[8]
+                || itemSlot.Item == inventory.items[9]
+                || itemSlot.Item == inventory.items[10])
             {
                 itemSlot.Count = 0;
             }

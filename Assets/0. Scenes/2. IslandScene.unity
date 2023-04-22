@@ -3741,14 +3741,11 @@ RectTransform:
   - {fileID: 1841907379}
   - {fileID: 1005411158}
   - {fileID: 90432821}
-  - {fileID: 662967918}
-  - {fileID: 1443426990}
-  - {fileID: 1152004409}
-  - {fileID: 829149863}
-  - {fileID: 515013146}
+  - {fileID: 1896201475}
   - {fileID: 898401310}
   - {fileID: 1892588695}
   - {fileID: 562475404}
+  - {fileID: 515013146}
   m_Father: {fileID: 1292975037}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10829,7 +10826,7 @@ RectTransform:
   m_Children:
   - {fileID: 1104607255}
   - {fileID: 1424054731}
-  m_Father: {fileID: 194927534}
+  m_Father: {fileID: 1896201475}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
@@ -13379,7 +13376,7 @@ RectTransform:
   - {fileID: 810397794}
   - {fileID: 569489541}
   - {fileID: 1774398846}
-  m_Father: {fileID: 194927534}
+  m_Father: {fileID: 1896201475}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
@@ -18951,7 +18948,7 @@ RectTransform:
   - {fileID: 956780464}
   - {fileID: 563350150}
   - {fileID: 1151593051}
-  m_Father: {fileID: 194927534}
+  m_Father: {fileID: 1896201475}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
@@ -20654,7 +20651,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1269989559}
-  m_LocalRotation: {x: 0.10080298, y: 0.74177957, z: -0.114496596, w: 0.65306395}
+  m_LocalRotation: {x: 0.100803, y: 0.7417795, z: -0.11449662, w: 0.653064}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -21186,6 +21183,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1292975037}
   - component: {fileID: 1292975036}
+  - component: {fileID: 1292975038}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -21236,10 +21234,12 @@ MonoBehaviour:
   expImg: {fileID: 144054057}
   defImg: {fileID: 1699343206}
   fadeImg: {fileID: 515013146}
+  qm: {fileID: 0}
+  dm: {fileID: 0}
+  inventory: {fileID: 0}
   playerAction: {fileID: 0}
   playerMove: {fileID: 0}
   playerCC: {fileID: 0}
-  npcs: []
   isPopup: 0
   popupState: 0
 --- !u!4 &1292975037
@@ -21262,6 +21262,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1292975038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1292975035}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71610b50ab68c4c839e1c6d9fe376c18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  npcs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &1293215234
 GameObject:
   m_ObjectHideFlags: 0
@@ -21843,7 +21859,7 @@ GameObject:
   - component: {fileID: 1341825207}
   - component: {fileID: 1341825206}
   m_Layer: 0
-  m_Name: NPC_Who
+  m_Name: NPC_Chatterer
   m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21930,10 +21946,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onoff: {fileID: 1798982921}
   headTxt: {fileID: 1067134143}
-  npcQuestState: 0
   npcName: 
   koreanName: 
+  npcIndex: 0
+  npcQuestState: 0
   isInteractable: 0
+  interactableNumber: 0
 --- !u!1 &1349580680
 GameObject:
   m_ObjectHideFlags: 0
@@ -23255,7 +23273,7 @@ RectTransform:
   m_Children:
   - {fileID: 417655358}
   - {fileID: 331225017}
-  m_Father: {fileID: 194927534}
+  m_Father: {fileID: 1896201475}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
@@ -33459,6 +33477,46 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &1896201474
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1896201475}
+  m_Layer: 5
+  m_Name: SkillBtns
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1896201475
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1896201474}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 662967918}
+  - {fileID: 1443426990}
+  - {fileID: 1152004409}
+  - {fileID: 829149863}
+  m_Father: {fileID: 194927534}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1897618383
 GameObject:
   m_ObjectHideFlags: 0
@@ -59980,10 +60038,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onoff: {fileID: 1783877742}
   headTxt: {fileID: 450181835}
-  npcQuestState: 0
   npcName: 
   koreanName: 
+  npcIndex: 1
+  npcQuestState: 0
   isInteractable: 0
+  interactableNumber: 3
 --- !u!33 &5243407898803827940
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -68638,10 +68698,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onoff: {fileID: 1370521168}
   headTxt: {fileID: 627006143}
-  npcQuestState: 0
   npcName: 
   koreanName: 
+  npcIndex: 2
+  npcQuestState: 0
   isInteractable: 0
+  interactableNumber: 4
 --- !u!1 &8805127763672614413
 GameObject:
   m_ObjectHideFlags: 0
