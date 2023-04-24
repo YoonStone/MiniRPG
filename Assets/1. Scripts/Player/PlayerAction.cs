@@ -184,7 +184,7 @@ public class PlayerAction : MonoBehaviour
             if(dm.data.questState == QuestState.Complete) AfterQuestComplete();
 
             // 퀘스트를 기다리는 중이지만 완료하지 못했을 때 상호작용 시도
-            else if (withNpc.npcName == "Merchant" || withNpc.npcName == "Boy")
+            else if (withNpc.info.npcName == "Merchant" || withNpc.info.npcName == "Boy")
                 withNpc.SendMessage("Interact");
         }
 

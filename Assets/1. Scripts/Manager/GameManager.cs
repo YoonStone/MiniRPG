@@ -282,7 +282,7 @@ public class GameManager : MonoBehaviour
             // 다음 대화가 퀘스트거나 대사의 주인이 현재 대화 중인 NPC라면
             string nextNpc = dm.chatList[dm.data.chatNum + 1]["NPC"].ToString();
 
-            if(nextNpc == "" || (nextNpc != "" && nextNpc == playerAction.withNpc.npcName))
+            if(nextNpc == "" || (nextNpc != "" && nextNpc == playerAction.withNpc.info.npcName))
             {
                 chatNextBtn.SetActive(true);
                 chatCancleBtn.SetActive(true);
@@ -318,7 +318,8 @@ public class GameManager : MonoBehaviour
                 qm.RestNPCState();
 
                 // 다음 대화가 있고, 다음 대사의 주인이 현재 대화 중인 NPC라면
-                if (dm.data.chatNum + 1 < dm.chatList.Count && dm.chatList[dm.data.chatNum + 1]["NPC"].ToString() == playerAction.withNpc.npcName)
+                if (dm.data.chatNum + 1 < dm.chatList.Count
+                    && dm.chatList[dm.data.chatNum + 1]["NPC"].ToString() == playerAction.withNpc.info.npcName)
                 {
                     chatNextBtn.SetActive(true);
                     chatCancleBtn.SetActive(true);
@@ -339,7 +340,7 @@ public class GameManager : MonoBehaviour
     public void QuestCompleteOpen()
     {
         int npcIdx = int.Parse(dm.questList[dm.data.questNum]["ToNPC"].ToString());
-        string npcName = qm.NPCKoreanName(npcIdx);
+        string npcName = qm.npcs[npcIdx].npcInfo.npcKoreanName;
         chatTxt.text = $"퀘스트를 완료했습니다!\nNPC에게 돌아가세요\n({npcName})";
 
         chatNextBtn.SetActive(false);

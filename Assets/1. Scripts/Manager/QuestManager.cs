@@ -3,11 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using static NPC;
 
+[System.Serializable]
+public struct NPCSet
+{
+    public NPCInfo npcInfo;
+    public NPC npcObj;
+}
+
 public class QuestManager : MonoBehaviour
 {
     public delegate IEnumerator QuestList();
     public QuestList[] questList;
-    public NPC[] npcs = new NPC[3];
+    public NPCSet[] npcs = new NPCSet[3];
 
     GameManager gm;
     DataManager dm;
@@ -30,12 +37,6 @@ public class QuestManager : MonoBehaviour
         if (dm.data.questState != QuestState.None) StartQuest(dm.data.questNum);
     }
 
-    // NPC의 한글 이름 전달
-    public string NPCKoreanName(int npcIdx)
-    {
-        return npcs[npcIdx].koreanName;
-    }
-
     // 퀘스트 조건 만족
     IEnumerator QuestComplete()
     {
@@ -44,7 +45,7 @@ public class QuestManager : MonoBehaviour
 
         // 해당 NPC가 존재할 때만 NPC 상태 변경
         int curNpcIdx = int.Parse(dm.questList[dm.data.questNum]["ToNPC"].ToString());
-        yield return new WaitUntil(() => npcs[curNpcIdx]);
+        yield return new WaitUntil(() => npcs[curNpcIdx].npcObj);
         dm.data.questState = QuestState.Complete;
         RestNPCState();
     }
@@ -52,9 +53,10 @@ public class QuestManager : MonoBehaviour
     // 모든 Npc의 상태 재정리
     public void RestNPCState()
     {
+        // NPC가 존재할 때만 실행
         foreach (var npc in npcs)
         {
-            npc.SetQuestState();
+            if(npc.npcObj) npc.npcObj.SetQuestState();
         }
     }
 
@@ -92,16 +94,12 @@ public class QuestManager : MonoBehaviour
 
         // NPC와 대화하여 해당 퀘스트가 끝나면 퀘스트용 아이템 삭제
         yield return new WaitUntil(() => dm.data.questState == QuestState.None);
-        int curNpcIdx = int.Parse(dm.questList[dm.data.questNum]["ToNPC"].ToString());
-        npcs[curNpcIdx].SendMessage("OutQuestItem_" + (dm.data.questNum - 1));
+        int curNpcIdx = int.Parse(dm.questList[dm.data.questNum - 1]["ToNPC"].ToString());
+        npcs[curNpcIdx].npcObj.SendMessage("OutQuestItem_" + (dm.data.questNum - 1));
     }
 
     IEnumerator Merchant_Buy()
     {
-        // 이제 상호작용 가능
-        int curNpcIdx = int.Parse(dm.questList[dm.data.questNum]["ToNPC"].ToString());
-        npcs[curNpcIdx].isInteractable = true;
-
         float curGold = gm.Gold;
 
         // 물건을 구매하여 골드가 줄어들 때까지 기다리기
@@ -111,17 +109,15 @@ public class QuestManager : MonoBehaviour
 
     IEnumerator Boy_Help()
     {
-        // 이제 상호작용 가능
-        int curNpcIdx = int.Parse(dm.questList[dm.data.questNum]["ToNPC"].ToString());
-        npcs[curNpcIdx].isInteractable = true;
-
         // 심부름 아이템의 개수가 3개 이상이 될 때까지 기다리기
         yield return new WaitUntil(() => dm.data.questItemCount >= 3);
         StartCoroutine(QuestComplete());
 
         // NPC와 대화하여 해당 퀘스트가 끝나면 퀘스트용 아이템 삭제
         yield return new WaitUntil(() => dm.data.questState == QuestState.None);
-        npcs[curNpcIdx].SendMessage("OutQuestItem_" + (dm.data.questNum - 1));
+        int curNpcIdx = int.Parse(dm.questList[dm.data.questNum - 1]["ToNPC"].ToString());
+        print(dm.data.questNum - 1);
+        npcs[curNpcIdx].npcObj.SendMessage("OutQuestItem_" + (dm.data.questNum - 1));
     }
     #endregion
 }

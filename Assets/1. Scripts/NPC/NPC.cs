@@ -13,11 +13,11 @@ public class NPC : MonoBehaviour
         Wait  // 플레이어가 수락했고, 기다리는 중
     }
 
+    public NPCInfo info;
     public GameObject onoff;
     public TextMeshProUGUI headTxt;
-    public string npcName;
-    public string koreanName;
-    public int npcIndex;
+
+    public bool isInteractable; // 상호작용 가능한지
 
     public NPCQuestState npcQuestState;
     public NPCQuestState NPCState
@@ -45,10 +45,6 @@ public class NPC : MonoBehaviour
     protected PlayerAction player;
     QuestManager qm;
 
-    public bool isInteractable; // 상호작용 가능한지
-    public int interactableNumber; // 상호작용이 가능해지는 퀘스트 번호
-    bool isFirst = true; // 게임이 시작되자마자 퀘스트 유무 확인용
-
     void Start()
     {
         dm = DataManager.instance;
@@ -57,13 +53,9 @@ public class NPC : MonoBehaviour
         qm = gm.qm;
         player = FindObjectOfType<PlayerAction>();
 
-        npcName = name.Split('_')[1];
-        koreanName = onoff.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text;
-
         // NPC 번호로 정보 전달 후 상태 세팅
-        qm.npcs[npcIndex] = this;
+        qm.npcs[info.npcIndex].npcObj = this;
         SetQuestState();
-        isFirst = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -85,7 +77,7 @@ public class NPC : MonoBehaviour
                 onoff.SetActive(false);
                 player.withNpc = null;
 
-                if(npcName == "Merchant") gameObject.SendMessage("PlayerBye"); 
+                if(info.npcName == "Merchant") gameObject.SendMessage("PlayerBye"); 
                 break;
         }
     }
@@ -103,7 +95,7 @@ public class NPC : MonoBehaviour
         // 이후에 퀘스트가 없다면 끝
         if (dm.data.questNum >= dm.questList.Count)
         {
-            print(npcName + "은/는 더이상 퀘스트가 없음");
+            print(info.npcName + "은/는 더이상 퀘스트가 없음");
             NPCState = NPCQuestState.None;
             return;
         }
@@ -113,34 +105,34 @@ public class NPC : MonoBehaviour
 
 
         // 퀘스트를 줄 NPC + 퀘스트 아직 안 받은 상태
-        if (fromNpc == npcIndex && dm.data.questState == QuestState.None)
+        if (fromNpc == info.npcIndex && dm.data.questState == QuestState.None)
         {
-            print(npcName + "은/는 퀘스트를 갖고 있어 대화를 기다리는 상태");
+            print(info.npcName + "은/는 퀘스트를 갖고 있어 대화를 기다리는 상태");
             NPCState = NPCQuestState.Have;
         }
 
         // 퀘스트를 완료할 NPC + 퀘스트 받은 상태
-        else if (toNpc == npcIndex && dm.data.questState == QuestState.Accept)
+        else if (toNpc == info.npcIndex && dm.data.questState == QuestState.Accept)
         {
-            print(npcName + "은/는 퀘스트 조건 만족을 기다리는 상태");
+            print(info.npcName + "은/는 퀘스트 조건 만족을 기다리는 상태");
             NPCState = NPCQuestState.Wait;
         }
 
         // 퀘스트를 완료할 NPC + 퀘스트 완료한 상태
-        else if (toNpc == npcIndex && dm.data.questState == QuestState.Complete)
+        else if (toNpc == info.npcIndex && dm.data.questState == QuestState.Complete)
         {
-            print(npcName + "은/는 퀘스트 조건 만족하여 대화를 기다리는 상태");
+            print(info.npcName + "은/는 퀘스트 조건 만족하여 대화를 기다리는 상태");
             NPCState = NPCQuestState.Wait;
         }
 
         // 현재 퀘스트와 관련 없는 NPC라면
         else
         {
-            print(npcName + "은/는 퀘스트 없는 상태");
+            print(info.npcName + "은/는 퀘스트 없는 상태");
             NPCState = NPCQuestState.None;
         }
 
         // 상호작용 가능한 상태
-        if (dm.data.questNum >= interactableNumber) isInteractable = true;
+        if (dm.data.questNum >= info.interactableNumber) isInteractable = true;
     }
 }
