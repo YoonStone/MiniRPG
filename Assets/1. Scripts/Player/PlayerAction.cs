@@ -54,13 +54,8 @@ public class PlayerAction : MonoBehaviour
         gm = GameManager.instance;
         inventory = InventoryManager.instance;
 
-        gm.playerActionBtn.onClick.AddListener(OnClickPlayerActionBtn);
-
-        for (int i = 0; i < gm.skills.Length; i++)
-        {
-            int ii = i;
-            gm.skills[ii].skillBtn.onClick.AddListener(() => Attack(2 + ii));
-        }
+        gm.actionBtn.onClick.AddListener(OnClickActionBtn);
+        gm.skillBtn.onClick.AddListener(OnClickSkillBtn);
 
         // 활 오브젝트풀 생성
         arrowPool = new GameObject[arrowCount];
@@ -75,46 +70,85 @@ public class PlayerAction : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) Attack(Random.Range(0, 2));
+        if (Input.GetKeyDown(KeyCode.Space)) OnClickActionBtn();
     }
 
     // 액션 버튼
-    void OnClickPlayerActionBtn()
+    void OnClickActionBtn()
     {
+        // NPC와 함께 있다면 상호작용
         if (withNpc) NPCInteract();
-        else Attack(Random.Range(0, 2));
+
+        // 무기를 들고 있다면 공격 
+        else if(hasWeapon != WeaponType.None) Attack();
     }
 
-    void Attack(int attackIdx)
+    void Attack()
     {
-        // 공격 중이거나 알맞은 무기를 들고 있지 않을 때 공격 불가
-        if (anim.GetCurrentAnimatorStateInfo(0).IsTag("Attack")
-            || hasWeapon == WeaponType.None
-            || (attackIdx < 3 && hasWeapon != WeaponType.Sword)
-            || (attackIdx >= 3 && hasWeapon != WeaponType.Bow))
+        // 공격 중일 때는 공격 불가
+        if (anim.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
             return;
 
-        // 공격력 수정 (기본 공격력 10)
-        dm.data.atk = attackIdx <= 1 ? 10 : gm.skills[attackIdx - 2].skillAtk;
+        // 공격력 수정
+        dm.data.atk = gm.skills[(int)hasWeapon].actionAtk;
 
         // 이동 불가능 + 공격 애니메이션
         playerMove.isCantMove = true;
         playerMove.MoveEnd();
-        anim.SetTrigger("attack");
-        anim.SetInteger("attackIdx", attackIdx);
 
-        if(attackIdx >= 3)
+        anim.SetTrigger("attack");
+
+        switch (hasWeapon)
         {
-            bowAnim.SetTrigger("bowAttack");
-            bowAnim.SetInteger("bowIdx", attackIdx);
-            arrowAnim.SetTrigger("arrowAttack");
-            arrowAnim.SetInteger("arrowIdx", attackIdx);
+            case WeaponType.Sword:
+                anim.SetInteger("attackIdx", Random.Range(0, 2));
+                break;
+
+            case WeaponType.Bow:
+                anim.SetInteger("attackIdx", 2);
+                bowAnim.SetTrigger("bowAttack");
+                bowAnim.SetInteger("bowIdx", 2);
+                arrowAnim.SetTrigger("arrowAttack");
+                arrowAnim.SetInteger("arrowIdx", 2);
+                break;
         }
 
         StartCoroutine(AttackEndCheck());
+    }
 
-        if (attackIdx > 1)
-            StartCoroutine(gm.SkiilCoolTime(attackIdx - 2));
+    void OnClickSkillBtn()
+    {
+        // 공격 중이거나 무기가 없을 때는 스킬 공격 불가
+        if (anim.GetCurrentAnimatorStateInfo(0).IsTag("Attack")
+            || hasWeapon == WeaponType.None)
+            return;
+
+        // 공격력 수정
+        dm.data.atk = gm.skills[(int)hasWeapon].skillAtk;
+
+        // 이동 불가능 + 공격 애니메이션
+        playerMove.isCantMove = true;
+        playerMove.MoveEnd();
+
+        anim.SetTrigger("attack");
+
+        switch (hasWeapon)
+        {
+            case WeaponType.Sword:
+                anim.SetInteger("attackIdx", 3);
+                break;
+
+            case WeaponType.Bow:
+                anim.SetInteger("attackIdx", 4);
+                bowAnim.SetTrigger("bowAttack");
+                bowAnim.SetInteger("bowIdx", 4);
+                arrowAnim.SetTrigger("arrowAttack");
+                arrowAnim.SetInteger("arrowIdx", 4);
+                break;
+        }
+
+        StartCoroutine(AttackEndCheck());
+        StartCoroutine(gm.SkiilCoolTime((int)hasWeapon));
     }
 
     // 공격 종료 (애니메이션이벤트)
@@ -225,7 +259,6 @@ public class PlayerAction : MonoBehaviour
     // 장비 장착
     public void EquipPutOn(int itemIdx)
     {
-        print(itemIdx + "장비장착");
         switch (itemIdx)
         {
             // 칼
@@ -237,7 +270,11 @@ public class PlayerAction : MonoBehaviour
                     EquipPutOff(3);
                 }
                 sword.SetActive(true);
-                hasWeapon = WeaponType.Sword; break;
+                hasWeapon = WeaponType.Sword;
+
+                // 액션, 스킬 이미지 변경
+                gm.ChangeSkill(1);
+                break;
 
             // 방패
             case 2:
@@ -247,32 +284,33 @@ public class PlayerAction : MonoBehaviour
                     anim.SetBool("isBow", false);
                     EquipPutOff(3);
                     hasWeapon = WeaponType.None;
+
+                    // 액션, 스킬 이미지 변경
+                    gm.ChangeSkill(0);
                 }
                 gm.defImg.color = Color.white;
                 shield.SetActive(true); break;
 
             // 활
             case 3:
-                if (hasWeapon == WeaponType.Sword)
-                {
-                    EquipPutOff(0);
-                }
-                if (shield.activeSelf)
-                {
-                    EquipPutOff(2);
-                }
+                if (hasWeapon == WeaponType.Sword) EquipPutOff(0);
+                if (shield.activeSelf) EquipPutOff(2);
+
                 anim.SetTrigger("weaponChange");
                 anim.SetBool("isBow", true);
                 bow.SetActive(true);
                 arrow.SetActive(true);
-                hasWeapon = WeaponType.Bow; break;
+                hasWeapon = WeaponType.Bow;
+
+                // 액션, 스킬 이미지 변경
+                gm.ChangeSkill(2);
+                break;
         }
     }
 
     // 장비 장착 해제
     public void EquipPutOff(int itemIdx)
     {
-        print(itemIdx + "장비해제");
         inventory.EquipItemMove(itemIdx, false);
 
         switch (itemIdx)

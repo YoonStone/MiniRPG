@@ -9,8 +9,9 @@ using System;
 [System.Serializable]
 public struct Skill
 {
-    public Button skillBtn;
-    public Image skillCool;
+    public Sprite actionImg;
+    public float actionAtk;
+    public Sprite skillImg;
     public float skillAtk;
     public float skillCoolTime;
 }
@@ -25,6 +26,8 @@ public enum PopupState
 
 public class GameManager : MonoBehaviour
 {
+    public Skill[] skills; // 공격 스킬 종류
+
     [Header("-- UI 애니메이터 -- ")]
     public Animator anim_Setting;
     public Animator anim_Inventory;
@@ -33,8 +36,8 @@ public class GameManager : MonoBehaviour
     public Animator anim_Shop;
 
     [Header("-- 버튼 -- ")]
-    public Button playerActionBtn;   // 플레이어 액션 버튼
-    public Skill[] skills;           // 공격 스킬 배열
+    public Button actionBtn;         // 플레이어 액션 버튼
+    public Button skillBtn;          // 스킬 버튼
     public GameObject chatNextBtn;   // 말풍선 다음 버튼
     public GameObject chatCancleBtn; // 말풍선 종료 버튼
 
@@ -50,6 +53,9 @@ public class GameManager : MonoBehaviour
     public Image hpImg;
     public Image expImg;
     public Image defImg;
+    public Image actionImg;
+    public Image skillImg;
+    public Image skillCoolImg;
     public Transform fadeImg; // 페이드인,페이드아웃
 
     [HideInInspector] public QuestManager qm;
@@ -177,6 +183,8 @@ public class GameManager : MonoBehaviour
     {
         dm.Save(); // 저장
         inventory.AddItem(0); // 칼 지급
+        inventory.AddItem(2); // 칼 지급
+        inventory.AddItem(3); // 칼 지급
         // 빵 아이템 뿌리기
     }
 
@@ -209,6 +217,10 @@ public class GameManager : MonoBehaviour
         popupBtn2Txt.text = btn2;
         anim_Popup.SetTrigger("Open");
 
+        // 액션 버튼, 스킬 버튼, 이동, 카메라 회전 비활성화
+        actionBtn.interactable = false;
+        skillBtn.interactable = false;
+        playerMove.isCantMove = false;
         cameraTurn.enabled = false;
 
         return true;
@@ -221,6 +233,11 @@ public class GameManager : MonoBehaviour
         popupState = isLeft ? PopupState.Left : PopupState.Right;
         anim_Popup.SetTrigger("Close");
         isPopup = false;
+
+        // 액션 버튼, 스킬 버튼, 이동, 카메라 회전 활성화
+        actionBtn.interactable = true;
+        skillBtn.interactable = true;
+        playerMove.isCantMove = true;
         cameraTurn.enabled = true;
     }
 
@@ -254,9 +271,10 @@ public class GameManager : MonoBehaviour
     // 지금 열릴 말풍선이 대화인지 퀘스트인지
     public void CheckBubble()
     {
-        // 액션 버튼, 이동 비활성화
-        playerActionBtn.interactable = false;
-        playerMove.isCantMove = true;
+        // 액션 버튼, 스킬 버튼, 이동 비활성화
+        actionBtn.interactable = false;
+        skillBtn.interactable = false;
+        playerMove.isCantMove = false;
 
         // 상점이 열려있다면 끄기
         anim_Shop.SetBool("isOpen", false);
@@ -352,7 +370,8 @@ public class GameManager : MonoBehaviour
     public void OnClickChatCancle()
     {
         anim_Chat.SetTrigger("Close");
-        playerActionBtn.interactable = true;
+        actionBtn.interactable = true;
+        skillBtn.interactable = true;
         playerMove.isCantMove = false;
     }
 
@@ -363,7 +382,18 @@ public class GameManager : MonoBehaviour
         CheckBubble();
     }
     #endregion
-    
+
+    // 무기가 달라짐에 따라 이미지와 스킬 변경
+    public void ChangeSkill(int skillIdx)
+    {
+        actionImg.sprite = skills[skillIdx].actionImg;
+        skillImg.sprite = skills[skillIdx].skillImg;
+
+        int a = skillIdx == 0 ? 0 : 1;
+        actionImg.color = new Vector4(1, 1, 1, a);
+        skillImg.color = new Vector4(1, 1, 1, a);
+    }
+
     // 페이드인, 페이드아웃
     public IEnumerator SceneFade(Vector3 fromScale, Vector3 toScale, int sceneIdx)
     {
@@ -394,23 +424,19 @@ public class GameManager : MonoBehaviour
     // 스킬 쿨타임
     public IEnumerator SkiilCoolTime(int skillNumber)
     {
-        skills[skillNumber].skillBtn.interactable = false;
-        skills[skillNumber].skillCool.gameObject.SetActive(true);
-
-        // 쿨타임 이미지
-        Image coolImg = skills[skillNumber].skillCool;
-        float coolTime = skills[skillNumber].skillCoolTime;
+        skillBtn.interactable = false;
+        skillCoolImg.gameObject.SetActive(true);
 
         float time = 0;
         while (time < 1)
         {
-            time += Time.deltaTime / coolTime;
-            coolImg.fillAmount = Mathf.Lerp(1, 0, time);
+            time += Time.deltaTime / skills[skillNumber].skillCoolTime;
+            skillCoolImg.fillAmount = Mathf.Lerp(1, 0, time);
             yield return null;
         }
 
-        skills[skillNumber].skillCool.gameObject.SetActive(false);
-        skills[skillNumber].skillBtn.interactable = true;
+        skillCoolImg.gameObject.SetActive(false);
+        skillBtn.interactable = true;
     }
 
     // 경험치 증가 효과

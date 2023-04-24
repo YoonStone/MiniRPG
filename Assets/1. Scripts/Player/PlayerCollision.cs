@@ -7,14 +7,6 @@ public class PlayerCollision : MonoBehaviour
     public float radius;
     public LayerMask itemLayer;
 
-    PlayerAction playerAction;
-    RaycastHit hit;
-
-    private void Start()
-    {
-        playerAction = GetComponent<PlayerAction>();
-    }
-
     private void Update()
     {
         // Item 용
