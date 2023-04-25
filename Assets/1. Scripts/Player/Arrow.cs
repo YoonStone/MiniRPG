@@ -4,52 +4,38 @@ using UnityEngine;
 
 public class Arrow : MonoBehaviour
 {
+    Transform player;
     Rigidbody rigid;
-
-    [Header("던지는 힘")]
-    public float throwPower = 10;
-
-    [HideInInspector]
-    public float atk;
 
     void Awake()
     {
+        player = FindObjectOfType<PlayerAction>().transform;
         rigid = GetComponent<Rigidbody>();
+        gameObject.SetActive(false);
     }
 
-    private void Shoot()
+    private void OnEnable()
     {
-        rigid.velocity = Vector3.zero;
-        Vector3 dir;
+        rigid.velocity = player.forward * 5 + player.up * 3;
 
-        Collider[] monsters = Physics.OverlapSphere(transform.position, 3f, LayerMask.NameToLayer("Monster"));
-        if(monsters.Length != 0)
-        {
-            float minDist = 0;
-            Transform minMonster = monsters[0].transform;
-            for (int i = 0; i < monsters.Length; i++)
-            {
-                float dist = Vector3.Distance(transform.position, monsters[i].transform.position);
-                if (minDist > dist)
-                {
-                    minDist = dist;
-                    minMonster = monsters[i].transform;
-                }
-            }
+        Invoke("SetDisable", 5);
+    }
 
-            dir = (minMonster.position - transform.position).normalized;
-        }
-        else dir = transform.forward;
-
-        rigid.AddForce(dir * throwPower, ForceMode.Impulse);
+    void Update()
+    {
+        // 포물선으로 떨어지도록
+        transform.forward = rigid.velocity;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        //if (collision.gameObject.CompareTag("Player"))
-        //{
-        //    player.GetHit(atk);
-        //}
-        //gameObject.SetActive(false);
+        Invoke("SetDisable", 0.1f);
+    }
+
+    void SetDisable()
+    {
+        rigid.velocity = Vector3.zero;
+        rigid.angularVelocity = Vector3.zero;
+        gameObject.SetActive(false);
     }
 }

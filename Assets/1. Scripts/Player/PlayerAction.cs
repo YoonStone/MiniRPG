@@ -25,7 +25,6 @@ public class PlayerAction : MonoBehaviour
     Animator anim;
     Animator bowAnim;
     Animator arrowAnim;
-
     DataManager dm;
     GameManager gm;
     InventoryManager inventory;
@@ -61,10 +60,7 @@ public class PlayerAction : MonoBehaviour
         arrowPool = new GameObject[arrowCount];
         for (int i = 0; i < arrowPool.Length; i++)
         {
-            arrowPool[i] = Instantiate(arrowPref);
-            arrowPool[i].GetComponent<Rigidbody>().centerOfMass
-                = arrowPool[i].transform.forward * 1.5f;
-            arrowPool[i].SetActive(false);
+            arrowPool[i] = Instantiate(arrowPref, gm.transform);
         }
     }
 
@@ -172,34 +168,9 @@ public class PlayerAction : MonoBehaviour
         {
             if (!arrowPref.activeSelf)
             {
-                arrowPref.transform.position = arrow.transform.position + arrowPref.transform.forward;
-                Rigidbody rigid = arrowPref.GetComponent<Rigidbody>();
-                rigid.velocity = Vector3.zero;
-
-                Collider[] monsters = Physics.OverlapSphere(transform.position, 3f, 1 << 7);
-                print(monsters.Length);
-                if (monsters.Length != 0)
-                {
-                    float minDist = 0;
-                    Transform minMonster = monsters[0].transform;
-                    for (int i = 0; i < monsters.Length; i++)
-                    {
-                        float dist = Vector3.Distance(transform.position, monsters[i].transform.position);
-                        if (minDist > dist)
-                        {
-                            minDist = dist;
-                            minMonster = monsters[i].transform;
-                        }
-                    }
-
-                    Vector3 dir = (minMonster.position + Vector3.up - arrowPref.transform.position).normalized;
-                    arrowPref.transform.rotation = Quaternion.LookRotation(dir);
-                }
-                else arrowPref.transform.rotation = arrow.transform.rotation;
-                arrowPref.transform.rotation *= Quaternion.Euler(0, 0, 20);
+                arrowPref.transform.position = transform.position + transform.forward + transform.up;
+                arrowPref.transform.rotation = arrow.transform.rotation * Quaternion.Euler(0, 20, 0);
                 arrowPref.SetActive(true);
-
-                rigid.AddForce(arrowPref.transform.forward * shootPower, ForceMode.Impulse);
                 break;
             }
         }

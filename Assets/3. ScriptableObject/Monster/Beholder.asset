@@ -23,5 +23,5 @@ MonoBehaviour:
     dropCount_min: 1
     dropCount_max: 3
     percent: 1
-  dist_Follow: 8
-  dist_Attack: 3.5
+  dist_Follow: 6
+  dist_Attack: 5

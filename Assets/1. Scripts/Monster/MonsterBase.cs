@@ -48,8 +48,8 @@ public class MonsterBase : MonoBehaviour
     }
 
     protected Animator anim;
-    NavMeshAgent agent;
     protected PlayerAction player;
+    NavMeshAgent agent;
     Transform playerTr;
     CanvasGroup cg;
 
