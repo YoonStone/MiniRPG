@@ -7,6 +7,8 @@ public class Arrow : MonoBehaviour
     Transform player;
     Rigidbody rigid;
 
+    [HideInInspector] public float shootPower;
+
     void Awake()
     {
         player = FindObjectOfType<PlayerAction>().transform;
@@ -16,20 +18,21 @@ public class Arrow : MonoBehaviour
 
     private void OnEnable()
     {
-        rigid.velocity = player.forward * 5 + player.up * 3;
+        //rigid.velocity = player.forward * 6 + player.up * 3.5f;
+        rigid.AddForce((player.forward + player.up * 0.6f) * shootPower, ForceMode.Impulse);
 
         Invoke("SetDisable", 5);
     }
 
     void Update()
     {
-        // 포물선으로 떨어지도록
+        // 이동하는 방향대로 바라보도록 (=포물선 운동)
         transform.forward = rigid.velocity;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        Invoke("SetDisable", 0.1f);
+        SetDisable();
     }
 
     void SetDisable()

@@ -170,6 +170,7 @@ public class PlayerAction : MonoBehaviour
             {
                 arrowPref.transform.position = transform.position + transform.forward + transform.up;
                 arrowPref.transform.rotation = arrow.transform.rotation * Quaternion.Euler(0, 20, 0);
+                arrowPref.GetComponent<Arrow>().shootPower = shootPower;
                 arrowPref.SetActive(true);
                 break;
             }
