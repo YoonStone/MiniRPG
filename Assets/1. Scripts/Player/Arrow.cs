@@ -7,6 +7,8 @@ public class Arrow : MonoBehaviour
     Transform player;
     Rigidbody rigid;
 
+    [HideInInspector] public float shootPower;
+
     void Awake()
     {
         player = FindObjectOfType<PlayerAction>().transform;
@@ -21,7 +23,7 @@ public class Arrow : MonoBehaviour
 
     void Update()
     {
-        // 포물선으로 떨어지도록
+        // 이동하는 방향대로 바라보도록 (=포물선 운동)
         transform.forward = rigid.velocity;
     }
 
