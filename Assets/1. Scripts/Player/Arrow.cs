@@ -16,8 +16,6 @@ public class Arrow : MonoBehaviour
 
     private void OnEnable()
     {
-        rigid.velocity = player.forward * 5 + player.up * 3;
-
         Invoke("SetDisable", 5);
     }
 
@@ -29,7 +27,7 @@ public class Arrow : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Invoke("SetDisable", 0.1f);
+        SetDisable();
     }
 
     void SetDisable()

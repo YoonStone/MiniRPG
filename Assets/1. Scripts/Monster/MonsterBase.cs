@@ -59,6 +59,9 @@ public class MonsterBase : MonoBehaviour
     [Header("몬스터 정보")]
     public MonsterInfo monsterInfo;
 
+    [Header("화살에 맞을 부위")]
+    public Transform shootPos;
+
     [HideInInspector]
     public bool isAttack; // 공격 중인지
 
@@ -208,7 +211,6 @@ public class MonsterBase : MonoBehaviour
         // 피격
         if (other.CompareTag("PlayerAttack"))
         {
-            other.enabled = false;
             StartCoroutine(GetHit());
         }
 

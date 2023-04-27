@@ -162,6 +162,7 @@ public class PlayerAction : MonoBehaviour
         playerMove.isCantMove = false;
     }
 
+    public Transform target;
     void Shoot()
     {
         foreach (var arrowPref in arrowPool)
@@ -170,7 +171,20 @@ public class PlayerAction : MonoBehaviour
             {
                 arrowPref.transform.position = transform.position + transform.forward + transform.up;
                 arrowPref.transform.rotation = arrow.transform.rotation * Quaternion.Euler(0, 20, 0);
-                arrowPref.SetActive(true);
+
+                // 조준된 몬스터가 있다면 방향 구해서 발사
+                if (target)
+                {
+                    Vector3 dir = (target.GetComponent<MonsterBase>().shootPos.position - transform.position).normalized;
+                    arrowPref.SetActive(true);
+                    arrowPref.GetComponent<Rigidbody>().velocity = dir * shootPower;
+                }
+                // 조준된 몬스터가 없다면 일반 발사
+                else
+                {
+                    arrowPref.SetActive(true);
+                    arrowPref.GetComponent<Rigidbody>().velocity = transform.forward * 5 + transform.up * 3;
+                }
                 break;
             }
         }
