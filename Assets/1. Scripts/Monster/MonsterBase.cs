@@ -62,6 +62,9 @@ public class MonsterBase : MonoBehaviour
     [Header("화살에 맞을 부위")]
     public Transform shootPos;
 
+    [Header("조준 이미지 생길 부위")]
+    public Transform aimPos;
+
     [HideInInspector]
     public bool isAttack; // 공격 중인지
 

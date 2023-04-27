@@ -281,6 +281,7 @@ MonoBehaviour:
   hpImg: {fileID: 3905289621855018237}
   monsterInfo: {fileID: 11400000, guid: 756d6b448b27a418a8b17ad7b30f4e0c, type: 2}
   shootPos: {fileID: 7761745781509325743}
+  aimPos: {fileID: 3377746512508185354}
   isAttack: 0
   atk_touch: 10
   bonePos: {fileID: 7174809950262928897}

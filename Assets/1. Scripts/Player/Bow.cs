@@ -10,24 +10,6 @@ public class Bow : MonoBehaviour
     public Vector3 boxSize;
     public LayerMask MonsterLayer;
 
-    //List<Transform> monsters = new List<Transform>();
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.tag == "Monster")
-        {
-            //monsters.Add(other.transform);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "Monster")
-        {
-            //monsters.Remove(other.transform);
-        }
-    }
-
     private void Update()
     {
         Collider[] monsters
@@ -44,17 +26,19 @@ public class Bow : MonoBehaviour
                     nearMonster = monsters[i].transform;
             }
 
-            // 조준된 몬스터 전달
-            aiming.gameObject.SetActive(true);
-            aiming.SetParent(nearMonster.GetComponent<MonsterBase>().shootPos);
-            aiming.anchoredPosition3D = new Vector3(0, 0, 0);
-            aiming.localRotation = Quaternion.identity;
-            aiming.gameObject.SetActive(true);
-            playerAction.target = nearMonster;
+            // 조준된 몬스터 전달 (이미 조준되어있는 경우 제외)
+            if(playerAction.target != nearMonster)
+            {
+                aiming.gameObject.SetActive(true);
+                aiming.SetParent(nearMonster.GetComponent<MonsterBase>().aimPos);
+                aiming.anchoredPosition3D = new Vector3(0, 0, 0);
+                aiming.localRotation = Quaternion.identity;
+                playerAction.target = nearMonster;
+            }
         }
 
-        // 조준된 몬스터가 없다면 비우기
-        else
+        // 조준된 몬스터가 없다면 비우기 (이미 비워진 경우 제외)
+        else if (playerAction.target)
         {
             aiming.SetParent(player);
             aiming.gameObject.SetActive(false);
