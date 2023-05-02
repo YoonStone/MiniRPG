@@ -30,7 +30,7 @@ public class Bow : MonoBehaviour
             if(playerAction.target != nearMonster)
             {
                 aiming.gameObject.SetActive(true);
-                aiming.SetParent(nearMonster.GetComponent<MonsterBase>().aimPos);
+                aiming.SetParent(nearMonster);
                 aiming.anchoredPosition3D = new Vector3(0, 0, 0);
                 aiming.localRotation = Quaternion.identity;
                 playerAction.target = nearMonster;

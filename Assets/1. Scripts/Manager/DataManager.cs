@@ -34,6 +34,8 @@ public class Data
     public int[] itemSlots_Count = new int[8];
     public int[] equipSlots_Number = new int[2];
     public int[] equipSlots_Count = new int[2];
+
+    public bool[] skillOpen = new bool[3];
 }
 
 public class DataManager : MonoBehaviour
@@ -122,8 +124,15 @@ public class DataManager : MonoBehaviour
     }
 
     // 불러오기한 내용 적용
-    public void AfterLoad()
+    public void AfterLoad(GameManager gm)
     {
+        // UI 표시하기
+        gm.Hp = data.hp;
+        gm.Exp = data.exp; 
+        gm.Level = data.level;
+        gm.Gold = data.gold;
+        gm.Def = data.def;
+
         PlayerAction player = FindObjectOfType<PlayerAction>();
 
         // 위치 불러오기

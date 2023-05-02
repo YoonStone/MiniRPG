@@ -1,36 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &4739688361035724304
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 83290696491290814}
-  m_Layer: 7
-  m_Name: ShootPos
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &83290696491290814
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4739688361035724304}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6876172977997547739}
-  m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6879251499406894337
 GameObject:
   m_ObjectHideFlags: 0
@@ -420,6 +389,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6876022032420272731}
+  - component: {fileID: 1323966562112463194}
   m_Layer: 7
   m_Name: Shell
   m_TagString: Untagged
@@ -453,6 +423,19 @@ Transform:
   m_Father: {fileID: 6877587093718357149}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 3.0355202e-15, y: 3.3192585e-15, z: 5.1130795}
+--- !u!135 &1323966562112463194
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6879656787050353449}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.71
+  m_Center: {x: -0.12, y: 0, z: 0}
 --- !u!1 &6879668251069869859
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,7 +657,7 @@ GameObject:
   - component: {fileID: 6786403217283747081}
   - component: {fileID: 6786403217283747084}
   - component: {fileID: 6786403217283747083}
-  - component: {fileID: 6786403217283747082}
+  - component: {fileID: 7353105129461862267}
   m_Layer: 7
   m_Name: TurtleShell
   m_TagString: Monster
@@ -697,7 +680,6 @@ Transform:
   - {fileID: 6876392823665926733}
   - {fileID: 6877771969776647799}
   - {fileID: 6880511050177126201}
-  - {fileID: 83290696491290814}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -735,8 +717,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hpImg: {fileID: 6880511048563353376}
   monsterInfo: {fileID: 11400000, guid: 8714e3830aba84c2caf62000263e41b7, type: 2}
-  shootPos: {fileID: 83290696491290814}
-  aimPos: {fileID: 6876022032420272731}
+  shootPos: {fileID: 6876022032420272731}
   isAttack: 0
   atk_touch: 6
 --- !u!195 &6786403217283747083
@@ -761,20 +742,22 @@ NavMeshAgent:
   m_BaseOffset: -0.08
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!136 &6786403217283747082
-CapsuleCollider:
+--- !u!54 &7353105129461862267
+Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6879866747523406347}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 0.66
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.9, z: 0}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 126
+  m_CollisionDetection: 0
 --- !u!1 &6879874437637175269
 GameObject:
   m_ObjectHideFlags: 0

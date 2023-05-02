@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class IslandManager : MonoBehaviour
 {
-    private void Start()
+    // 처음 플레이할 때만 빵 아이템 생성
+    public GameObject firstItems;
+    public void CreateItem()
     {
-        // NPC 정보 넘겨주기
-        //GameManager.instance.qm.npcs = FindObjectsOfType<NPC>();
+        firstItems.SetActive(true);
     }
 }

@@ -17,7 +17,7 @@ public class PlayerMove : MonoBehaviour
     float turnVelocity; // 현재 회전 속도
     bool isMoving;      // 이동 중인지
 
-    [HideInInspector]
+    //[HideInInspector]
     public bool isCantMove; // 이동 불가능한 상태인지
 
     [Header("-- 조이스틱 관련 --")]
@@ -43,7 +43,11 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        if (isCantMove) return;
+        if (isCantMove)
+        {
+            MoveEnd();
+            return;
+        }
 
         //moveDir = JoyStickMove();
         float h = Input.GetAxisRaw("Horizontal");

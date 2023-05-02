@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
     public Image skillImg;
     public Image skillCoolImg;
     public Transform fadeImg; // 페이드인,페이드아웃
+    public GameObject dontTouch;
 
     [HideInInspector] public QuestManager qm;
     [HideInInspector] public DataManager dm;
@@ -94,6 +95,8 @@ public class GameManager : MonoBehaviour
         get { return dm.data.level; }
         set
         {
+            print($"원래는 {dm.data.level}인데 {value}로 변함");
+            if (value > dm.data.level) StartCoroutine(LevelUp(value));
             dm.data.level = value;
             levelTxt.text = value.ToString();
         }
@@ -156,6 +159,7 @@ public class GameManager : MonoBehaviour
         // 씬 전환 이벤트 추가
         SceneManager.sceneLoaded += OnSceneLoaded;
 
+        // 씬 내에 필요한 컴포넌트 수집
         qm = GetComponent<QuestManager>();
         playerAction = FindObjectOfType<PlayerAction>();
         playerMove = playerAction.GetComponent<PlayerMove>();
@@ -165,8 +169,11 @@ public class GameManager : MonoBehaviour
         dm = DataManager.instance;
         inventory = InventoryManager.instance;
 
+        // 먼저 할 일들
+        playerAction.BeforeStart();
+
         // 불러오기한 내용 적용
-        if (dm.isLoad) dm.AfterLoad();
+        if (dm.isLoad) dm.AfterLoad(this);
 
         // 처음 플레이하는 경우
         else FirstPlaySetting();
@@ -183,9 +190,7 @@ public class GameManager : MonoBehaviour
     {
         dm.Save(); // 저장
         inventory.AddItem(0); // 칼 지급
-        inventory.AddItem(2); // 칼 지급
-        inventory.AddItem(3); // 칼 지급
-        // 빵 아이템 뿌리기
+        //FindObjectOfType<IslandManager>().CreateItem(); // 빵 아이템 뿌리기
     }
 
     // 설정 버튼
@@ -218,9 +223,8 @@ public class GameManager : MonoBehaviour
         anim_Popup.SetTrigger("Open");
 
         // 액션 버튼, 스킬 버튼, 이동, 카메라 회전 비활성화
-        actionBtn.interactable = false;
-        skillBtn.interactable = false;
-        playerMove.isCantMove = false;
+        dontTouch.SetActive(true);
+        playerMove.isCantMove = true;
         cameraTurn.enabled = false;
 
         return true;
@@ -235,9 +239,8 @@ public class GameManager : MonoBehaviour
         isPopup = false;
 
         // 액션 버튼, 스킬 버튼, 이동, 카메라 회전 활성화
-        actionBtn.interactable = true;
-        skillBtn.interactable = true;
-        playerMove.isCantMove = true;
+        dontTouch.SetActive(false);
+        playerMove.isCantMove = false;
         cameraTurn.enabled = true;
     }
 
@@ -272,9 +275,8 @@ public class GameManager : MonoBehaviour
     public void CheckBubble()
     {
         // 액션 버튼, 스킬 버튼, 이동 비활성화
-        actionBtn.interactable = false;
-        skillBtn.interactable = false;
-        playerMove.isCantMove = false;
+        dontTouch.SetActive(true);
+        playerMove.isCantMove = true;
 
         // 상점이 열려있다면 끄기
         anim_Shop.SetBool("isOpen", false);
@@ -370,8 +372,7 @@ public class GameManager : MonoBehaviour
     public void OnClickChatCancle()
     {
         anim_Chat.SetTrigger("Close");
-        actionBtn.interactable = true;
-        skillBtn.interactable = true;
+        dontTouch.SetActive(false);
         playerMove.isCantMove = false;
     }
 
@@ -383,15 +384,62 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    // 레벨업
+    IEnumerator LevelUp(int level)
+    {
+        // 레벨 2가 되면 칼 스킬 해금
+        if (level >= 2 && !dm.data.skillOpen[1])
+        {
+            dm.data.skillOpen[1] = true;
+            PopupOpen("레벨업!\n새로운 스킬(휘리릭) 사용 가능", "확인", "만세!");
+        }
+
+        // 레벨 3이 되면 칼 스킬 해금
+        if (level >= 3 && !dm.data.skillOpen[2])
+        {
+            dm.data.skillOpen[2] = true;
+            PopupOpen("레벨업!\n새로운 스킬(슝슝슝) 사용 가능", "확인", "만세!");
+        }
+
+        // 스킬 잠금여부 확인
+        CurSkillSetting();
+
+        // 예/아니오를 누를 때까지 기다리기
+        popupState = PopupState.None;
+        yield return new WaitUntil(() => popupState != PopupState.None);
+
+        popupState = PopupState.None;
+    }
+
     // 무기가 달라짐에 따라 이미지와 스킬 변경
     public void ChangeSkill(int skillIdx)
     {
         actionImg.sprite = skills[skillIdx].actionImg;
         skillImg.sprite = skills[skillIdx].skillImg;
 
+        // 무기가 없다면 이미지 투명
         int a = skillIdx == 0 ? 0 : 1;
         actionImg.color = new Vector4(1, 1, 1, a);
         skillImg.color = new Vector4(1, 1, 1, a);
+
+        // 스킬 해금 여부에 따라
+        skillBtn.interactable = dm.data.skillOpen[skillIdx];
+        print("스킬 해금 상태 : " + dm.data.skillOpen[skillIdx]);
+    }
+
+    // 스킬 잠금여부 확인
+    void CurSkillSetting()
+    {
+        switch (playerAction.hasWeapon)
+        {
+            case PlayerAction.WeaponType.Sword:
+                if(dm.data.skillOpen[1]) skillBtn.interactable = true;
+                else skillBtn.interactable = false; break;
+
+            case PlayerAction.WeaponType.Bow:
+                if (dm.data.skillOpen[2]) skillBtn.interactable = true;
+                else skillBtn.interactable = false; break;
+        }
     }
 
     // 페이드인, 페이드아웃
@@ -405,7 +453,7 @@ public class GameManager : MonoBehaviour
             fadeImg.localScale = Vector3.Lerp(fromScale, toScale, time);
             yield return null;
         }
-        print("페이드 끝");
+
         if (sceneIdx != -1)
         {
             dm.Save(); // 씬 전환 전 저장
@@ -436,7 +484,9 @@ public class GameManager : MonoBehaviour
         }
 
         skillCoolImg.gameObject.SetActive(false);
-        skillBtn.interactable = true;
+
+        // 스킬 잠금여부 확인 후 활성화
+        CurSkillSetting();
     }
 
     // 경험치 증가 효과

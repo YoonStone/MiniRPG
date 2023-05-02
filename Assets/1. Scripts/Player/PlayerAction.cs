@@ -32,25 +32,30 @@ public class PlayerAction : MonoBehaviour
     GameObject[] arrowPool;
 
     // 들고 있는 무기 종류
-    enum WeaponType
+    public enum WeaponType
     {
         None,
         Sword,
         Bow
     }
 
-    WeaponType hasWeapon; // 들고 있는 무기
+    public WeaponType hasWeapon; // 들고 있는 무기
+
+    // Start 함수보다 빨리 호출
+    public void BeforeStart()
+    {
+        gm = GameManager.instance;
+        anim = GetComponent<Animator>();
+    }
 
     void Start()
     {
         swordColl = sword.GetComponent<BoxCollider>();
         playerMove = GetComponent<PlayerMove>();
-        anim = GetComponent<Animator>();
         bowAnim = bow.GetComponent<Animator>();
         arrowAnim = arrow.GetComponent<Animator>();
 
         dm = DataManager.instance;
-        gm = GameManager.instance;
         inventory = InventoryManager.instance;
 
         gm.actionBtn.onClick.AddListener(OnClickActionBtn);
@@ -175,7 +180,7 @@ public class PlayerAction : MonoBehaviour
                 // 조준된 몬스터가 있다면 방향 구해서 발사
                 if (target)
                 {
-                    Vector3 dir = (target.GetComponent<MonsterBase>().shootPos.position - transform.position).normalized;
+                    Vector3 dir = (target.position - transform.position).normalized;
                     arrowPref.SetActive(true);
                     arrowPref.GetComponent<Rigidbody>().velocity = dir * shootPower;
                 }

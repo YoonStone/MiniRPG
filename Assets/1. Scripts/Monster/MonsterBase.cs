@@ -62,9 +62,6 @@ public class MonsterBase : MonoBehaviour
     [Header("화살에 맞을 부위")]
     public Transform shootPos;
 
-    [Header("조준 이미지 생길 부위")]
-    public Transform aimPos;
-
     [HideInInspector]
     public bool isAttack; // 공격 중인지
 
@@ -172,10 +169,9 @@ public class MonsterBase : MonoBehaviour
     // 죽음
     protected virtual IEnumerator Die()
     {
-        print("부모의 죽음 함수 호출");
         cg.alpha = 0;
         anim.SetTrigger("die");
-        GetComponent<Collider>().enabled = false;
+        GetComponentInChildren<Collider>().enabled = false;
         this.enabled = false;
 
         // 경험치, 골드 증가
