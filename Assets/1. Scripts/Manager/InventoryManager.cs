@@ -50,7 +50,7 @@ public class InventoryManager : MonoBehaviour
     {
         // 퀘스트용 아이템
         if (item.itemType == ItemType.Quest)
-            dm.data.questItemCount++;
+            gm.QuestItemCount++;
 
         foreach (var itemSlot in itemSlots)
         {

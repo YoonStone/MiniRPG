@@ -20,6 +20,13 @@ public class CameraTurn : MonoBehaviour
         screenWidthHalf = Screen.width * 0.5f;
     }
 
+    private void OnDisable()
+    {
+        isDrag = false;
+        cineFreeLook.m_YAxis.m_InputAxisValue = 0;
+        cineFreeLook.m_XAxis.m_InputAxisValue = 0;
+    }
+
     void Update()
     {
         // 드래그 시작

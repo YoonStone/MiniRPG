@@ -219,6 +219,10 @@ public class PlayerAction : MonoBehaviour
     // 퀘스트 완료 행동
     void AfterQuestComplete()
     {
+        // 퀘스트 진행 숫자 초기화 및 완료 표시
+        dm.data.questItemCount = 0;
+        gm.QuestCompleteUI(dm.data.questNum);
+
         // 보상 받기
         string getItem = dm.questList[dm.data.questNum]["GetItemIndex"].ToString();
         string getExp = dm.questList[dm.data.questNum]["GetExp"].ToString();

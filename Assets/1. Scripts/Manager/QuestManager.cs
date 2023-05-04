@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using static NPC;
 
@@ -40,7 +41,6 @@ public class QuestManager : MonoBehaviour
     // 퀘스트 조건 만족
     IEnumerator QuestComplete()
     {
-        print("퀘스트 조건 만족");
         gm.QuestCompleteOpen();
 
         // 해당 NPC가 존재할 때만 NPC 상태 변경
@@ -63,9 +63,11 @@ public class QuestManager : MonoBehaviour
     // 퀘스트 번호에 맞는 퀘스트 함수를 골라 실행
     public void StartQuest(int questNum)
     {
+        // 퀘스트 목록 생성
+        gm.AddQuestList(questNum, gm.QuestItemCount);
+
         RestNPCState();
         StartCoroutine(questList[questNum]());
-        print(questNum + "번 퀘스트 실행");
     }
 
     #region [퀘스트 종류]
@@ -73,6 +75,7 @@ public class QuestManager : MonoBehaviour
     {
         // 음식을 먹어 체력이 회복될 때까지 기다리기
         yield return new WaitUntil(() => gm.Hp >= 100);
+        gm.QuestItemCount = 1;
         StartCoroutine(QuestComplete());
     }
 
@@ -82,14 +85,21 @@ public class QuestManager : MonoBehaviour
 
         // 몬스터를 죽여 경험치가 오를 때까지 기다리기
         yield return new WaitUntil(() => gm.Exp > curExp);
+        gm.QuestItemCount = 1;
         StartCoroutine(QuestComplete());
     }
 
 
     IEnumerator Chatterer_Delivery()
     {
+        // 뿔 아이템을 퀘스트 아이템으로
+        inventory.items[4].itemType = ItemType.Quest;
+
+        // 이미 뿔을 얻은 적이 있다면 적용
+        if (inventory.FindItemSlot(4)) gm.QuestItemCount = inventory.FindItemSlot(4).Count;
+
         // 뿔 아이템의 개수가 8개 이상이 될 때까지 기다리기
-        yield return new WaitUntil(() => dm.data.questItemCount >= 8);
+        yield return new WaitUntil(() => gm.QuestItemCount >= 8);
         StartCoroutine(QuestComplete());
 
         // NPC와 대화하여 해당 퀘스트가 끝나면 퀘스트용 아이템 삭제
@@ -104,19 +114,19 @@ public class QuestManager : MonoBehaviour
 
         // 물건을 구매하여 골드가 줄어들 때까지 기다리기
         yield return new WaitUntil(() => gm.Gold < curGold);
+        gm.QuestItemCount = 1;
         StartCoroutine(QuestComplete());
     }
 
     IEnumerator Boy_Help()
     {
         // 심부름 아이템의 개수가 3개 이상이 될 때까지 기다리기
-        yield return new WaitUntil(() => dm.data.questItemCount >= 3);
+        yield return new WaitUntil(() => gm.QuestItemCount >= 3);
         StartCoroutine(QuestComplete());
 
         // NPC와 대화하여 해당 퀘스트가 끝나면 퀘스트용 아이템 삭제
         yield return new WaitUntil(() => dm.data.questState == QuestState.None);
         int curNpcIdx = int.Parse(dm.questList[dm.data.questNum - 1]["ToNPC"].ToString());
-        print(dm.data.questNum - 1);
         npcs[curNpcIdx].npcObj.SendMessage("OutQuestItem_" + (dm.data.questNum - 1));
     }
     #endregion

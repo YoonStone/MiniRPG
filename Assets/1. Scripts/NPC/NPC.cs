@@ -95,7 +95,6 @@ public class NPC : MonoBehaviour
         // 이후에 퀘스트가 없다면 끝
         if (dm.data.questNum >= dm.questList.Count)
         {
-            print(info.npcName + "은/는 더이상 퀘스트가 없음");
             NPCState = NPCQuestState.None;
             return;
         }
@@ -107,28 +106,24 @@ public class NPC : MonoBehaviour
         // 퀘스트를 줄 NPC + 퀘스트 아직 안 받은 상태
         if (fromNpc == info.npcIndex && dm.data.questState == QuestState.None)
         {
-            print(info.npcName + "은/는 퀘스트를 갖고 있어 대화를 기다리는 상태");
             NPCState = NPCQuestState.Have;
         }
 
         // 퀘스트를 완료할 NPC + 퀘스트 받은 상태
         else if (toNpc == info.npcIndex && dm.data.questState == QuestState.Accept)
         {
-            print(info.npcName + "은/는 퀘스트 조건 만족을 기다리는 상태");
             NPCState = NPCQuestState.Wait;
         }
 
         // 퀘스트를 완료할 NPC + 퀘스트 완료한 상태
         else if (toNpc == info.npcIndex && dm.data.questState == QuestState.Complete)
         {
-            print(info.npcName + "은/는 퀘스트 조건 만족하여 대화를 기다리는 상태");
             NPCState = NPCQuestState.Wait;
         }
 
         // 현재 퀘스트와 관련 없는 NPC라면
         else
         {
-            print(info.npcName + "은/는 퀘스트 없는 상태");
             NPCState = NPCQuestState.None;
         }
 

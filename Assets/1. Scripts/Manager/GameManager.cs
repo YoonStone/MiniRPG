@@ -56,8 +56,12 @@ public class GameManager : MonoBehaviour
     public Image actionImg;
     public Image skillImg;
     public Image skillCoolImg;
+
+    [Header("-- 오브젝트 -- ")]
     public Transform fadeImg; // 페이드인,페이드아웃
     public GameObject dontTouch;
+    public GameObject questListPref;
+    public Transform questContentTr;
 
     [HideInInspector] public QuestManager qm;
     [HideInInspector] public DataManager dm;
@@ -67,6 +71,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public CharacterController playerCC;
 
     CameraTurn cameraTurn;
+    List<TextMeshProUGUI> questList = new List<TextMeshProUGUI>();
 
     #region [프로퍼티]
     private float maxHp = 100;
@@ -95,7 +100,6 @@ public class GameManager : MonoBehaviour
         get { return dm.data.level; }
         set
         {
-            print($"원래는 {dm.data.level}인데 {value}로 변함");
             if (value > dm.data.level) StartCoroutine(LevelUp(value));
             dm.data.level = value;
             levelTxt.text = value.ToString();
@@ -138,6 +142,18 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    public int QuestItemCount // 퀘스트 아이템 개수
+    {
+        get { return dm.data.questItemCount; }
+        set
+        {
+            dm.data.questItemCount = value;
+            int count = int.Parse(dm.questList[dm.data.questNum]["Count"].ToString());
+            dm.data.questItemCount = dm.data.questItemCount > count ? count : dm.data.questItemCount;
+            questList[dm.data.questNum].text = $"{dm.data.questItemCount}/{count}";
+        }
+    }
     #endregion
 
     #region [싱글톤]
@@ -149,6 +165,7 @@ public class GameManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
             qm = GetComponent<QuestManager>();
+            dm = DataManager.instance;
         }
         else if (instance != this) Destroy(gameObject);
     }
@@ -160,13 +177,10 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         // 씬 내에 필요한 컴포넌트 수집
-        qm = GetComponent<QuestManager>();
         playerAction = FindObjectOfType<PlayerAction>();
         playerMove = playerAction.GetComponent<PlayerMove>();
         playerCC = playerAction.GetComponent<CharacterController>();
         cameraTurn = FindObjectOfType<CameraTurn>();
-
-        dm = DataManager.instance;
         inventory = InventoryManager.instance;
 
         // 먼저 할 일들
@@ -181,6 +195,14 @@ public class GameManager : MonoBehaviour
         // 머리 위 닉네임 설정
         playerAction.GetComponentInChildren<TextMeshPro>().text = $"[ {dm.data.nickname} ]";
 
+        // 완료된 퀘스트 목록 불러오기
+        for (int i = 0; i < dm.data.questNum; i++)
+        {
+            int count = int.Parse(dm.questList[i]["Count"].ToString());
+            AddQuestList(i, count);
+            QuestCompleteUI(i);
+        }
+
         // 현재 씬 저장
         dm.data.curSceneIdx = SceneManager.GetActiveScene().buildIndex;
     }
@@ -190,20 +212,51 @@ public class GameManager : MonoBehaviour
     {
         dm.Save(); // 저장
         inventory.AddItem(0); // 칼 지급
-        //FindObjectOfType<IslandManager>().CreateItem(); // 빵 아이템 뿌리기
+        inventory.AddItem(3); // 칼 지급
     }
 
-    // 설정 버튼
+    #region [버튼]
+    // 설정 열기 버튼
     public void OnClickSettingBtn(bool isOpen)
     {
         anim_Setting.SetBool("isOpen", isOpen);
     }
 
-    // 인벤토리 버튼
+    // 인벤토리 열기 버튼
     public void OnClickInventoryBtn(bool isOpen)
     {
         anim_Inventory.SetBool("isOpen", isOpen);
     }
+
+    // 퀘스트 버튼
+    public void OnClickQuestBtn()
+    {
+        // 액션 버튼, 스킬 버튼, 이동, 카메라 회전 비활성화
+        dontTouch.SetActive(true);
+        playerMove.isCantMove = true;
+        cameraTurn.enabled = false;
+    }
+
+    // 퀘스트 종료 버튼
+    public void OnClickQuestCancleBtn()
+    {
+        // 액션 버튼, 스킬 버튼, 이동, 카메라 회전 활성화
+        dontTouch.SetActive(false);
+        playerMove.isCantMove = false;
+        cameraTurn.enabled = true;
+    }
+
+    // 설정 버튼
+    public void OnClickSettingBtn()
+    {
+    }
+
+    // 종료 버튼
+    public void OnClickExitBtn()
+    {
+
+    }
+    #endregion
 
     #region [팝업창]
     [HideInInspector]
@@ -384,6 +437,26 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    // 퀘스트 리스트 관리
+    public void AddQuestList(int questNum, int questItemCount = 0)
+    {
+        GameObject quest = Instantiate(questListPref, questContentTr);
+
+        string questName = dm.questList[questNum]["KoreanName"].ToString();
+        quest.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = questName;
+
+        string count = dm.questList[questNum]["Count"].ToString();
+
+        questList.Add(quest.transform.GetChild(1).GetChild(0).GetComponent<TextMeshProUGUI>());
+        questList[questNum].text = $"{questItemCount}/{count}";
+    }
+
+    // 퀘스트 완료 표시
+    public void QuestCompleteUI(int questNum)
+    {
+        questList[questNum].transform.parent.GetChild(1).GetComponent<Image>().color = Color.white;
+    }
+
     // 레벨업
     IEnumerator LevelUp(int level)
     {
@@ -424,7 +497,6 @@ public class GameManager : MonoBehaviour
 
         // 스킬 해금 여부에 따라
         skillBtn.interactable = dm.data.skillOpen[skillIdx];
-        print("스킬 해금 상태 : " + dm.data.skillOpen[skillIdx]);
     }
 
     // 스킬 잠금여부 확인
@@ -445,7 +517,6 @@ public class GameManager : MonoBehaviour
     // 페이드인, 페이드아웃
     public IEnumerator SceneFade(Vector3 fromScale, Vector3 toScale, int sceneIdx)
     {
-        print(sceneIdx + "씬으로 페이드 시작");
         float time = 0;
         while (time < 1)
         {
@@ -510,8 +581,6 @@ public class GameManager : MonoBehaviour
     // 씬 전환 완료 시 실행할 이벤트
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        print($"{dm.data.curSceneIdx} > {scene.buildIndex}");
-
         dm.Load(); // 씬 전환 후 불러오기
 
         // 페이드 기능
