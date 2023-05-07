@@ -88,7 +88,8 @@ public class MonsterBase : MonoBehaviour
 
         while (State == MonsterState.Idle)
         {
-            if (Vector3.Distance(transform.position, playerTr.position) <= monsterInfo.dist_Follow)
+            if (Vector3.Distance(transform.position, playerTr.position) <= monsterInfo.dist_Follow
+                && playerTr.CompareTag("Player"))
                 State = MonsterState.Follow;
             yield return null;
         }
@@ -105,7 +106,7 @@ public class MonsterBase : MonoBehaviour
         {
             float distance = Vector3.Distance(transform.position, playerTr.position);
             if (distance <= monsterInfo.dist_Attack) State = MonsterState.Attack;
-            else if (distance > monsterInfo.dist_Follow) State = MonsterState.Idle;
+            else if (distance > monsterInfo.dist_Follow || !playerTr.CompareTag("Player")) State = MonsterState.Idle;
             else agent.destination = playerTr.position;
             yield return null;
         }
@@ -122,9 +123,9 @@ public class MonsterBase : MonoBehaviour
         while (State == MonsterState.Attack)
         {
             if (Vector3.Distance(transform.position, playerTr.position) > monsterInfo.dist_Attack)
-            {
                 State = MonsterState.Follow;
-            }
+            else if (!playerTr.CompareTag("Player"))
+                State = MonsterState.Idle;
             else
             {
                 transform.LookAt(playerTr);

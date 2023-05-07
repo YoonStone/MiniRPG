@@ -28,6 +28,7 @@ public class PlayerAction : MonoBehaviour
     DataManager dm;
     GameManager gm;
     InventoryManager inventory;
+    CharacterController cc;
 
     GameObject[] arrowPool;
 
@@ -54,6 +55,7 @@ public class PlayerAction : MonoBehaviour
         playerMove = GetComponent<PlayerMove>();
         bowAnim = bow.GetComponent<Animator>();
         arrowAnim = arrow.GetComponent<Animator>();
+        cc = GetComponent<CharacterController>();
 
         dm = DataManager.instance;
         inventory = InventoryManager.instance;
@@ -236,9 +238,6 @@ public class PlayerAction : MonoBehaviour
     // 공격 받음
     public void GetHit(float atk)
     {
-        playerMove.isCantMove = false;
-        anim.SetTrigger("getHit");
-
         // 방패를 들고 있다면
         if (gm.defImg.color == Color.white)
         {
@@ -248,6 +247,40 @@ public class PlayerAction : MonoBehaviour
         else gm.Hp -= atk;
 
         StartCoroutine(gm.HpImgColor(Color.red));
+
+        if (gm.Hp <= 0) StartCoroutine(Dead());
+        else anim.SetTrigger("getHit");
+    }
+
+    // 죽음
+    public IEnumerator Dead()
+    {
+        anim.SetTrigger("dead");
+        tag = "Untagged";
+
+        // 액션 버튼, 스킬 버튼, 이동, 카메라 회전 비활성화
+        gm.dontTouch.SetActive(true);
+        playerMove.isCantMove = true;
+        gm.cameraTurn.enabled = false;
+
+        yield return new WaitForSeconds(2f);
+        StartCoroutine(gm.SceneFade(Vector3.zero, Vector3.one, 1));
+    }
+
+    // 부활한 후 할 일
+    public void ResetAll()
+    {
+        tag = "Untagged";
+
+        // 액션 버튼, 스킬 버튼, 이동, 카메라 회전 활성화
+        gm.dontTouch.SetActive(false);
+        playerMove.isCantMove = false;
+        gm.cameraTurn.enabled = true;
+
+        cc.enabled = false;
+        cc.transform.position = new Vector3(-5.5f, -6, -12);
+        cc.transform.rotation = Quaternion.Euler(0, 145, 0);
+        cc.enabled = true;
     }
 
     // 장비 장착

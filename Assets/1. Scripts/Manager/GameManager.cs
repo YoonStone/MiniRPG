@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
-using System;
 
 [System.Serializable]
 public struct Skill
@@ -69,8 +68,8 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public PlayerAction playerAction;
     [HideInInspector] public PlayerMove playerMove;
     [HideInInspector] public CharacterController playerCC;
+    [HideInInspector] public CameraTurn cameraTurn;
 
-    CameraTurn cameraTurn;
     List<TextMeshProUGUI> questList = new List<TextMeshProUGUI>();
 
     #region [프로퍼티]
@@ -100,7 +99,6 @@ public class GameManager : MonoBehaviour
         get { return dm.data.level; }
         set
         {
-            if (value > dm.data.level) StartCoroutine(LevelUp(value));
             dm.data.level = value;
             levelTxt.text = value.ToString();
         }
@@ -458,17 +456,17 @@ public class GameManager : MonoBehaviour
     }
 
     // 레벨업
-    IEnumerator LevelUp(int level)
+    IEnumerator LevelUp()
     {
         // 레벨 2가 되면 칼 스킬 해금
-        if (level >= 2 && !dm.data.skillOpen[1])
+        if (Level >= 2 && !dm.data.skillOpen[1])
         {
             dm.data.skillOpen[1] = true;
             PopupOpen("레벨업!\n새로운 스킬(휘리릭) 사용 가능", "확인", "만세!");
         }
 
         // 레벨 3이 되면 칼 스킬 해금
-        if (level >= 3 && !dm.data.skillOpen[2])
+        if (Level >= 3 && !dm.data.skillOpen[2])
         {
             dm.data.skillOpen[2] = true;
             PopupOpen("레벨업!\n새로운 스킬(슝슝슝) 사용 가능", "확인", "만세!");
@@ -528,7 +526,7 @@ public class GameManager : MonoBehaviour
         if (sceneIdx != -1)
         {
             dm.Save(); // 씬 전환 전 저장
-            LoadingManager.LoadScene(sceneIdx);
+            SceneManager.LoadScene(sceneIdx);
         }
     }
 
@@ -571,10 +569,12 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
 
+        // 경험치가 가득 찼다면 레벨 업
         if (expImg.fillAmount >= 1)
         {
             Exp = 0;
             Level++;
+            StartCoroutine(LevelUp());
         }
     }
 
@@ -598,6 +598,12 @@ public class GameManager : MonoBehaviour
                     playerCC.transform.position = new Vector3(-18, 3.45f, -17);
                     playerCC.transform.rotation = Quaternion.Euler(0, 145, 0);
                     playerCC.enabled = true;
+                }
+
+                // 마을 > 마을
+                else if (dm.data.curSceneIdx == 1)
+                {
+                    playerAction.ResetAll();
                 }
                 break;
 
