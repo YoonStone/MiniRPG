@@ -14,7 +14,7 @@ public class CameraTurn : MonoBehaviour
     float screenWidthHalf;
     bool isDrag;
 
-    void Start()
+    private void Awake()
     {
         cineFreeLook = GetComponent<CinemachineFreeLook>();
         screenWidthHalf = Screen.width * 0.5f;

@@ -263,14 +263,15 @@ public class PlayerAction : MonoBehaviour
         playerMove.isCantMove = true;
         gm.cameraTurn.enabled = false;
 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         StartCoroutine(gm.SceneFade(Vector3.zero, Vector3.one, 1));
     }
 
     // 부활한 후 할 일
     public void ResetAll()
     {
-        tag = "Untagged";
+        tag = "Player";
+        gm.Hp = 100;
 
         // 액션 버튼, 스킬 버튼, 이동, 카메라 회전 활성화
         gm.dontTouch.SetActive(false);
