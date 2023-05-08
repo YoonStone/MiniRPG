@@ -62,7 +62,7 @@ public class MonsterBase : MonoBehaviour
     [Header("화살에 맞을 부위")]
     public Transform shootPos;
 
-    [HideInInspector]
+    //[HideInInspector]
     public bool isAttack; // 공격 중인지
 
     private void Awake()
@@ -206,6 +206,12 @@ public class MonsterBase : MonoBehaviour
         Destroy(gameObject);
     }
 
+    void RealAttack()
+    {
+        // 애니메이션에서 바로 바꾸면 false로 바꾸는게 적용 안 됨
+        isAttack = true;
+    }
+
     protected virtual void OnTriggerEnter(Collider other)
     {
         // 피격
@@ -215,13 +221,11 @@ public class MonsterBase : MonoBehaviour
         }
 
         // 기본 공격
-        else if (other.CompareTag("Player"))
+        else if (other.CompareTag("Player") && isAttack)
         {
-            if (isAttack)
-            {
-                player.GetHit(monsterInfo.atk);
-                isAttack = false;
-            }
+            print("공격 중에 플레이어 닿음");
+            player.GetHit(monsterInfo.atk);
+            isAttack = false;
         }
     }
 }

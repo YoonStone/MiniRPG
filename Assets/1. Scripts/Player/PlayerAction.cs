@@ -280,7 +280,7 @@ public class PlayerAction : MonoBehaviour
 
         cc.enabled = false;
         cc.transform.position = new Vector3(-5.5f, -6, -12);
-        cc.transform.rotation = Quaternion.Euler(0, 145, 0);
+        cc.transform.rotation = Quaternion.identity;
         cc.enabled = true;
     }
 

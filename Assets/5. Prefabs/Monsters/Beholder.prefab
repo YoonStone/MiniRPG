@@ -298,7 +298,7 @@ MonoBehaviour:
   atk_touch: 10
   bonePos: {fileID: 7174809950262928897}
   bonePref: {fileID: 1160785499867723302, guid: 9d61493a9c9f640f490ad51a73c12485, type: 3}
-  boneCount: 3
+  boneCount: 5
 --- !u!195 &3377746512508185347
 NavMeshAgent:
   m_ObjectHideFlags: 0

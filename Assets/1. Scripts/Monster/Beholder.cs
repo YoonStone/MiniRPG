@@ -45,6 +45,7 @@ public class Beholder : MonsterBase
     // 던지기 공격
     void Throw()
     {
+        print("던짐");
         foreach (var bone in bonePool)
         {
             if (!bone.activeSelf)

@@ -591,19 +591,16 @@ public class GameManager : MonoBehaviour
         {
             // 마을
             case 1:
+                // 죽었다가 부활한 경우
+                if (Hp == 0) playerAction.ResetAll();
+
                 // 던전 > 마을
-                if(dm.data.curSceneIdx == 2)
+                else if (dm.data.curSceneIdx == 2)
                 {
                     playerCC.enabled = false;
                     playerCC.transform.position = new Vector3(-18, 3.45f, -17);
                     playerCC.transform.rotation = Quaternion.Euler(0, 145, 0);
                     playerCC.enabled = true;
-                }
-
-                // 마을 > 마을
-                else if (dm.data.curSceneIdx == 1)
-                {
-                    playerAction.ResetAll();
                 }
                 break;
 
