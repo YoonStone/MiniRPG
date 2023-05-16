@@ -33,6 +33,21 @@ public class StartManager : MonoBehaviour
     {
         StartCoroutine(OnClickStart());
     }
+    // 설정 버튼
+    public void OnClickSettingBtn()
+    {
+
+    }
+
+    // 종료 버튼
+    public void OnClickExitBtn()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
 
     // 시작 버튼 누른 후 할 일
     public IEnumerator OnClickStart()

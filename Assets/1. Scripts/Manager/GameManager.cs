@@ -252,7 +252,8 @@ public class GameManager : MonoBehaviour
     // 종료 버튼
     public void OnClickExitBtn()
     {
-
+        dm.Save(); // 씬 전환 전 저장
+        SceneManager.LoadScene(0);
     }
     #endregion
 
@@ -581,10 +582,18 @@ public class GameManager : MonoBehaviour
     // 씬 전환 완료 시 실행할 이벤트
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        dm.Load(); // 씬 전환 후 불러오기
+        // 시작 화면으로 갈 때는 삭제
+        if (scene.buildIndex == 0)
+        {
+            Destroy(GameManager.instance.gameObject);
+            return;
+        }
 
-        // 페이드 기능
-        StartCoroutine(SceneFade(Vector3.one, Vector3.zero, -1));
+        // 전환 후 불러오기
+        dm.Load();
+
+        // 전환된 씬 번호로 저장
+        dm.data.curSceneIdx = scene.buildIndex;
 
         // 위치 이동 기능
         switch (scene.buildIndex)
@@ -592,7 +601,13 @@ public class GameManager : MonoBehaviour
             // 마을
             case 1:
                 // 죽었다가 부활한 경우
-                if (Hp == 0) playerAction.ResetAll();
+                if (Hp == 0)
+                {
+                    playerAction.ResetAll();
+
+                    // 페이드 기능
+                    StartCoroutine(SceneFade(Vector3.one, Vector3.zero, -1));
+                }
 
                 // 던전 > 마을
                 else if (dm.data.curSceneIdx == 2)
@@ -601,6 +616,9 @@ public class GameManager : MonoBehaviour
                     playerCC.transform.position = new Vector3(-18, 3.45f, -17);
                     playerCC.transform.rotation = Quaternion.Euler(0, 145, 0);
                     playerCC.enabled = true;
+
+                    // 페이드 기능
+                    StartCoroutine(SceneFade(Vector3.one, Vector3.zero, -1));
                 }
                 break;
 
@@ -613,11 +631,11 @@ public class GameManager : MonoBehaviour
                     playerCC.transform.position = new Vector3(3, 0, 0);
                     playerCC.transform.rotation = Quaternion.Euler(0, 180, 0);
                     playerCC.enabled = true;
+
+                    // 페이드 기능
+                    StartCoroutine(SceneFade(Vector3.one, Vector3.zero, -1));
                 }
                 break;
         }
-
-        // 전환된 씬 번호로 저장
-        dm.data.curSceneIdx = scene.buildIndex;
     }
 }

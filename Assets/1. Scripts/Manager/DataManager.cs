@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.IO;
 
 // 퀘스트 상태
@@ -23,6 +24,7 @@ public class Data
     public float def = 1; // 현재 방패 내구력
 
     public Vector3 curPos;
+    public Quaternion curRot;
     public int curSceneIdx; // 현재 씬 번호
 
     public QuestState questState = QuestState.None;
@@ -73,7 +75,9 @@ public class DataManager : MonoBehaviour
     public void Save()
     {
         // 위치 저장
-        data.curPos = FindObjectOfType<PlayerAction>().transform.position;
+        Transform player = FindObjectOfType<PlayerAction>().transform;
+        data.curPos = player.position;
+        data.curRot = player.rotation;
 
         // 인벤토리 저장 (아이템)
         Slot[] _itemSlots = InventoryManager.instance.itemSlots;
@@ -139,6 +143,7 @@ public class DataManager : MonoBehaviour
         CharacterController cc = player.GetComponent<CharacterController>();
         cc.enabled = false;
         cc.transform.position = data.curPos;
+        cc.transform.rotation = data.curRot;
         cc.enabled = true;
 
         // 인벤토리 불러오기
@@ -168,6 +173,7 @@ public class DataManager : MonoBehaviour
     // 게임 종료 시 자동 저장
     private void OnApplicationQuit()
     {
-        Save();
+        // 시작 화면이 아닌 상태로 끄면 자동 저장 
+        if(SceneManager.GetActiveScene().buildIndex != 0) Save();
     }
 }
