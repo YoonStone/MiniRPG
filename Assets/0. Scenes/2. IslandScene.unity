@@ -4934,7 +4934,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6532589731770669359, guid: 541cf1fd7df81452e843823d2f486456, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -5512,7 +5512,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6532589731770669359, guid: 541cf1fd7df81452e843823d2f486456, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -13258,7 +13258,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6532589731770669359, guid: 541cf1fd7df81452e843823d2f486456, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -13490,7 +13490,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 842846770}
-  m_LocalRotation: {x: 0.045788385, y: 0.6747392, z: -0.0420094, w: 0.7354358}
+  m_LocalRotation: {x: 0.04578837, y: 0.6747392, z: -0.042009383, w: 0.7354358}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -15686,7 +15686,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.062134784, y: -0.012792623, z: 0.00079647143, w: 0.9979855}
+  m_LocalRotation: {x: 0.062134765, y: -0.012792592, z: 0.0007964693, w: 0.9979855}
   m_LocalPosition: {x: -5.3334365, y: -2.3600001, z: -24.495941}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -16241,7 +16241,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6879866747523406347, guid: a87a7fcf7f5144a88aedb39998a25384, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -16399,7 +16399,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6879866747523406347, guid: a87a7fcf7f5144a88aedb39998a25384, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -18477,7 +18477,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6532589731770669359, guid: 541cf1fd7df81452e843823d2f486456, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -20109,8 +20109,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1292975037}
-  m_RootOrder: -1
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1257762819
 GameObject:
@@ -20504,7 +20504,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1269989559}
-  m_LocalRotation: {x: 0.05618599, y: 0.67407745, z: -0.051548872, w: 0.73471457}
+  m_LocalRotation: {x: 0.056185987, y: 0.67407745, z: -0.051548872, w: 0.73471457}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -21101,8 +21101,8 @@ MonoBehaviour:
   dm: {fileID: 0}
   inventory: {fileID: 0}
   playerAction: {fileID: 0}
-  playerMove: {fileID: 0}
   playerCC: {fileID: 0}
+  playerMove: {fileID: 0}
   cameraTurn: {fileID: 0}
   isPopup: 0
   popupState: 0
@@ -21119,7 +21119,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 194927534}
-  - {fileID: 1245825801}
   - {fileID: 963194228}
   - {fileID: 934710712}
   - {fileID: 2102661239613287641}
@@ -24104,6 +24103,7 @@ MonoBehaviour:
     atk: 0
     def: 1
     curPos: {x: 0, y: 0, z: 0}
+    curRot: {x: 0, y: 0, z: 0, w: 0}
     curSceneIdx: 0
     questState: 0
     chatNum: 0
@@ -32164,7 +32164,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6879866747523406347, guid: a87a7fcf7f5144a88aedb39998a25384, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_AddedGameObjects: []
@@ -65025,7 +65025,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &6879874437326232490
 GameObject:
   m_ObjectHideFlags: 0

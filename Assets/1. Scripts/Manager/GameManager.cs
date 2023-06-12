@@ -66,8 +66,8 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public DataManager dm;
     [HideInInspector] public InventoryManager inventory;
     [HideInInspector] public PlayerAction playerAction;
-    [HideInInspector] public PlayerMove playerMove;
     [HideInInspector] public CharacterController playerCC;
+    [HideInInspector] public PlayerMove playerMove;
     [HideInInspector] public CameraTurn cameraTurn;
 
     List<TextMeshProUGUI> questList = new List<TextMeshProUGUI>();
@@ -164,6 +164,10 @@ public class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             qm = GetComponent<QuestManager>();
             dm = DataManager.instance;
+
+            // 먼저 할 일
+            playerAction = FindObjectOfType<PlayerAction>();
+            playerAction.BeforeStart();
         }
         else if (instance != this) Destroy(gameObject);
     }
@@ -171,18 +175,11 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // 씬 전환 이벤트 추가
-        SceneManager.sceneLoaded += OnSceneLoaded;
-
         // 씬 내에 필요한 컴포넌트 수집
-        playerAction = FindObjectOfType<PlayerAction>();
         playerMove = playerAction.GetComponent<PlayerMove>();
         playerCC = playerAction.GetComponent<CharacterController>();
         cameraTurn = FindObjectOfType<CameraTurn>();
         inventory = InventoryManager.instance;
-
-        // 먼저 할 일들
-        playerAction.BeforeStart();
 
         // 불러오기한 내용 적용
         if (dm.isLoad) dm.AfterLoad(this);
@@ -203,6 +200,9 @@ public class GameManager : MonoBehaviour
 
         // 현재 씬 저장
         dm.data.curSceneIdx = SceneManager.GetActiveScene().buildIndex;
+
+        // 던전에서 시작하는 경우 배경음악 교체
+        if(dm.data.curSceneIdx == 2) AudioManager.instance.AudioCtrl_BGM(true);
     }
 
     // 처음 플레이하는 경우 할 일들
@@ -218,12 +218,14 @@ public class GameManager : MonoBehaviour
     public void OnClickSettingBtn(bool isOpen)
     {
         anim_Setting.SetBool("isOpen", isOpen);
+        AudioManager.instance.AudioCtrl_Effects(isOpen ? Effect.EffectUp : Effect.EffectDown);
     }
 
     // 인벤토리 열기 버튼
     public void OnClickInventoryBtn(bool isOpen)
     {
         anim_Inventory.SetBool("isOpen", isOpen);
+        AudioManager.instance.AudioCtrl_Effects(isOpen ? Effect.EffectUp : Effect.EffectDown);
     }
 
     // 퀘스트 버튼
@@ -347,6 +349,7 @@ public class GameManager : MonoBehaviour
     {
         chatTxt.text = dm.chatList[dm.data.chatNum]["Script"].ToString();
         anim_Chat.SetTrigger("Open");
+        AudioManager.instance.AudioCtrl_Effects(Effect.EffectUp);
 
         // 다음 대화가 있다면
         if (dm.data.chatNum + 1 < dm.chatList.Count)
@@ -406,11 +409,13 @@ public class GameManager : MonoBehaviour
                 break;
         }
         anim_Chat.SetTrigger("Open");
+        AudioManager.instance.AudioCtrl_Effects(Effect.EffectUp);
     }
 
     // 퀘스트 완료창 열기
     public void QuestCompleteOpen()
     {
+
         int npcIdx = int.Parse(dm.questList[dm.data.questNum]["ToNPC"].ToString());
         string npcName = qm.npcs[npcIdx].npcInfo.npcKoreanName;
         chatTxt.text = $"퀘스트를 완료했습니다!\nNPC에게 돌아가세요\n({npcName})";
@@ -418,12 +423,15 @@ public class GameManager : MonoBehaviour
         chatNextBtn.SetActive(false);
         chatCancleBtn.SetActive(false);
         anim_Chat.SetTrigger("Open");
+        AudioManager.instance.AudioCtrl_Effects(Effect.EffectUp);
     }
 
     // 대화창 끄기
     public void OnClickChatCancle()
     {
         anim_Chat.SetTrigger("Close");
+        AudioManager.instance.AudioCtrl_Effects(Effect.EffectDown);
+
         dontTouch.SetActive(false);
         playerMove.isCantMove = false;
     }
@@ -431,6 +439,7 @@ public class GameManager : MonoBehaviour
     // 대화창 다음
     public void OnClickChatNext()
     {
+        AudioManager.instance.AudioCtrl_Effects(Effect.EffectUp);
         dm.data.chatNum++;
         CheckBubble();
     }
@@ -459,6 +468,11 @@ public class GameManager : MonoBehaviour
     // 레벨업
     IEnumerator LevelUp()
     {
+        Exp = 0;
+        Level++;
+
+        AudioManager.instance.AudioCtrl_Effects(Effect.LevelUp);
+
         // 레벨 2가 되면 칼 스킬 해금
         if (Level >= 2 && !dm.data.skillOpen[1])
         {
@@ -571,71 +585,6 @@ public class GameManager : MonoBehaviour
         }
 
         // 경험치가 가득 찼다면 레벨 업
-        if (expImg.fillAmount >= 1)
-        {
-            Exp = 0;
-            Level++;
-            StartCoroutine(LevelUp());
-        }
-    }
-
-    // 씬 전환 완료 시 실행할 이벤트
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        // 시작 화면으로 갈 때는 삭제
-        if (scene.buildIndex == 0)
-        {
-            Destroy(GameManager.instance.gameObject);
-            return;
-        }
-
-        // 전환 후 불러오기
-        dm.Load();
-
-        // 전환된 씬 번호로 저장
-        dm.data.curSceneIdx = scene.buildIndex;
-
-        // 위치 이동 기능
-        switch (scene.buildIndex)
-        {
-            // 마을
-            case 1:
-                // 죽었다가 부활한 경우
-                if (Hp == 0)
-                {
-                    playerAction.ResetAll();
-
-                    // 페이드 기능
-                    StartCoroutine(SceneFade(Vector3.one, Vector3.zero, -1));
-                }
-
-                // 던전 > 마을
-                else if (dm.data.curSceneIdx == 2)
-                {
-                    playerCC.enabled = false;
-                    playerCC.transform.position = new Vector3(-18, 3.45f, -17);
-                    playerCC.transform.rotation = Quaternion.Euler(0, 145, 0);
-                    playerCC.enabled = true;
-
-                    // 페이드 기능
-                    StartCoroutine(SceneFade(Vector3.one, Vector3.zero, -1));
-                }
-                break;
-
-            // 던전
-            case 2:
-                // 마을 > 던전
-                if (dm.data.curSceneIdx == 1)
-                {
-                    playerCC.enabled = false;
-                    playerCC.transform.position = new Vector3(3, 0, 0);
-                    playerCC.transform.rotation = Quaternion.Euler(0, 180, 0);
-                    playerCC.enabled = true;
-
-                    // 페이드 기능
-                    StartCoroutine(SceneFade(Vector3.one, Vector3.zero, -1));
-                }
-                break;
-        }
+        if (expImg.fillAmount >= 1) StartCoroutine(LevelUp());
     }
 }

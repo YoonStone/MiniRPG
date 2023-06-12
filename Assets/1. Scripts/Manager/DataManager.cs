@@ -60,6 +60,9 @@ public class DataManager : MonoBehaviour
             // CSV 읽어오기
             chatList = CSVReader.Read("ChatList");
             questList = CSVReader.Read("QuestList");
+
+            // 씬 전환 이벤트 추가
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else if (instance != this) Destroy(gameObject);
     }
@@ -175,5 +178,80 @@ public class DataManager : MonoBehaviour
     {
         // 시작 화면이 아닌 상태로 끄면 자동 저장 
         if(SceneManager.GetActiveScene().buildIndex != 0) Save();
+    }
+
+
+    // 씬 전환 완료 시 실행할 이벤트
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        GameManager gm = GameManager.instance;
+        print("씬이동" + scene.buildIndex);
+
+        // 시작 화면으로 갈 때는 삭제
+        if (gm && scene.buildIndex == 0)
+        {
+            // 던전에서 넘어가는 경우에는 배경음악 교체
+            if (data.curSceneIdx == 2) AudioManager.instance.AudioCtrl_BGM(false);
+            Destroy(GameManager.instance.gameObject);
+            return;
+        }
+
+        // 전환 후 불러오기
+        Load();
+
+        // 위치 이동 기능
+        switch (scene.buildIndex)
+        {
+            // 마을
+            case 1:
+                AudioManager.instance.audios[1].clip = AudioManager.instance.clip_Walk[0];
+
+                // 죽었다가 부활한 경우
+                if (gm.Hp == 0)
+                {
+                    gm.playerAction.ResetAll();
+
+                    // 페이드 기능
+                    StartCoroutine(gm.SceneFade(Vector3.one, Vector3.zero, -1));
+
+                    if (data.curSceneIdx == 2) AudioManager.instance.AudioCtrl_BGM(false);
+                }
+
+                // 던전 > 마을
+                else if (data.curSceneIdx == 2)
+                {
+                    AudioManager.instance.AudioCtrl_BGM(false);
+
+                    CharacterController cc = FindObjectOfType<CharacterController>();
+                    gm.playerCC.enabled = false;
+                    gm.playerCC.transform.SetPositionAndRotation(new Vector3(-18, 3.45f, -17), Quaternion.Euler(0, 145, 0));
+                    gm.playerCC.enabled = true;
+
+                    // 페이드 기능
+                    StartCoroutine(gm.SceneFade(Vector3.one, Vector3.zero, -1));
+                }
+                break;
+
+            // 던전
+            case 2:
+                AudioManager.instance.AudioCtrl_BGM(true);
+                AudioManager.instance.audios[1].clip = AudioManager.instance.clip_Walk[1];
+
+                // 마을 > 던전
+                if (data.curSceneIdx == 1)
+                {
+                    CharacterController cc = FindObjectOfType<CharacterController>();
+                    gm.playerCC.enabled = false;
+                    gm.playerCC.transform.SetPositionAndRotation(new Vector3(3, 0, 0), Quaternion.Euler(0, 180, 0));
+                    gm.playerCC.enabled = true;
+
+                    // 페이드 기능
+                    StartCoroutine(gm.SceneFade(Vector3.one, Vector3.zero, -1));
+                }
+                break;
+        }
+
+        // 전환된 씬 번호로 저장
+        data.curSceneIdx = scene.buildIndex;
     }
 }

@@ -62,6 +62,7 @@ public class PlayerMove : MonoBehaviour
             // 이동 애니메이션
             anim.SetFloat("velocity", moveDir.magnitude);
             Turn();
+            AudioManager.instance.AudioCtrl_Walk(true);
         }
     }
 

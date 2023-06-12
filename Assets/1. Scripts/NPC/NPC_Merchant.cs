@@ -8,11 +8,17 @@ public class NPC_Merchant : NPC
     void Interact()
     {
         // 열려있다면 상점 종료
-        if (inventory.isOpenShop) PlayerBye();
+        if (inventory.isOpenShop)
+        {
+            gm.anim_Shop.SetBool("isOpen", false);
+            AudioManager.instance.AudioCtrl_Effects(Effect.EffectDown);
+            inventory.isOpenShop = false;
+        }
         else
         {
             gm.anim_Shop.SetBool("isOpen", true);
             gm.anim_Inventory.SetBool("isOpen", true);
+            AudioManager.instance.AudioCtrl_Effects(Effect.EffectUp);
             inventory.isOpenShop = true;
         }
     }
@@ -20,8 +26,12 @@ public class NPC_Merchant : NPC
     // 플레이어와 멀어졌을 때
     void PlayerBye()
     {
-        gm.anim_Shop.SetBool("isOpen", false);
-        inventory.isOpenShop = false;
+        if (inventory.isOpenShop)
+        {
+            gm.anim_Shop.SetBool("isOpen", false);
+            AudioManager.instance.AudioCtrl_Effects(Effect.EffectDown);
+            inventory.isOpenShop = false;
+        }
     }
 
     // 2번 퀘스트 완료 시 퀘스트 아이템 삭제

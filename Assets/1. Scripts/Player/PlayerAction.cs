@@ -255,6 +255,7 @@ public class PlayerAction : MonoBehaviour
     // 죽음
     public IEnumerator Dead()
     {
+        AudioManager.instance.AudioCtrl_Effects(Effect.Dead);
         anim.SetTrigger("dead");
         tag = "Untagged";
 

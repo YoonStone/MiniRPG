@@ -223,7 +223,6 @@ public class MonsterBase : MonoBehaviour
         // 기본 공격
         else if (other.CompareTag("Player") && isAttack)
         {
-            print("공격 중에 플레이어 닿음");
             player.GetHit(monsterInfo.atk);
             isAttack = false;
         }

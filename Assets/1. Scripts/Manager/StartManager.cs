@@ -74,6 +74,7 @@ public class StartManager : MonoBehaviour
 
         // 팝업창 열리기
         anim_Popup.SetTrigger("Open");
+        AudioManager.instance.AudioCtrl_Effects(Effect.EffectDown);
 
         // 버튼 선택할 때까지 기다리기
         yield return new WaitUntil(() => popupState != PopupState.None);
@@ -111,5 +112,6 @@ public class StartManager : MonoBehaviour
         // 팝업창을 사용한 오브젝트에게 어떤 버튼을 선택했는지 알려주기
         popupState = isOk ? PopupState.Ok : PopupState.No;
         anim_Popup.SetTrigger("Close");
+        AudioManager.instance.AudioCtrl_Effects(Effect.EffectUp);
     }
 }
