@@ -139,7 +139,6 @@ public class AudioManager : MonoBehaviour
     // 실제 볼륨 조절
     public void SetVolume(int number, float value)
     {
-        print("실제 볼륨이 "+ value + "으로 조절됨");
         dm.data.volumes[number] = value;
         audioMixer.SetFloat("Volume" + number, Mathf.Log10(value) * 20);
     }
@@ -147,7 +146,6 @@ public class AudioManager : MonoBehaviour
     // 슬라이더 > 볼륨
     public void OnChangeVolume(int number)
     {
-        print("슬라이더 조절됨");
         SetVolume(number, audioSliders[number].value);
     }
 }
