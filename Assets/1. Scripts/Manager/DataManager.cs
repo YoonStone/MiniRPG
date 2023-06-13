@@ -122,6 +122,8 @@ public class DataManager : MonoBehaviour
     public int Load()
     {
         string path = Application.persistentDataPath + $"/{data.nickname}.json";
+        if(!File.Exists(path)) return -1;
+
         string loadData = File.ReadAllText(path);
 
         data = JsonUtility.FromJson<Data>(loadData);
@@ -185,7 +187,6 @@ public class DataManager : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         GameManager gm = GameManager.instance;
-        print("씬이동" + scene.buildIndex);
 
         // 시작 화면으로 갈 때는 삭제
         if (gm && scene.buildIndex == 0)

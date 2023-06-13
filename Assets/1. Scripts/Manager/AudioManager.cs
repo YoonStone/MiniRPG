@@ -2,12 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 0 : 배경음, 1 : 발자국, 2 : 공격, 3 : 플레이어, 4 : 아이템
 public enum Effect
 {
-    LevelUp = 2,
-    EffectUp = 3,
-    EffectDown = 4,
-    Dead = 5
+    LevelUp = 5,
+    EffectUp = 6,
+    EffectDown = 7,
+    GetItem = 8
+}
+
+public enum AttackAudio
+{
+    Sword,
+    SwordSpin,
+    Bow
+}
+
+public enum PlayerAudio
+{
+    GetHit,
+    Dead
+}
+
+public enum ItemAudio
+{
+    Equip,
+    Food,
+    BuySell
 }
 
 public class AudioManager : MonoBehaviour
@@ -16,6 +37,9 @@ public class AudioManager : MonoBehaviour
 
     public AudioClip[] clip_BGM;
     public AudioClip[] clip_Walk;
+    public AudioClip[] clip_Attack;
+    public AudioClip[] clip_Player;
+    public AudioClip[] clip_Item;
 
     public static AudioManager instance;
     private void Awake()
@@ -59,8 +83,25 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    
-    public void AudioCtrl_Effects(Effect effect)
+    public void AudioCtrl_Effect(AttackAudio attackAudio)
+    {
+        audios[2].clip = clip_Attack[(int)attackAudio];
+        audios[2].Play();
+    }
+
+    public void AudioCtrl_Effect(PlayerAudio playerAudio)
+    {
+        audios[3].clip = clip_Player[(int)playerAudio];
+        audios[3].Play();
+    }
+
+    public void AudioCtrl_Effect(ItemAudio item)
+    {
+        audios[4].clip = clip_Item[(int)item];
+        audios[4].Play();
+    }
+
+    public void AudioCtrl_Effect(Effect effect)
     {
         audios[(int)effect].Play();
     }    

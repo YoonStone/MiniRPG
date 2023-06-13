@@ -218,37 +218,23 @@ public class GameManager : MonoBehaviour
     public void OnClickSettingBtn(bool isOpen)
     {
         anim_Setting.SetBool("isOpen", isOpen);
-        AudioManager.instance.AudioCtrl_Effects(isOpen ? Effect.EffectUp : Effect.EffectDown);
+        AudioManager.instance.AudioCtrl_Effect(isOpen ? Effect.EffectUp : Effect.EffectDown);
     }
 
     // 인벤토리 열기 버튼
     public void OnClickInventoryBtn(bool isOpen)
     {
         anim_Inventory.SetBool("isOpen", isOpen);
-        AudioManager.instance.AudioCtrl_Effects(isOpen ? Effect.EffectUp : Effect.EffectDown);
+        AudioManager.instance.AudioCtrl_Effect(isOpen ? Effect.EffectUp : Effect.EffectDown);
     }
 
-    // 퀘스트 버튼
-    public void OnClickQuestBtn()
+    // UI가 켜고 꺼짐에 따라 제한
+    public void UIAndMoveCtrl(bool UIOpen)
     {
-        // 액션 버튼, 스킬 버튼, 이동, 카메라 회전 비활성화
-        dontTouch.SetActive(true);
-        playerMove.isCantMove = true;
-        cameraTurn.enabled = false;
-    }
-
-    // 퀘스트 종료 버튼
-    public void OnClickQuestCancleBtn()
-    {
-        // 액션 버튼, 스킬 버튼, 이동, 카메라 회전 활성화
-        dontTouch.SetActive(false);
-        playerMove.isCantMove = false;
-        cameraTurn.enabled = true;
-    }
-
-    // 설정 버튼
-    public void OnClickSettingBtn()
-    {
+        // 액션 버튼, 스킬 버튼, 이동, 카메라 회전 활성화/비활성화
+        dontTouch.SetActive(UIOpen);
+        playerMove.isCantMove = UIOpen;
+        cameraTurn.enabled = !UIOpen;
     }
 
     // 종료 버튼
@@ -349,7 +335,7 @@ public class GameManager : MonoBehaviour
     {
         chatTxt.text = dm.chatList[dm.data.chatNum]["Script"].ToString();
         anim_Chat.SetTrigger("Open");
-        AudioManager.instance.AudioCtrl_Effects(Effect.EffectUp);
+        AudioManager.instance.AudioCtrl_Effect(Effect.EffectUp);
 
         // 다음 대화가 있다면
         if (dm.data.chatNum + 1 < dm.chatList.Count)
@@ -409,7 +395,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
         anim_Chat.SetTrigger("Open");
-        AudioManager.instance.AudioCtrl_Effects(Effect.EffectUp);
+        AudioManager.instance.AudioCtrl_Effect(Effect.EffectUp);
     }
 
     // 퀘스트 완료창 열기
@@ -423,14 +409,14 @@ public class GameManager : MonoBehaviour
         chatNextBtn.SetActive(false);
         chatCancleBtn.SetActive(false);
         anim_Chat.SetTrigger("Open");
-        AudioManager.instance.AudioCtrl_Effects(Effect.EffectUp);
+        AudioManager.instance.AudioCtrl_Effect(Effect.EffectUp);
     }
 
     // 대화창 끄기
     public void OnClickChatCancle()
     {
         anim_Chat.SetTrigger("Close");
-        AudioManager.instance.AudioCtrl_Effects(Effect.EffectDown);
+        AudioManager.instance.AudioCtrl_Effect(Effect.EffectDown);
 
         dontTouch.SetActive(false);
         playerMove.isCantMove = false;
@@ -439,7 +425,7 @@ public class GameManager : MonoBehaviour
     // 대화창 다음
     public void OnClickChatNext()
     {
-        AudioManager.instance.AudioCtrl_Effects(Effect.EffectUp);
+        AudioManager.instance.AudioCtrl_Effect(Effect.EffectUp);
         dm.data.chatNum++;
         CheckBubble();
     }
@@ -471,7 +457,7 @@ public class GameManager : MonoBehaviour
         Exp = 0;
         Level++;
 
-        AudioManager.instance.AudioCtrl_Effects(Effect.LevelUp);
+        AudioManager.instance.AudioCtrl_Effect(Effect.LevelUp);
 
         // 레벨 2가 되면 칼 스킬 해금
         if (Level >= 2 && !dm.data.skillOpen[1])
@@ -494,6 +480,7 @@ public class GameManager : MonoBehaviour
         popupState = PopupState.None;
         yield return new WaitUntil(() => popupState != PopupState.None);
 
+        AudioManager.instance.AudioCtrl_Effect(Effect.EffectUp);
         popupState = PopupState.None;
     }
 

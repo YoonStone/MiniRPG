@@ -105,6 +105,7 @@ public class PlayerAction : MonoBehaviour
         {
             case WeaponType.Sword:
                 anim.SetInteger("attackIdx", Random.Range(0, 2));
+                AudioManager.instance.AudioCtrl_Effect(AttackAudio.Sword);
                 break;
 
             case WeaponType.Bow:
@@ -139,6 +140,7 @@ public class PlayerAction : MonoBehaviour
         {
             case WeaponType.Sword:
                 anim.SetInteger("attackIdx", 3);
+                AudioManager.instance.AudioCtrl_Effect(AttackAudio.SwordSpin);
                 break;
 
             case WeaponType.Bow:
@@ -192,6 +194,7 @@ public class PlayerAction : MonoBehaviour
                     arrowPref.SetActive(true);
                     arrowPref.GetComponent<Rigidbody>().velocity = transform.forward * 5 + transform.up * 3;
                 }
+                AudioManager.instance.AudioCtrl_Effect(AttackAudio.Bow);
                 break;
             }
         }
@@ -248,15 +251,23 @@ public class PlayerAction : MonoBehaviour
 
         StartCoroutine(gm.HpImgColor(Color.red));
 
-        if (gm.Hp <= 0) StartCoroutine(Dead());
-        else anim.SetTrigger("getHit");
+        // 죽었다면
+        if (gm.Hp <= 0)
+        {
+            StartCoroutine(Dead());
+            return;
+        }
+
+        // 죽지 않았으면 피격만
+        anim.SetTrigger("getHit");
+        AudioManager.instance.AudioCtrl_Effect(PlayerAudio.GetHit);
     }
 
     // 죽음
     public IEnumerator Dead()
     {
-        AudioManager.instance.AudioCtrl_Effects(Effect.Dead);
         anim.SetTrigger("dead");
+        AudioManager.instance.AudioCtrl_Effect(PlayerAudio.Dead);
         tag = "Untagged";
 
         // 액션 버튼, 스킬 버튼, 이동, 카메라 회전 비활성화

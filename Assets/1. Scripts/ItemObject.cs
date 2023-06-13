@@ -51,6 +51,7 @@ public class ItemObject : MonoBehaviour
             isGet = true;
             Destroy(gameObject);
             InventoryManager.instance.AddItem(item);
+            AudioManager.instance.AudioCtrl_Effect(Effect.GetItem);
         }
     }
 }

@@ -13,6 +13,9 @@ scopes = {
 	"last_search.AE24D059" = "layer=<$layer:7, Monster$>"
 	"OpenInspectorPreview.AE24D059" = "0"
 	"currentGroup.AE24D059" = "all"
+	"last_search.7788661B" = ""
+	"OpenInspectorPreview.7788661B" = "0"
+	"currentGroup.7788661B" = "all"
 }
 providers = {
 	find = {

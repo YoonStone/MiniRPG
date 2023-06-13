@@ -11,14 +11,14 @@ public class NPC_Merchant : NPC
         if (inventory.isOpenShop)
         {
             gm.anim_Shop.SetBool("isOpen", false);
-            AudioManager.instance.AudioCtrl_Effects(Effect.EffectDown);
+            AudioManager.instance.AudioCtrl_Effect(Effect.EffectDown);
             inventory.isOpenShop = false;
         }
         else
         {
             gm.anim_Shop.SetBool("isOpen", true);
             gm.anim_Inventory.SetBool("isOpen", true);
-            AudioManager.instance.AudioCtrl_Effects(Effect.EffectUp);
+            AudioManager.instance.AudioCtrl_Effect(Effect.EffectUp);
             inventory.isOpenShop = true;
         }
     }
@@ -29,7 +29,7 @@ public class NPC_Merchant : NPC
         if (inventory.isOpenShop)
         {
             gm.anim_Shop.SetBool("isOpen", false);
-            AudioManager.instance.AudioCtrl_Effects(Effect.EffectDown);
+            AudioManager.instance.AudioCtrl_Effect(Effect.EffectDown);
             inventory.isOpenShop = false;
         }
     }

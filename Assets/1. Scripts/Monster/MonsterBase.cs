@@ -52,6 +52,7 @@ public class MonsterBase : MonoBehaviour
     NavMeshAgent agent;
     Transform playerTr;
     CanvasGroup cg;
+    AudioSource myAudio;
 
     [Header("체력바")]
     public Image hpImg;
@@ -71,6 +72,7 @@ public class MonsterBase : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         player = FindObjectOfType<PlayerAction>();
         cg = GetComponentInChildren<CanvasGroup>();
+        myAudio = GetComponent<AudioSource>();
 
         Hp = monsterInfo.hp_max;
         playerTr = player.transform;
@@ -203,7 +205,8 @@ public class MonsterBase : MonoBehaviour
             }
         }
 
-        Destroy(gameObject);
+        if(monsterInfo.dropItems.Length != 0) myAudio.Play();
+        Destroy(gameObject, myAudio.clip.length);
     }
 
     void RealAttack()

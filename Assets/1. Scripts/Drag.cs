@@ -96,15 +96,17 @@ public class Drag : MonoBehaviour
     // 팝업창 사용 (아이템 버리기)
     IEnumerator PopupCall_ItemDrop()
     {
-
         bool isCanPopup = gm.PopupOpen("이 아이템을 버리시겠습니까?", "예", "아니오");
 
         // 이미 팝업창이 열려있었다면 실행 금지
-        if (isCanPopup) yield break;
+        if (!isCanPopup) yield break;
 
         // 예/아니오를 누를 때까지 기다리기
+        AudioManager.instance.AudioCtrl_Effect(Effect.EffectDown);
         gm.popupState = PopupState.None;
         yield return new WaitUntil(() => gm.popupState != PopupState.None);
+
+        AudioManager.instance.AudioCtrl_Effect(Effect.EffectUp);
 
         // 예를 눌렀다면 버리기
         if (gm.popupState == PopupState.Left)
