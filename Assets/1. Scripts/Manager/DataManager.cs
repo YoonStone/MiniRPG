@@ -38,6 +38,9 @@ public class Data
     public int[] equipSlots_Count = new int[2];
 
     public bool[] skillOpen = new bool[3];
+
+    // 0 : BGM, 1 : SFX
+    public float[] volumes = { 1, 1 };
 }
 
 public class DataManager : MonoBehaviour
@@ -172,6 +175,12 @@ public class DataManager : MonoBehaviour
                 player.EquipPutOn(data.equipSlots_Number[i]);
 
             }
+        }
+
+        // 사운드 불러오기
+        for (int i = 0; i < 2; i++)
+        {
+            AudioManager.instance.SetVolume(i, data.volumes[i]);
         }
     }
 

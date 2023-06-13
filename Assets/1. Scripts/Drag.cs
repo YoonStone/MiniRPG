@@ -102,11 +102,11 @@ public class Drag : MonoBehaviour
         if (!isCanPopup) yield break;
 
         // 예/아니오를 누를 때까지 기다리기
-        AudioManager.instance.AudioCtrl_Effect(Effect.EffectDown);
+        AudioManager.instance.AudioCtrl_SFX(SFX.EffectDown);
         gm.popupState = PopupState.None;
         yield return new WaitUntil(() => gm.popupState != PopupState.None);
 
-        AudioManager.instance.AudioCtrl_Effect(Effect.EffectUp);
+        AudioManager.instance.AudioCtrl_SFX(SFX.EffectUp);
 
         // 예를 눌렀다면 버리기
         if (gm.popupState == PopupState.Left)

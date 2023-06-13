@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Audio;
+using Unity.VisualScripting;
+using Newtonsoft.Json.Linq;
 
 // 0 : 배경음, 1 : 발자국, 2 : 공격, 3 : 플레이어, 4 : 아이템
-public enum Effect
+public enum SFX
 {
     LevelUp = 5,
     EffectUp = 6,
@@ -35,12 +39,17 @@ public class AudioManager : MonoBehaviour
 {
     [HideInInspector] public AudioSource[] audios;
 
+    public AudioMixer audioMixer;
+    public GameObject setting;
+    public Slider[] audioSliders;
+
     public AudioClip[] clip_BGM;
     public AudioClip[] clip_Walk;
     public AudioClip[] clip_Attack;
     public AudioClip[] clip_Player;
     public AudioClip[] clip_Item;
 
+    DataManager dm;
     public static AudioManager instance;
     private void Awake()
     {
@@ -58,7 +67,28 @@ public class AudioManager : MonoBehaviour
     void Start()
     {
         audios = GetComponents<AudioSource>();
+        dm = DataManager.instance;
+
         AudioCtrl_BGM(false);
+    }
+
+    // 설정화면 열기
+    public void OpenSetting()
+    {
+        // 저장되어있는 볼륨 > 슬라이더
+        for (int i = 0; i < 2; i++)
+        {
+            audioSliders[i].value = dm.data.volumes[i];
+        }
+
+        setting.SetActive(true);
+    }
+
+    // 설정화면 닫기
+    public void CloseSetting()
+    {
+        if(GameManager.instance) GameManager.instance.UIAndMoveCtrl(false);
+        setting.SetActive(false);
     }
 
     public void AudioCtrl_BGM(bool isDungeon)
@@ -83,26 +113,41 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void AudioCtrl_Effect(AttackAudio attackAudio)
+    public void AudioCtrl_SFX(AttackAudio attackAudio)
     {
         audios[2].clip = clip_Attack[(int)attackAudio];
         audios[2].Play();
     }
 
-    public void AudioCtrl_Effect(PlayerAudio playerAudio)
+    public void AudioCtrl_SFX(PlayerAudio playerAudio)
     {
         audios[3].clip = clip_Player[(int)playerAudio];
         audios[3].Play();
     }
 
-    public void AudioCtrl_Effect(ItemAudio item)
+    public void AudioCtrl_SFX(ItemAudio item)
     {
         audios[4].clip = clip_Item[(int)item];
         audios[4].Play();
     }
 
-    public void AudioCtrl_Effect(Effect effect)
+    public void AudioCtrl_SFX(SFX effect)
     {
         audios[(int)effect].Play();
-    }    
+    }
+
+    // 실제 볼륨 조절
+    public void SetVolume(int number, float value)
+    {
+        print("실제 볼륨이 "+ value + "으로 조절됨");
+        dm.data.volumes[number] = value;
+        audioMixer.SetFloat("Volume" + number, Mathf.Log10(value) * 20);
+    }
+
+    // 슬라이더 > 볼륨
+    public void OnChangeVolume(int number)
+    {
+        print("슬라이더 조절됨");
+        SetVolume(number, audioSliders[number].value);
+    }
 }

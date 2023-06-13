@@ -206,13 +206,13 @@ public class InventoryManager : MonoBehaviour
         switch (slot.Item.itemType)
         {
             case ItemType.Equipment:
-                AudioManager.instance.AudioCtrl_Effect(ItemAudio.Equip);
+                AudioManager.instance.AudioCtrl_SFX(ItemAudio.Equip);
                 EquipItemMove(slot.Item.itemIdx, true);
                 break;
 
             // 음식은 체력이 100보다 작을 때만 섭취 가능
             case ItemType.Food:
-                AudioManager.instance.AudioCtrl_Effect(ItemAudio.Food);
+                AudioManager.instance.AudioCtrl_SFX(ItemAudio.Food);
 
                 if (gm.Hp >= 100) return;
                 Eat(slot.Item.itemName);
