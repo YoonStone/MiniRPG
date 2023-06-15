@@ -66,6 +66,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public DataManager dm;
     [HideInInspector] public InventoryManager inventory;
     [HideInInspector] public PlayerAction playerAction;
+    [HideInInspector] public TextMeshPro playerHeadTxt;
     [HideInInspector] public CharacterController playerCC;
     [HideInInspector] public PlayerMove playerMove;
     [HideInInspector] public CameraTurn cameraTurn;
@@ -101,6 +102,7 @@ public class GameManager : MonoBehaviour
         {
             dm.data.level = value;
             levelTxt.text = value.ToString();
+            playerHeadTxt.text = $"lv.{Level} [ {dm.data.nickname} ]";
         }
     }
 
@@ -177,6 +179,7 @@ public class GameManager : MonoBehaviour
     {
         // 씬 내에 필요한 컴포넌트 수집
         playerMove = playerAction.GetComponent<PlayerMove>();
+        playerHeadTxt = playerAction.GetComponentInChildren<TextMeshPro>();
         playerCC = playerAction.GetComponent<CharacterController>();
         cameraTurn = FindObjectOfType<CameraTurn>();
         inventory = InventoryManager.instance;
@@ -188,7 +191,7 @@ public class GameManager : MonoBehaviour
         else FirstPlaySetting();
 
         // 머리 위 닉네임 설정
-        playerAction.GetComponentInChildren<TextMeshPro>().text = $"[ {dm.data.nickname} ]";
+        playerHeadTxt.text = $"lv.{Level} [ {dm.data.nickname} ]";
 
         // 완료된 퀘스트 목록 불러오기
         for (int i = 0; i < dm.data.questNum; i++)

@@ -23977,6 +23977,9 @@ MonoBehaviour:
     equipSlots_Number: 0000000000000000
     equipSlots_Count: 0000000000000000
     skillOpen: 000000
+    volumes:
+    - 1
+    - 1
   isLoad: 0
 --- !u!4 &615579246
 Transform:
@@ -31919,7 +31922,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 758231623}
-  m_LocalRotation: {x: 0.061341964, y: 0.15942827, z: -0.009926032, w: 0.9852519}
+  m_LocalRotation: {x: 0.061341964, y: 0.15942833, z: -0.009926036, w: 0.9852519}
   m_LocalPosition: {x: -0.6948402, y: 3.75, z: -14.419758}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -39168,6 +39171,7 @@ MonoBehaviour:
   dm: {fileID: 0}
   inventory: {fileID: 0}
   playerAction: {fileID: 0}
+  playerHeadTxt: {fileID: 0}
   playerCC: {fileID: 0}
   playerMove: {fileID: 0}
   cameraTurn: {fileID: 0}
@@ -60275,7 +60279,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1435516604}
-  m_LocalRotation: {x: 0.037861522, y: 0.791411, z: -0.049273383, w: 0.6081178}
+  m_LocalRotation: {x: 0.037861526, y: 0.7914111, z: -0.049273394, w: 0.6081178}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -100272,8 +100276,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "[ \uC0C8\uB85C\uC6B4\uB2C9\uB124\uC784 ]"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 67375400512489e449e55b5195ce12c9, type: 2}
-  m_sharedMaterial: {fileID: -5268182018197545567, guid: 67375400512489e449e55b5195ce12c9, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a26b672436283403288b768149921553, type: 2}
+  m_sharedMaterial: {fileID: -5268182018197545567, guid: a26b672436283403288b768149921553, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -100362,7 +100366,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -5268182018197545567, guid: 67375400512489e449e55b5195ce12c9, type: 2}
+  - {fileID: -5268182018197545567, guid: a26b672436283403288b768149921553, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

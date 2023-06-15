@@ -53,15 +53,12 @@ public class AudioManager : MonoBehaviour
     public static AudioManager instance;
     private void Awake()
     {
-        if(instance == null)
+        if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else if(instance != this)
-        {
-            Destroy(gameObject);
-        }
+        else if (instance != this) Destroy(gameObject);
     }
 
     void Start()
@@ -147,5 +144,31 @@ public class AudioManager : MonoBehaviour
     public void OnChangeVolume(int number)
     {
         SetVolume(number, audioSliders[number].value);
+
+        if (number == 1 && !isChangeSFX)
+        {
+            changeCoolTime = 0;
+            isChangeSFX = true;
+            AudioCtrl_SFX(SFX.GetItem);
+        }
+    }
+
+    // 효과음 조절 시 미리듣기
+    public void SFXPreview()
+    {
+        AudioCtrl_SFX(SFX.GetItem);
+    }
+
+    // 효과음 조절 시 미리듣기가 너무 많이 나오지 않도록 조절 
+    public bool isChangeSFX;
+    public float changeCoolTime;
+    private void Update()
+    {
+        if(isChangeSFX)
+        {
+            changeCoolTime += Time.deltaTime;
+
+            if (changeCoolTime >= 0.2f) isChangeSFX = false;
+        }
     }
 }
