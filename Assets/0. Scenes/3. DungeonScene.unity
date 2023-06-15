@@ -22543,6 +22543,7 @@ GameObject:
   - component: {fileID: 545760350}
   - component: {fileID: 545760349}
   - component: {fileID: 545760347}
+  - component: {fileID: 545760351}
   - component: {fileID: 545760348}
   m_Layer: 3
   m_Name: Player
@@ -22558,7 +22559,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 545760345}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 3.2, y: 0.15, z: -2.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -22572,7 +22573,7 @@ Transform:
   - {fileID: 1149872132}
   m_Father: {fileID: 958801043}
   m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &545760347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22590,11 +22591,8 @@ MonoBehaviour:
   shield: {fileID: 192098307}
   bow: {fileID: 253927772}
   arrow: {fileID: 940923230}
-  arrowPref: {fileID: 7336231268551190591, guid: dee18dd75c1fa42ab8ed344ba0585a93, type: 3}
-  arrowCount: 10
-  shootPower: 8
-  hasWeapon: 0
   target: {fileID: 0}
+  hasWeapon: 0
 --- !u!143 &545760348
 CharacterController:
   m_ObjectHideFlags: 0
@@ -22650,6 +22648,21 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &545760351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 545760345}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 098b88e60f4464ede94748e2fffa8db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrowPref: {fileID: 7336231268551190591, guid: dee18dd75c1fa42ab8ed344ba0585a93, type: 3}
+  arrowCount: 10
+  shootPower: 8
 --- !u!1 &547369129
 GameObject:
   m_ObjectHideFlags: 0
@@ -39133,14 +39146,14 @@ MonoBehaviour:
     skillAtk: 0
     skillCoolTime: 0
   - actionImg: {fileID: 21300000, guid: 8cd5f32effaa24176a75f4ea15e15072, type: 3}
-    actionAtk: 10
+    actionAtk: 8
     skillImg: {fileID: 21300000, guid: f6e7f9e1b442846b3b49bdf230135960, type: 3}
-    skillAtk: 20
+    skillAtk: 16
     skillCoolTime: 1
   - actionImg: {fileID: 21300000, guid: e0aa250d405c742a7a623c792696c48c, type: 3}
-    actionAtk: 20
+    actionAtk: 15
     skillImg: {fileID: 21300000, guid: 223cc63439e9e4526938de9f676637e5, type: 3}
-    skillAtk: 40
+    skillAtk: 30
     skillCoolTime: 2
   anim_Setting: {fileID: 1762212075}
   anim_Inventory: {fileID: 707741681}
@@ -100239,8 +100252,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 1.8}
-  m_SizeDelta: {x: 15, y: 3.2}
+  m_AnchoredPosition: {x: 0, y: 2}
+  m_SizeDelta: {x: 30, y: 3.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2114683385
 MonoBehaviour:
@@ -100274,7 +100287,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "[ \uC0C8\uB85C\uC6B4\uB2C9\uB124\uC784 ]"
+  m_text: "lv.0 [ \uC0C8\uB85C\uC6B4\uB2C9\uB124\uC784 ]"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a26b672436283403288b768149921553, type: 2}
   m_sharedMaterial: {fileID: -5268182018197545567, guid: a26b672436283403288b768149921553, type: 2}
@@ -100301,8 +100314,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

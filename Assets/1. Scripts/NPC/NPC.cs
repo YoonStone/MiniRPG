@@ -92,6 +92,9 @@ public class NPC : MonoBehaviour
     // 퀘스트 상태 재정비
     public void SetQuestState()
     {
+        // 상호작용 가능한 상태
+        if (dm.data.questNum >= info.interactableNumber) isInteractable = true;
+
         // 이후에 퀘스트가 없다면 끝
         if (dm.data.questNum >= dm.questList.Count)
         {
@@ -126,8 +129,5 @@ public class NPC : MonoBehaviour
         {
             NPCState = NPCQuestState.None;
         }
-
-        // 상호작용 가능한 상태
-        if (dm.data.questNum >= info.interactableNumber) isInteractable = true;
     }
 }

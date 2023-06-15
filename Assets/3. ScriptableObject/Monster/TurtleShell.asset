@@ -20,8 +20,8 @@ MonoBehaviour:
   gold_max: 60
   dropItems:
   - itemPref: {fileID: 1876475607197472639, guid: 7c9d3f99f874a4abdafccf2a80a689e6, type: 3}
-    dropCount_min: 8
-    dropCount_max: 8
+    dropCount_min: 2
+    dropCount_max: 4
     percent: 1
   dist_Follow: 6
   dist_Attack: 2.5

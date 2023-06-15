@@ -215,7 +215,7 @@ SphereCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3377746512508024618}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.77
@@ -300,6 +300,7 @@ MonoBehaviour:
   bonePos: {fileID: 7174809950262928897}
   bonePref: {fileID: 1160785499867723302, guid: 9d61493a9c9f640f490ad51a73c12485, type: 3}
   boneCount: 5
+  throwPower: 10
 --- !u!195 &3377746512508185347
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -2135,7 +2136,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7174809950262928910}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.9673474, z: 0.88}
+  m_LocalPosition: {x: 0, y: 1, z: 0.88}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

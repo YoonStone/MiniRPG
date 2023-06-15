@@ -16,9 +16,6 @@ public class PlayerAction : MonoBehaviour
     [Header("활, 화살")]
     public GameObject bow;
     public GameObject arrow;
-    public GameObject arrowPref;
-    public int arrowCount;
-    public float shootPower;
 
     BoxCollider swordColl;
     PlayerMove playerMove;
@@ -30,7 +27,7 @@ public class PlayerAction : MonoBehaviour
     InventoryManager inventory;
     CharacterController cc;
 
-    GameObject[] arrowPool;
+    public Transform target;
 
     // 들고 있는 무기 종류
     public enum WeaponType
@@ -62,15 +59,9 @@ public class PlayerAction : MonoBehaviour
 
         gm.actionBtn.onClick.AddListener(OnClickActionBtn);
         gm.skillBtn.onClick.AddListener(OnClickSkillBtn);
-
-        // 활 오브젝트풀 생성
-        arrowPool = new GameObject[arrowCount];
-        for (int i = 0; i < arrowPool.Length; i++)
-        {
-            arrowPool[i] = Instantiate(arrowPref, gm.transform);
-        }
     }
 
+    // PC용
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space)) OnClickActionBtn();
@@ -171,35 +162,6 @@ public class PlayerAction : MonoBehaviour
         playerMove.isCantMove = false;
     }
 
-    public Transform target;
-    void Shoot()
-    {
-        foreach (var arrowPref in arrowPool)
-        {
-            if (!arrowPref.activeSelf)
-            {
-                arrowPref.transform.position = transform.position + transform.forward + transform.up;
-                arrowPref.transform.rotation = arrow.transform.rotation * Quaternion.Euler(0, 20, 0);
-
-                // 조준된 몬스터가 있다면 방향 구해서 발사
-                if (target)
-                {
-                    Vector3 dir = (target.position - transform.position).normalized;
-                    arrowPref.SetActive(true);
-                    arrowPref.GetComponent<Rigidbody>().velocity = dir * shootPower;
-                }
-                // 조준된 몬스터가 없다면 일반 발사
-                else
-                {
-                    arrowPref.SetActive(true);
-                    arrowPref.GetComponent<Rigidbody>().velocity = transform.forward * 5 + transform.up * 3;
-                }
-                AudioManager.instance.AudioCtrl_SFX(AttackAudio.Bow);
-                break;
-            }
-        }
-    }
-
     // NPC와의 상호작용
     void NPCInteract()
     {
@@ -251,8 +213,8 @@ public class PlayerAction : MonoBehaviour
 
         StartCoroutine(gm.HpImgColor(Color.red));
 
-        // 죽었다면
-        if (gm.Hp <= 0)
+        // 죽었다면(한 번만 실행하도록)
+        if (gm.Hp <= 0 && !CompareTag("Untagged"))
         {
             StartCoroutine(Dead());
             return;

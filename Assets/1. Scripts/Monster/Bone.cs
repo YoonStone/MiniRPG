@@ -1,38 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class Bone : MonoBehaviour
 {
     Rigidbody rigid;
     PlayerAction player;
+    Transform spinMesh;
 
-    [Header("던지는 힘")]
-    public float throwPower = 10;
+    public IObjectPool<GameObject> myBonePool;
 
-    [HideInInspector]
-    public float atk;
-
-    float turnPower;
+    [HideInInspector] public float atk;
+    [HideInInspector] public float turnPower;
 
     void Awake()
     {
         rigid = GetComponent<Rigidbody>();
         player = FindObjectOfType<PlayerAction>();
-    }
-
-    private void OnEnable()
-    {
-        rigid.velocity = Vector3.zero;
-        Vector3 dir = (player.transform.position + Vector3.up - transform.position).normalized;
-        rigid.AddForce(dir * throwPower, ForceMode.Impulse);
-
-        turnPower = Random.Range(-10, 10);
+        spinMesh = transform.GetChild(0);
     }
 
     private void Update()
     {
-        transform.Rotate(0, turnPower, 0);
+        spinMesh.Rotate(turnPower * 0.5f, turnPower, 0);
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -41,6 +32,7 @@ public class Bone : MonoBehaviour
         {
             player.GetHit(atk);
         }
-        gameObject.SetActive(false);
+
+        if(gameObject.activeSelf) myBonePool.Release(gameObject);
     }
 }
