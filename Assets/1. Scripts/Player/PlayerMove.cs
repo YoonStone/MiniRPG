@@ -49,10 +49,10 @@ public class PlayerMove : MonoBehaviour
             return;
         }
 
-        //moveDir = JoyStickMove();
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-        moveDir = new Vector3(h, 0, v).normalized * 5;
+        moveDir = JoyStickMove();
+        //float h = Input.GetAxisRaw("Horizontal");
+        //float v = Input.GetAxisRaw("Vertical");
+        //moveDir = new Vector3(h, 0, v).normalized * 5;
         anim.SetFloat("velocity", moveDir.magnitude);
 
         isMoving = moveDir.magnitude != 0;

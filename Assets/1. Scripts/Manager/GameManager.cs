@@ -213,7 +213,6 @@ public class GameManager : MonoBehaviour
     {
         dm.Save(); // 저장
         inventory.AddItem(0); // 칼 지급
-        inventory.AddItem(3); // 칼 지급
     }
 
     #region [버튼]

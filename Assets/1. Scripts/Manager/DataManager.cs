@@ -32,8 +32,8 @@ public class Data
     public int questNum = 0;
     public int questItemCount = 0;
 
-    public int[] itemSlots_Number = new int[8];
-    public int[] itemSlots_Count = new int[8];
+    public int[] itemSlots_Number = new int[12];
+    public int[] itemSlots_Count = new int[12];
     public int[] equipSlots_Number = new int[2];
     public int[] equipSlots_Count = new int[2];
 
@@ -125,10 +125,10 @@ public class DataManager : MonoBehaviour
     public int Load()
     {
         string path = Application.persistentDataPath + $"/{data.nickname}.json";
-        if(!File.Exists(path)) return -1;
+
+        if (data.nickname == "" || !File.Exists(path)) return -1;
 
         string loadData = File.ReadAllText(path);
-
         data = JsonUtility.FromJson<Data>(loadData);
 
         // 마지막에 위치했던 씬 번호 반환
