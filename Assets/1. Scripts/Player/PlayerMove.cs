@@ -17,16 +17,15 @@ public class PlayerMove : MonoBehaviour
     float turnVelocity; // 현재 회전 속도
     bool isMoving;      // 이동 중인지
 
-    //[HideInInspector]
-    public bool isCantMove; // 이동 불가능한 상태인지
+    [HideInInspector] public bool isCantMove; // 이동 불가능한 상태인지
+    [HideInInspector] public bool isJoyStick; // 조이스틱 사용 중인지
+    [HideInInspector] public int touchId;
 
     [Header("-- 조이스틱 관련 --")]
     public GameObject joyStick;
 
     Transform stick;
     float joyStickRadiius; // 조이스틱 배경의 반지름
-    float screenWidthHalf; // 화면의 절반
-    bool isJoyStick;       // 조이스틱 사용 중인지
     float posY;            // y축 이동 담당
 
     void Start()
@@ -38,7 +37,6 @@ public class PlayerMove : MonoBehaviour
 
         // 조이스틱 배경의 반지름, 화면의 절반 계산
         joyStickRadiius = joyStick.GetComponent<RectTransform>().rect.width * 0.5f;
-        screenWidthHalf = Screen.width * 0.5f;
     }
 
     void Update()
@@ -81,26 +79,11 @@ public class PlayerMove : MonoBehaviour
     // 조이스틱 담당
     Vector3 JoyStickMove()
     {
-        // 드래그 시작
-        if (Input.GetMouseButtonDown(0) && Input.mousePosition.x < screenWidthHalf)
-        {
-            isJoyStick = true;
-            joyStick.SetActive(true);
-            joyStick.transform.position = Input.mousePosition;
-        }
-        // 드래그 종료
-        else if (Input.GetMouseButtonUp(0))
-        {
-            isJoyStick = false;
-            joyStick.SetActive(false);
-            MoveEnd();
-        }
-
-        // 드래그 중
+        // 터치(드래그) 중
         if (isJoyStick)
         {
             // 조이스틱 드래그
-            stick.position = Input.mousePosition;
+            stick.position = Input.GetTouch(touchId).position;
             stick.localPosition = Vector3.ClampMagnitude(stick.localPosition, joyStickRadiius);
 
             // 조이스틱 이동 방향 구하기
