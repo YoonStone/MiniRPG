@@ -88,7 +88,7 @@ public class PlayerAction : MonoBehaviour
 
         // 이동 불가능 + 공격 애니메이션
         playerMove.isCantMove = true;
-        playerMove.MoveEnd();
+        playerMove.StopMove();
 
         anim.SetTrigger("attack");
 
@@ -123,7 +123,7 @@ public class PlayerAction : MonoBehaviour
 
         // 이동 불가능 + 공격 애니메이션
         playerMove.isCantMove = true;
-        playerMove.MoveEnd();
+        playerMove.StopMove();
 
         anim.SetTrigger("attack");
 
