@@ -6,36 +6,38 @@ using TMPro;
 
 public class TouchManager : MonoBehaviour
 {
-    public TextMeshProUGUI text;
-    public TextMeshProUGUI text2;
     public CameraTurn cameraTurn;
     public PlayerMove playerMove;
 
-    public GameObject joyStick_Move;
-    public GameObject joyStick_Camera;
+    public GameObject joyStick_L;
+    public GameObject joyStick_R;
 
-    Transform stick_Move;
-    Transform stick_Camera;
+    Transform stick_L;
+    Transform stick_R;
 
-    float joyStickRadiius_M; // 조이스틱 배경의 반지름
-    float joyStickRadiius_C; // 조이스틱 배경의 반지름
+    float joyStickRadiius_L; // 조이스틱 배경의 반지름
+    float joyStickRadiius_R; // 조이스틱 배경의 반지름
+
+    int leftFingerId = -1;
+    int rightFingerId = -1;
 
     float screenWidthHalf; // 화면의 절반
 
-    int moveId = -1;
-    int cameraId = -1;
+    bool isWaitingLeft;  // 왼쪽 손가락이 나가서 기다리는 중인지
+    bool isWaitingRight; // 오른쪽 손가락이 나가서 기다리는 중인지
 
     void Start()
     {
+        // 화면의 절반 계산
         screenWidthHalf = Screen.width * 0.5f;
 
-        stick_Move = joyStick_Move.transform.GetChild(0);
-        stick_Camera = joyStick_Camera.transform.GetChild(0);
+        stick_L = joyStick_L.transform.GetChild(0);
+        stick_R = joyStick_R.transform.GetChild(0);
 
-        // 조이스틱 배경의 반지름, 화면의 절반 계산
-        joyStickRadiius_M = joyStick_Move.GetComponent<RectTransform>().rect.width * 0.5f;
-        joyStickRadiius_C = joyStick_Camera.GetComponent<RectTransform>().rect.width * 0.5f;
-    }
+        // 조이스틱 배경의 반지름
+        joyStickRadiius_L = joyStick_L.GetComponent<RectTransform>().rect.width * 0.5f;
+        joyStickRadiius_R = joyStick_R.GetComponent<RectTransform>().rect.width * 0.5f;
+   }
 
     void Update()
     {
@@ -48,115 +50,139 @@ public class TouchManager : MonoBehaviour
                 float touchPosX = touch.position.x;
                 TouchPhase touchPhase = touch.phase;
 
-                // 터치 시작
-                if (touchPhase == TouchPhase.Began)
+                switch (touchPhase)
                 {
-                    if (EventSystem.current.IsPointerOverGameObject(i)) continue;
+                    case TouchPhase.Began: // 터치 시작
 
-                    // 왼쪽 터치 = 조이스틱
-                    if (touchPosX < screenWidthHalf)
-                    {
-                        moveId = fingerId;
-                        joyStick_Move.SetActive(true);
-                        joyStick_Move.transform.position = touch.position;
-                        //text2.text += $"+joy({fingerId})\n";
-                    }
+                        // UI 예외처리
+                        if (EventSystem.current.IsPointerOverGameObject(i)) continue;
 
-                    // 오른쪽 터치 = 카메라 회전
-                    else if (touchPosX >= screenWidthHalf)
-                    {
-                        cameraId = fingerId;
-                        joyStick_Camera.SetActive(true);
-                        joyStick_Camera.transform.position = touch.position;
-                        //text2.text += $"+cam({fingerId})\n";
-                    }
-                }
-
-                // 터치 종료
-                else if (touchPhase == TouchPhase.Ended)
-                {
-                    if (fingerId == moveId)
-                    {
-                        // 더 낮은 번호의 손가락이 떨어지면 윗번호가 달라짐
-                        if (moveId < cameraId)
+                        // 왼쪽 터치 = 조이스틱 (드래그 중일 때는 제한)
+                        if (touchPosX < screenWidthHalf && leftFingerId == -1)
                         {
-                            //--cameraId;
+                            leftFingerId = fingerId;
+                            joyStick_L.SetActive(true);
+                            joyStick_L.transform.position = touch.position;
+
+                            // 빠졌던 손가락이 다시 들어온거라면
+                            if (isWaitingLeft)
+                            {
+                                rightFingerId++;
+                                isWaitingLeft = false;
+                            }
+
                         }
 
-                        moveId = -1;
-                        joyStick_Move.SetActive(false);
-                        playerMove.moveDir = Vector3.zero;
-                        playerMove.StopMove();
-                    }
-                    else if (fingerId == cameraId)
-                    {
-                        // 더 낮은 번호의 손가락이 떨어지면 윗번호가 달라짐
-                        if (cameraId < moveId)
+                        // 오른쪽 터치 = 카메라 회전 (드래그 중일 때는 제한)
+                        else if (touchPosX >= screenWidthHalf && rightFingerId == -1)
                         {
-                            //--moveId;
+                            rightFingerId = fingerId;
+                            joyStick_R.SetActive(true);
+                            joyStick_R.transform.position = touch.position;
+
+                            // 빠졌던 손가락이 다시 들어오면
+                            if (isWaitingRight)
+                            {
+                                leftFingerId++;
+                                isWaitingLeft = false;
+                            }
+                        }
+                        break;
+
+                    case TouchPhase.Ended:
+                    case TouchPhase.Canceled:
+
+                        // 왼쪽 손가락 아웃
+                        if (!isWaitingRight && fingerId == leftFingerId)
+                        {
+                            // 더 낮은 숫자가 빠진거라면
+                            if (leftFingerId < rightFingerId)
+                            {
+                                rightFingerId--;
+                                isWaitingLeft = true;
+                            }
+
+                            leftFingerId = -1;
+                            joyStick_L.SetActive(false);
+                            playerMove.moveDir = Vector3.zero;
+                            playerMove.StopMove();
                         }
 
-                        cameraId = -1;
-                        joyStick_Camera.SetActive(false);
-                        cameraTurn.StopRotate();
-                    }
+                        // 오른손이 먼저 나갔었고, 왼쪽 손가락 아웃
+                        else if (isWaitingRight && fingerId == leftFingerId + 1)
+                        {
+                            isWaitingRight = false;
+
+                            leftFingerId = -1;
+                            joyStick_L.SetActive(false);
+                            playerMove.moveDir = Vector3.zero;
+                            playerMove.StopMove();
+                        }
+
+                        // 오른쪽 손가락 아웃
+                        else if (!isWaitingRight && fingerId == rightFingerId)
+                        {
+                            // 더 낮은 숫자가 빠진거라면
+                            if (rightFingerId < leftFingerId)
+                            {
+                                leftFingerId--;
+                                isWaitingRight = true;
+                            }
+
+                            rightFingerId = -1;
+                            joyStick_R.SetActive(false);
+                            cameraTurn.StopRotate();
+                        }
+
+                        // 왼손이 먼저 나갔었고, 오른쪽 손가락 아웃
+                        else if (isWaitingLeft && fingerId == rightFingerId + 1)
+                        {
+                            isWaitingLeft = false;
+
+                            rightFingerId = -1;
+                            joyStick_R.SetActive(false);
+                            cameraTurn.StopRotate();
+                        }
+                        break;
                 }
 
-                else if(touchPhase == TouchPhase.Moved && Input.touchCount == 1)
-                {
-                    text2.text = $"Alone&Move({fingerId})";
-                }
             }
         }
-        text.text = $"j({moveId}), c({cameraId})";
+        else
+        {
+            leftFingerId = -1;
+            rightFingerId = -1;
+        }
+        // 켜져있는 조이스틱만 계산, 꺼져있는데 중단되지 않았다면 중단
+        if (leftFingerId != -1) JoyStick_Move();
+        else if (playerMove.moveDir != Vector3.zero) playerMove.moveDir = Vector3.zero;
 
-        // 켜져있는 조이스틱만 계산
-        if(joyStick_Move.activeSelf) JoyStick_Move();
-        if(joyStick_Camera.activeSelf) JoyStick_Camera();
+        if (rightFingerId != -1) JoyStick_Camera();
+        else if (cameraTurn.GetYAxisValue() != 0 || cameraTurn.GetXAxisValue() != 0) cameraTurn.StopRotate();
     }
-
-    //void JoystickContinue(int id)
-    //{
-    //    playerMove.touchId = id;
-    //    playerMove.joyStick.transform.position = Input.GetTouch(id).position;
-    //}
-
-    //void CameraContinue(int id)
-    //{
-    //    cameraTurn.touchId = id;
-    //    cameraTurn.currentPos = Input.GetTouch(id).position;
-    //}
 
     // 이동용 조이스틱 결과물 전달
     void JoyStick_Move()
     {
-        // 이동 조이스틱 조작 중
-        if (moveId != -1)
-        {
-            // 드래그
-            stick_Move.position = Input.GetTouch(moveId).position;
-            stick_Move.localPosition = Vector3.ClampMagnitude(stick_Move.localPosition, joyStickRadiius_M);
+        // 드래그
+        stick_L.position = Input.GetTouch(leftFingerId).position;
+        stick_L.localPosition = Vector3.ClampMagnitude(stick_L.localPosition, joyStickRadiius_L);
 
-            // 조이스틱 이동 방향 구하기
-            Vector3 dir = stick_Move.position - joyStick_Move.transform.position;
-            playerMove.moveDir = dir.normalized;    
-        }
+        // 조이스틱 이동 방향 구해서 전달
+        Vector3 dir = stick_L.position - joyStick_L.transform.position;
+        playerMove.moveDir = dir.normalized;
     }
 
 
     // 카메라 회전용 조이스틱 결과물 전달
     void JoyStick_Camera()
     {
-        // 이동 조이스틱 조작 중
-        if (cameraId != -1)
-        {
-            // 드래그
-            stick_Camera.position = Input.GetTouch(cameraId).position;
-            stick_Camera.localPosition = Vector3.ClampMagnitude(stick_Camera.localPosition, joyStickRadiius_C);
+        // 드래그
+        stick_R.position = Input.GetTouch(rightFingerId).position;
+        stick_R.localPosition = Vector3.ClampMagnitude(stick_R.localPosition, joyStickRadiius_R);
 
-            // 조이스틱 이동 방향 구하기
-            Vector3 dir = stick_Camera.position - joyStick_Camera.transform.position;
-            cameraTurn.DoRotate(dir.normalized);
-        }
+        // 조이스틱 이동 방향 구해서 전달
+        Vector3 dir = stick_R.position - joyStick_R.transform.position;
+        cameraTurn.DoRotate(dir.normalized);
     }
 }

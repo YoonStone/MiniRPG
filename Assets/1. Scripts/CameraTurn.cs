@@ -46,4 +46,15 @@ public class CameraTurn : MonoBehaviour
         cineFreeLook.m_YAxis.m_InputAxisValue = 0;
         cineFreeLook.m_XAxis.m_InputAxisValue = 0;
     }
+
+    public float GetYAxisValue()
+    {
+        return cineFreeLook.m_YAxis.m_InputAxisValue;
+    }
+
+
+    public float GetXAxisValue()
+    {
+        return cineFreeLook.m_XAxis.m_InputAxisValue;
+    }
 }
