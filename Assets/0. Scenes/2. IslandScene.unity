@@ -1929,7 +1929,6 @@ MonoBehaviour:
   isQuickSlot: 0
   item: {fileID: 0}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!114 &95836857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2258,7 +2257,6 @@ MonoBehaviour:
   isQuickSlot: 0
   item: {fileID: 0}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!114 &103667306
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2568,7 +2566,6 @@ MonoBehaviour:
   isQuickSlot: 0
   item: {fileID: 0}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!114 &109845359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3430,7 +3427,6 @@ MonoBehaviour:
   isQuickSlot: 0
   item: {fileID: 0}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!114 &133175565
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4387,7 +4383,6 @@ MonoBehaviour:
   isQuickSlot: 0
   item: {fileID: 0}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!114 &185413993
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8730,7 +8725,6 @@ MonoBehaviour:
   isQuickSlot: 0
   item: {fileID: 0}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!114 &492085612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10708,7 +10702,7 @@ GameObject:
   m_Component:
   - component: {fileID: 607382473}
   m_Layer: 0
-  m_Name: FirstItems
+  m_Name: Basic Items
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11340,7 +11334,6 @@ MonoBehaviour:
   isQuickSlot: 1
   item: {fileID: 11400000, guid: b4f2d045744cffc46a903708d3e68413, type: 2}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!1 &665910717
 GameObject:
   m_ObjectHideFlags: 0
@@ -14325,7 +14318,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 842846770}
-  m_LocalRotation: {x: 0.06191489, y: -0.08485039, z: 0.005282802, w: 0.99445415}
+  m_LocalRotation: {x: 0.061914884, y: -0.08485045, z: 0.0052828058, w: 0.99445415}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -16008,6 +16001,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointEnterSlot: {fileID: 0}
+  isOnSlot: 0
 --- !u!1 &918728165
 GameObject:
   m_ObjectHideFlags: 0
@@ -16405,7 +16399,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 934710710}
   m_LocalRotation: {x: -0, y: -0.68543476, z: -0, w: 0.72813416}
-  m_LocalPosition: {x: 6.6255746, y: -2.3600001, z: -10.796205}
+  m_LocalPosition: {x: 6.6255755, y: -2.3600001, z: -10.796205}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -16711,8 +16705,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.041461334, y: -0.74341583, z: 0.046285212, w: 0.66593665}
-  m_LocalPosition: {x: 6.6255746, y: -2.3600001, z: -10.796205}
+  m_LocalRotation: {x: 0.041461322, y: -0.7434159, z: 0.04628521, w: 0.6659366}
+  m_LocalPosition: {x: 6.6255755, y: -2.3600001, z: -10.796205}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17152,51 +17146,6 @@ Transform:
   m_Father: {fileID: 920642244}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &989971673
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 989971674}
-  - component: {fileID: 989971675}
-  m_Layer: 0
-  m_Name: IslandManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &989971674
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 989971673}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.081654, y: 3.0877714, z: -18.193117}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 10
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &989971675
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 989971673}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c7ec77c945264418ca41202fa3d51544, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  firstItems: {fileID: 607382472}
 --- !u!1 &994165004
 GameObject:
   m_ObjectHideFlags: 0
@@ -21655,7 +21604,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1257762819
 GameObject:
@@ -22049,7 +21998,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1269989559}
-  m_LocalRotation: {x: 0.07597453, y: -0.084767185, z: 0.0064824177, w: 0.993479}
+  m_LocalRotation: {x: 0.075974524, y: -0.084767215, z: 0.006482414, w: 0.99347895}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -22780,8 +22729,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f909efb9d8fdc4656be24e67af8b7840, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 0}
-  text2: {fileID: 0}
   cameraTurn: {fileID: 934710714}
   playerMove: {fileID: 2102661239613287644}
   joyStick_L: {fileID: 1836606611}
@@ -24956,7 +24903,6 @@ MonoBehaviour:
   isQuickSlot: 0
   item: {fileID: 0}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!114 &1441772682
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26162,7 +26108,6 @@ MonoBehaviour:
   isQuickSlot: 0
   item: {fileID: 0}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!114 &1545904910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35193,7 +35138,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1854457980}
-  m_LocalRotation: {x: 0.06730897, y: -0.08482054, z: 0.0057430416, w: 0.99410367}
+  m_LocalRotation: {x: 0.06730896, y: -0.08482054, z: 0.0057430435, w: 0.99410367}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -37803,7 +37748,6 @@ MonoBehaviour:
   isQuickSlot: 0
   item: {fileID: 0}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!114 &2019100292
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37981,7 +37925,6 @@ MonoBehaviour:
   isQuickSlot: 0
   item: {fileID: 0}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!114 &2027811881
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38379,7 +38322,6 @@ MonoBehaviour:
   isQuickSlot: 0
   item: {fileID: 0}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!114 &2061243475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39030,7 +38972,6 @@ MonoBehaviour:
   isQuickSlot: 0
   item: {fileID: 0}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!114 &2111123232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39223,7 +39164,6 @@ MonoBehaviour:
   isQuickSlot: 0
   item: {fileID: 0}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!114 &2114326955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39552,7 +39492,6 @@ MonoBehaviour:
   isQuickSlot: 0
   item: {fileID: 0}
   foodBtn: {fileID: 0}
-  isDown: 0
 --- !u!114 &2130335354
 MonoBehaviour:
   m_ObjectHideFlags: 0

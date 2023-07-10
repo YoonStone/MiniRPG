@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class Drag : MonoBehaviour
 {
-    [HideInInspector]
-    public Slot pointEnterSlot;
+    [HideInInspector] public Slot pointEnterSlot;
+    [HideInInspector] public bool isOnSlot; // 슬롯 위에 손가락이 있는지
 
     CameraTurn cameraTurn;
     Image img;
@@ -41,7 +41,7 @@ public class Drag : MonoBehaviour
         {
             transform.position = Input.mousePosition;
 
-            // 드래그 종료 (나중에 터치아이디 사용해야 함**)
+            // 드래그 종료
             if (Input.GetMouseButtonUp(0))
             {
                 DragEnd();
@@ -66,6 +66,8 @@ public class Drag : MonoBehaviour
     // 드래그 시작
     public void DragStart(Slot _dragStartSlot, Item _dragItem, int _drgaItemCount)
     {
+        transform.position = Input.mousePosition;
+
         dragStartSlot = _dragStartSlot;
         dragItem = _dragItem;
         drgaItemCount = _drgaItemCount;
@@ -88,6 +90,7 @@ public class Drag : MonoBehaviour
     // 드래그 초기화
     void DragReset()
     {
+        pointEnterSlot = null;
         dragStartSlot = null;
         dragItem = null;
         drgaItemCount = 0;

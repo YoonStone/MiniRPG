@@ -51,6 +51,7 @@ public class Slot : MonoBehaviour
     InventoryManager inventory;
     GameManager gm;
     Drag drag;
+    Image dragImg;
     CameraTurn cameraTurn;
     //[HideInInspector] 
     public Slot foodBtn;
@@ -68,6 +69,7 @@ public class Slot : MonoBehaviour
         inventory = InventoryManager.instance;
         gm = GameManager.instance;
         drag = inventory.drag;
+        dragImg = drag.GetComponent<Image>();
     }
 
     // 슬롯 클릭하면 아이템 사용
@@ -85,17 +87,16 @@ public class Slot : MonoBehaviour
     // 슬롯 위에 손이 올라오면
     public void OnEnter()
     {
+        drag.isOnSlot = true;
         drag.pointEnterSlot = this;
     }
 
     // 슬롯 위에서 손이 떨어지면 
     public void OnExit()
     {
-        drag.pointEnterSlot = null;
+        drag.isOnSlot = false;
     }
 
-    // 슬롯 드래그 시작
-    [HideInInspector] public bool isDown;
     public void OnDown()
     {
         if (item == null || gm.isPopup) return;
@@ -105,19 +106,18 @@ public class Slot : MonoBehaviour
     IEnumerator DownCheck()
     {
         cameraTurn.enabled = false;
-        isDown = true;
 
         // 0.5초 후에도 누르고 있다면
         yield return new WaitForSeconds(0.5f);
-        if (!isDown) yield break;
+        if (drag.pointEnterSlot != this) yield break;
 
+        dragImg.color = Color.clear;
         drag.gameObject.SetActive(true);
         drag.DragStart(this, item, count);
     }
 
     public void OnUp()
     {
-        isDown = false;
         cameraTurn.enabled = true;
     }
 
