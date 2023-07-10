@@ -7,6 +7,7 @@ public class PlayerCollision : MonoBehaviour
     public float radius;
     public LayerMask itemLayer;
 
+    // 주변에 아이템이 있는지 확인 
     private void Update()
     {
         // Item 용

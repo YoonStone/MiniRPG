@@ -18,6 +18,7 @@ public class ItemObject : MonoBehaviour
         gameObject.layer = 6;
     }
 
+    // 제자리 회전
     private void Update()
     {
         transform.Rotate(Vector3.up  * rotateSpeed, Space.World);
@@ -30,15 +31,13 @@ public class ItemObject : MonoBehaviour
         tag = "Untagged";
 
         Vector3 targetPos;
-        float distance;
         do
         {
             targetPos = player.position + new Vector3(0, 1, 0);
             transform.position = Vector3.Slerp(transform.position, targetPos, moveSpeed * Time.deltaTime);
-            distance = Vector3.Distance(transform.position, targetPos);
             yield return null;
         }
-        while (!isGet); // 가까워질 때까지 반복
+        while (!isGet); // 플레이어와 충돌할 때까지 반복
 
     }
 

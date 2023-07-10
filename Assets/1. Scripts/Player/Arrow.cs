@@ -25,6 +25,7 @@ public class Arrow : MonoBehaviour
         transform.forward = rigid.velocity;
     }
 
+    // 화살이 어딘가에 충돌하면 돌려놓기
     private void OnCollisionEnter(Collision collision)
     {
         if (gameObject.activeSelf) myArrowPool.Release(this.gameObject);
