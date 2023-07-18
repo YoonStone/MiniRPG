@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Audio;
-using Unity.VisualScripting;
-using Newtonsoft.Json.Linq;
 
 // 0 : 배경음, 1 : 발자국, 2 : 공격, 3 : 플레이어, 4 : 아이템
 public enum SFX
@@ -138,6 +136,7 @@ public class AudioManager : MonoBehaviour
     {
         dm.data.volumes[number] = value;
         audioMixer.SetFloat("Volume" + number, Mathf.Log10(value) * 20);
+        print(Mathf.Log10(value) + ", " + Mathf.Log10(value) * 20);
     }
 
     // 슬라이더 > 볼륨

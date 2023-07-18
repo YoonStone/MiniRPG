@@ -223,7 +223,6 @@ public class InventoryManager : MonoBehaviour
                 else slot.Count--;
                 break;
         }
-
     }
 
     // 음식 섭취

@@ -97,12 +97,14 @@ public class Slot : MonoBehaviour
         drag.isOnSlot = false;
     }
 
+    // 슬롯을 누르면
     public void OnDown()
     {
         if (item == null || gm.isPopup) return;
         StartCoroutine(DownCheck());
     }
 
+    // 계속 누르고 있는지 확인
     IEnumerator DownCheck()
     {
         cameraTurn.enabled = false;
@@ -116,6 +118,7 @@ public class Slot : MonoBehaviour
         drag.DragStart(this, item, count);
     }
 
+    // 슬롯에서 손을 떼면
     public void OnUp()
     {
         cameraTurn.enabled = true;
