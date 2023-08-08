@@ -57,7 +57,7 @@ public class MonsterBase : MonoBehaviour
     [Header("체력바")]
     public Image hpImg;
 
-    [Header("몬스터 정보")]
+    [Header("몬스터 정보")]
     public MonsterInfo monsterInfo;
 
     [Header("화살에 맞을 부위")]

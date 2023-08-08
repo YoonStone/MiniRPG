@@ -14,7 +14,7 @@ public class Drag : MonoBehaviour
     Slot dragStartSlot;
     Item dragItem;
 
-    int drgaItemCount;
+    int dragItemCount;
     bool isDrag;
 
     private void Awake()
@@ -50,7 +50,7 @@ public class Drag : MonoBehaviour
                 if (pointEnterSlot && pointEnterSlot != dragStartSlot && pointEnterSlot.Item == null)
                 {
                     pointEnterSlot.Item = dragItem;
-                    pointEnterSlot.Count = drgaItemCount;
+                    pointEnterSlot.Count = dragItemCount;
                     dragStartSlot.Count = 0;
                 }
 
@@ -64,13 +64,13 @@ public class Drag : MonoBehaviour
     }
 
     // 드래그 시작
-    public void DragStart(Slot _dragStartSlot, Item _dragItem, int _drgaItemCount)
+    public void DragStart(Slot _dragStartSlot, Item _dragItem, int _dragItemCount)
     {
         transform.position = Input.mousePosition;
 
         dragStartSlot = _dragStartSlot;
         dragItem = _dragItem;
-        drgaItemCount = _drgaItemCount;
+        dragItemCount = _dragItemCount;
 
         img.sprite = dragItem.itemSprite;
         img.color = Color.white;
@@ -93,7 +93,7 @@ public class Drag : MonoBehaviour
         pointEnterSlot = null;
         dragStartSlot = null;
         dragItem = null;
-        drgaItemCount = 0;
+        dragItemCount = 0;
     }
 
     // 팝업창 사용 (아이템 버리기)
