@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using UnityEngine.UIElements;
 
 public class CameraTurn : MonoBehaviour
 {
@@ -22,18 +23,29 @@ public class CameraTurn : MonoBehaviour
         StopRotate();
     }
 
+#if UNITY_EDITOR
+    Vector2 position;
+    Vector2 currentPos;
     void Update()
     {
-        //// 드래그 중
-        //if (isDrag)
-        //{
-        //    // 드래그 방향대로 카메라 회전
-        //    //Vector2 dragDir = (Vector2)Input.GetTouch(touchId).position - currentPos;
-        //    cineFreeLook.m_YAxis.m_InputAxisValue = rotateDir.y * turnSpeed;
-        //    cineFreeLook.m_XAxis.m_InputAxisValue = rotateDir.x * turnSpeed;
-        //    //currentPos = Input.GetTouch(touchId).position;
-        //}
+        // 드래그 중
+        if (Input.GetMouseButton(0))
+        {
+            // 드래그 방향 구해서 전달
+            position = Input.mousePosition;
+            Vector3 dir = position - currentPos;
+            DoRotate(dir.normalized * 3f);
+
+            currentPos = Input.mousePosition;
+
+            // 드래그 방향대로 카메라 회전
+            //Vector2 dragDir = (Vector2)Input.GetTouch(touchId).position - currentPos;
+            //cineFreeLook.m_YAxis.m_InputAxisValue = rotateDir.y * turnSpeed;
+            //cineFreeLook.m_XAxis.m_InputAxisValue = rotateDir.x * turnSpeed;
+            //currentPos = Input.GetTouch(touchId).position;
+        }
     }
+#endif
 
     public void DoRotate(Vector3 rotateDir)
     {

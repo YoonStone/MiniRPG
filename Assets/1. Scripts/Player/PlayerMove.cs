@@ -34,9 +34,11 @@ public class PlayerMove : MonoBehaviour
             return;
         }
 
-        //float h = Input.GetAxisRaw("Horizontal");
-        //float v = Input.GetAxisRaw("Vertical");
-        //moveDir = new Vector3(h, 0, v).normalized * 5;
+#if UNITY_EDITOR
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        moveDir = new Vector3(h, 0, v).normalized * 7;
+#endif
         anim.SetFloat("velocity", moveDir.magnitude);
 
         isMoving = moveDir.magnitude != 0;

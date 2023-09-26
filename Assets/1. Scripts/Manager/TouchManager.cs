@@ -6,6 +6,8 @@ using TMPro;
 
 public class TouchManager : MonoBehaviour
 {
+#if UNITY_EDITOR
+#else
     public CameraTurn cameraTurn;
     public PlayerMove playerMove;
 
@@ -185,4 +187,5 @@ public class TouchManager : MonoBehaviour
         Vector3 dir = stick_R.position - joyStick_R.transform.position;
         cameraTurn.DoRotate(dir.normalized);
     }
+#endif
 }

@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1512
     height: 916
   m_ShowMode: 4
-  m_Title: Hierarchy
+  m_Title: Inspector
   m_RootView: {fileID: 4}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -74,7 +74,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 200}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 91
+  controlID: 68
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1739,7 +1739,7 @@ MonoBehaviour:
       oldMaxSizes: 
       oldSplitSize: 0
     m_HorizontalSplitter:
-      ID: 182
+      ID: 25
       splitterInitialOffset: 0
       currentActiveSplitter: -1
       realSizes:
@@ -1830,8 +1830,8 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 72600000
-      m_LastClickedID: 24690
+      m_SelectedIDs: 68600000
+      m_LastClickedID: 24680
       m_ExpandedIDs: 10fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
@@ -1942,18 +1942,18 @@ MonoBehaviour:
     m_ExpandedIDs: ffffffff00000000d661000014620000206200002262000030640000326400003464000036640000386400003a6400003c6400003e64000040640000426400004464000046640000486400004a6400004c6400004e64000050640000526400005464000056640000586400005a6400005c6400005e64000060640000626400006464000066640000686400006a6400006c6400006e64000070640000726400007464000076640000786400007a6400007c6400007e64000080640000826400008464000086640000886400008a6400008c6400008e64000090640000926400009464000096640000986400009a6400009c6400009e640000a0640000a2640000a4640000a6640000a8640000aa640000ac640000ae640000b0640000b2640000b4640000b6640000b8640000ba640000bc640000be640000c0640000c2640000c4640000c6640000c8640000ca640000cc640000ce640000d0640000d2640000d4640000d6640000d8640000da640000dc640000de640000e0640000e2640000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: QuestManager
-      m_OriginalName: QuestManager
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 5960
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 11}
     m_SearchString: 

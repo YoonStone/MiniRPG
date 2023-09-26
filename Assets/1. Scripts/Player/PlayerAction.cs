@@ -211,6 +211,9 @@ public class PlayerAction : MonoBehaviour
         }
         else gm.Hp -= atk;
 
+        // *** 피 닳지 않도록
+        gm.Hp = 100;
+
         StartCoroutine(gm.HpImgColor(Color.red));
 
         // 죽었다면(한 번만 실행하도록)
